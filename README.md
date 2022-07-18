@@ -58,3 +58,10 @@ If you want to learn more about building native executables, please consult http
 Easily start your Reactive RESTful Web Services
 
 [Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+
+### Subindo local:
+mvn quarkus:dev
+
+Container Postgres:
+sudo docker pull postgres
+sudo docker container run -d --name question-recommender-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=questionrecommender -p 5432:5432 postgres:latest
