@@ -58,7 +58,7 @@ Número mínimo de perguntas recomendadas para enviar email ao usuário.<br/>
 Número máximo de perguntas recomendadas para enviar email ao usuário.<br/>
 ``Valor default: 5``
 
-`` integration.settings.default_email_notification_time``<br/>
+`` integration.settings.default_email_notification_hour``<br/>
 Hora que iniciará o o processamento para envio de emails aos usuários. Também é possível configurar por usuário na tabela 'user'.<br/>
 ``Valor default: 17``
 
