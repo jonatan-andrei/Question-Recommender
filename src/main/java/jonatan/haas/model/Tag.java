@@ -23,12 +23,12 @@ public class Tag {
     private Long tagId;
 
     @NotNull
-    @Column(name = "integration_tag_id")
+    @Column(name = "integration_tag_id", unique = true)
     @Size(min = 1, max = 100)
     private String integrationTagId;
 
     @NotNull
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @Size(min = 1, max = 100)
     private String name;
 

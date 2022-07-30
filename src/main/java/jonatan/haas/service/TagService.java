@@ -3,24 +3,39 @@ package jonatan.haas.service;
 import jonatan.haas.dto.TagRequestDto;
 import jonatan.haas.factory.TagFactory;
 import jonatan.haas.model.Tag;
+import jonatan.haas.repository.TagRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.Objects;
+
+import static java.util.Objects.nonNull;
 
 @ApplicationScoped
 public class TagService {
 
     @Inject
-    EntityManager entityManager; // TODO criar repositório
+    TagRepository tagRepository;
 
     @Transactional
-    public Tag save(TagRequestDto tagRequestDto) {
-        // TODO Verifica se Tag existe
-        entityManager.persist(TagFactory.newTag(tagRequestDto));
-        // TODO adicionar retorno de tag
-        return null;
+    public Tag saveOrUpdate(TagRequestDto tagRequestDto) {
+        // TODO validar informações obrigatórias
+        Tag existingTagWithIntegrationTagId = tagRepository.findByIntegrationTagId(tagRequestDto.getIntegrationTagId());
+        Tag existingTagWithName = tagRepository.findByName(tagRequestDto.getName());
+        if (nonNull(existingTagWithIntegrationTagId)) {
+            if (nonNull(existingTagWithName) && !Objects.equals(existingTagWithIntegrationTagId.getIntegrationTagId(), existingTagWithName.getIntegrationTagId())) {
+                // TODO exception - tag de nome e id diferentes
+            }
+            return tagRepository.save(TagFactory.overwrite(existingTagWithIntegrationTagId, tagRequestDto));
+        } else if (nonNull(existingTagWithName)) {
+            if (nonNull(existingTagWithName.getIntegrationTagId()) && !existingTagWithName.getIntegrationTagId().equals(tagRequestDto.getIntegrationTagId())) {
+                // TODO exception - tag de nome e id diferentes
+            }
+            return tagRepository.save(TagFactory.overwrite(existingTagWithName, tagRequestDto));
+        } else {
+            return tagRepository.save(TagFactory.newTag(tagRequestDto));
+        }
     }
 
 }

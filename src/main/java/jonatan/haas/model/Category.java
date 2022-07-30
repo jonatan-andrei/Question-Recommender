@@ -23,7 +23,7 @@ public class Category {
     private Long categoryId;
 
     @NotNull
-    @Column(name = "integration_category_id")
+    @Column(name = "integration_category_id", unique = true)
     @Size(min = 1, max = 100)
     private String integrationCategoryId;
 
@@ -31,7 +31,7 @@ public class Category {
     private Long parentCategoryId;
 
     @NotNull
-    @Column(name = "name")
+    @Column(name = "name", unique = true)
     @Size(min = 1, max = 100)
     private String name;
 

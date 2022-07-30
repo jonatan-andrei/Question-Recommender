@@ -2,7 +2,6 @@ package jonatan.haas.dto;
 
 import lombok.*;
 
-import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
 @Data

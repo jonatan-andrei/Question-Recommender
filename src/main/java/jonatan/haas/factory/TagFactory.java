@@ -14,4 +14,12 @@ public class TagFactory {
                 .questionCount(0)
                 .build();
     }
+
+    public static Tag overwrite (Tag existingTag, TagRequestDto tagRequestDto){
+        existingTag.setIntegrationTagId(tagRequestDto.getIntegrationTagId());
+        existingTag.setActive(tagRequestDto.isActive());
+        existingTag.setName(tagRequestDto.getName());
+        existingTag.setDescription(tagRequestDto.getDescription());
+        return existingTag;
+    }
 }

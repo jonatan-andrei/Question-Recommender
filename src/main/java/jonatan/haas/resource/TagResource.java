@@ -17,7 +17,7 @@ public class TagResource {
     TagService tagService;
 
     @POST
-    public void save(@Valid TagRequestDto tagRequestDto) {
-        tagService.save(tagRequestDto);
+    public void saveOrUpdate(@Valid TagRequestDto tagRequestDto) {
+        tagService.saveOrUpdate(tagRequestDto);
     }
 }

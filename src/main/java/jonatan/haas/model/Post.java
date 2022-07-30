@@ -24,7 +24,7 @@ public abstract class Post {
     private Long postId;
 
     @NotNull
-    @Column(name = "integration_post_id")
+    @Column(name = "integration_post_id", unique = true)
     private String integrationPostId;
 
     @NotNull

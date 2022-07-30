@@ -25,7 +25,7 @@ public class User {
 
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "integration_user_id")
+    @Column(name = "integration_user_id", unique = true)
     private String integrationUserId;
 
     @Size(min = 1, max = 100)
