@@ -11,7 +11,7 @@ Agora você já poderá executar local a aplicação com os seguintes comandos:
 
 ```./mvnw compile quarkus:dev``` <br/>
 ou <br/>
-```mvn quarkus:dev```
+```mvn compile quarkus:dev```
 
 Se você fizer uma correção ou adicionar algo novo em QR, por favor, considere abrir um pull request.
 
