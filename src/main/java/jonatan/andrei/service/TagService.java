@@ -10,7 +10,9 @@ import jonatan.andrei.repository.TagRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -35,6 +37,11 @@ public class TagService {
         } else {
             return tagRepository.save(TagFactory.newTag(tagRequestDto));
         }
+    }
+
+    @Transactional
+    public List<Tag> saveOrUpdate(List<TagRequestDto> tags) {
+        return tags.stream().map(tag -> saveOrUpdate(tag)).collect(Collectors.toList());
     }
 
     private void validateExistingTagWithNameWithIntegrationTagId(Tag existingTagWithIntegrationTagId, Tag existingTagWithName) {
