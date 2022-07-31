@@ -13,7 +13,7 @@ Agora você já poderá executar local a aplicação com os seguintes comandos:
 ou <br/>
 ```mvn compile quarkus:dev```
 
-Se você fizer uma correção ou adicionar algo novo em QR, por favor, considere abrir um pull request.
+Se você fizer uma correção ou adicionar algo novo em QR, considere abrir um pull request.
 
 
 
