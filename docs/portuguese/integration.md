@@ -1,5 +1,26 @@
 # Integração de dados
 
+## Posts
+TODO
+
+## Usuários
+TODO
+
+## Categorias
+
+### POST /category
+Endpoint para integração de uma categoria com Question Recommender.
+```
+integration_category_id (String): Id da categoria no sistema principal
+integration_parent_category_id (String): Id da categoria pai no sistema principal (opcional)
+name (String): Nome da categoria
+description (String): Descrição da categoria (opcional)
+active (boolean): Se a categoria deve ser considerada 
+```
+
+### POST /category/list
+Endpoint para integração de uma lista de categorias com Question Recommender. Os dados que devem ser enviados são iguais ao endpoint POST /category.
+
 ## Tags
 
 ### POST /tag
@@ -13,3 +34,12 @@ active (boolean): Se a tag deve ser considerada
 
 ### POST /tag/list
 Endpoint para integração de uma lista de tags com Question Recommender. Os dados que devem ser enviados são iguais ao endpoint POST /tag.
+
+## Notificações
+TODO
+
+## Emails
+TODO
+
+## Lista de perguntas
+TODO
