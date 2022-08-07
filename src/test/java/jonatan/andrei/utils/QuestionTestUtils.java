@@ -19,9 +19,13 @@ public class QuestionTestUtils {
     UserTestUtils userTestUtils;
 
     public Question save() {
-        User user = userTestUtils.save();
+        return saveWithIntegrationPostId("1");
+    }
+
+    public Question saveWithIntegrationPostId(String integrationPostId) {
+        User user = userTestUtils.saveWithIntegrationUserId(integrationPostId);
         return questionRepository.save(Question.builder()
-                .integrationPostId("1")
+                .integrationPostId(integrationPostId)
                 .postType(PostType.QUESTION)
                 .userId(user.getUserId())
                 .publicationDate(LocalDateTime.now())
@@ -34,7 +38,6 @@ public class QuestionTestUtils {
                 .title("Question title")
                 .description("Question description")
                 .followers(0)
-                .duplicateQuestion(false)
                 .build());
     }
 }

@@ -3,6 +3,13 @@
 ## Posts
 TODO
 
+### PUT /post/register-duplicate_question
+Endpoint para marcar ou desmarcar uma pergunta como duplicada
+```
+integrationQuestionId (String): Id da pergunta no sistema principal
+integrationDuplicateQuestionId (String): Id da pergunta da qual a integrationQuestionId é duplicada
+```
+
 ### PUT /post/hidden
 Endpoint para ocultar ou tornar novamente visível publicação
 ```

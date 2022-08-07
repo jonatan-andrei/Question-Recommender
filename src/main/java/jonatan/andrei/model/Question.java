@@ -35,10 +35,6 @@ public class Question extends Post {
     @Column(name = "followers")
     private Integer followers;
 
-    @NotNull
-    @Column(name = "duplicate_question")
-    private boolean duplicateQuestion;
-
     @Column(name = "duplicate_question_id")
     private Long duplicateQuestionId;
 

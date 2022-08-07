@@ -1,8 +1,6 @@
 package jonatan.andrei.resource;
 
-import jonatan.andrei.dto.CreatePostRequestDto;
-import jonatan.andrei.dto.HidePostRequestDto;
-import jonatan.andrei.dto.UpdatePostRequestDto;
+import jonatan.andrei.dto.*;
 import jonatan.andrei.model.Post;
 import jonatan.andrei.service.PostService;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +26,20 @@ public class PostResource {
     @PUT
     public ResponseEntity<Post> update(UpdatePostRequestDto updatePostRequestDto) {
         return ResponseEntity.ok(postService.update(updatePostRequestDto));
+    }
+
+    @PUT()
+    @Path("/register-best-answer")
+    public ResponseEntity registerBestAnswer(BestAnswerRequestDto bestAnswerRequestDto) {
+        postService.registerBestAnswer(bestAnswerRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PUT()
+    @Path("/register-duplicate_question")
+    public ResponseEntity registerDuplicateQuestion(DuplicateQuestionRequestDto duplicateQuestionRequestDto) {
+        postService.registerDuplicateQuestion(duplicateQuestionRequestDto);
+        return ResponseEntity.ok().build();
     }
 
     @PUT()
