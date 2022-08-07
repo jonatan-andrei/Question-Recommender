@@ -2,6 +2,7 @@ package jonatan.andrei.model;
 
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @PrimaryKeyJoinColumn(name="post_id")
 @Table(name="question")
 public class Question extends Post {
@@ -44,4 +45,8 @@ public class Question extends Post {
     @Column(name = "url")
     @Size(min = 1, max = 500)
     private String url;
+
+    @NotNull
+    @Column(name = "views")
+    private Integer views;
 }

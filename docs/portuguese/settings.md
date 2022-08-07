@@ -95,7 +95,9 @@ Se o usuário ficar esse período sem gerar nenhum conteúdo, não serão mais g
 Se o usuário ficar esse período sem gerar nenhum conteúdo, não serão mais geradas recomendações por email para ele.<br/>
 ``Valor default: 60``
 
-
+`` recommendation.settings.minimum_word_size_considered``<br/>
+Tamanho mínimo de palavra que deve ser considerada. <br/>
+``Valor default: 2``
 
 
 

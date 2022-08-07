@@ -3,6 +3,13 @@
 ## Posts
 TODO
 
+### PUT /post/hidden
+Endpoint para ocultar ou tornar novamente visível publicação
+```
+integrationPostId (String): Id da publicação no sistema principal
+hidden (boolean): Se a publicação deve ficar oculta
+```
+
 ## Usuários
 TODO
 
@@ -11,8 +18,8 @@ TODO
 ### POST /category
 Endpoint para integração de uma categoria com Question Recommender.
 ```
-integration_category_id (String): Id da categoria no sistema principal
-integration_parent_category_id (String): Id da categoria pai no sistema principal (opcional)
+integrationCategoryId (String): Id da categoria no sistema principal
+integrationParentCategoryId (String): Id da categoria pai no sistema principal (opcional)
 name (String): Nome da categoria
 description (String): Descrição da categoria (opcional)
 active (boolean): Se a categoria deve ser considerada 
@@ -26,7 +33,7 @@ Endpoint para integração de uma lista de categorias com Question Recommender. 
 ### POST /tag
 Endpoint para integração de uma tag com Question Recommender.
 ```
-integration_tag_id (String): Id da tag no sistema principal
+integrationTagId (String): Id da tag no sistema principal
 name (String): Nome da tag
 description (String): Descrição da tag (opcional)
 active (boolean): Se a tag deve ser considerada 

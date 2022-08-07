@@ -53,7 +53,7 @@ public class CategoryService {
         if (isNull(integrationParentCategoryId)) {
             return null;
         }
-        return Optional.ofNullable(categoryRepository.findCategoryIdByIntegrationCategoryId(integrationParentCategoryId)).map(Category::getCategoryId)
+        return Optional.ofNullable(categoryRepository.findByIntegrationCategoryId(integrationParentCategoryId)).map(Category::getCategoryId)
                 .orElseThrow(() -> new InconsistentIntegratedDataException("Not found parent category with id " + integrationParentCategoryId));
     }
 }

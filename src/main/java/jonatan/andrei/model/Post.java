@@ -2,6 +2,7 @@ package jonatan.andrei.model;
 
 import jonatan.andrei.domain.PostType;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @Inheritance(strategy = InheritanceType.JOINED)
 @Table(name="post")
 public abstract class Post {
@@ -59,9 +61,5 @@ public abstract class Post {
     @NotNull
     @Column(name = "downvotes")
     private Integer downvotes;
-
-    @NotNull
-    @Column(name = "views")
-    private Integer views;
 
 }

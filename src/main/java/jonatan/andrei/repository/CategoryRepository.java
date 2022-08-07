@@ -11,7 +11,4 @@ public interface CategoryRepository extends CrudRepository<Category, Long> {
 
     Category findByIntegrationCategoryId(String integrationCategoryId);
 
-    @Query(value = "SELECT c FROM Category c WHERE c.integrationCategoryId = :integrationCategoryId")
-    Category findCategoryIdByIntegrationCategoryId(@Param("integrationCategoryId") String integrationCategoryId);
-
 }
