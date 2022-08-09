@@ -4,7 +4,7 @@ import jonatan.andrei.domain.PostType;
 import jonatan.andrei.dto.*;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
-import jonatan.andrei.model.Post;
+import jonatan.andrei.model.*;
 import jonatan.andrei.repository.PostRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,14 +27,42 @@ public class PostService {
     @Inject
     AnswerService answerService;
 
+    @Inject
+    QuestionCommentService questionCommentService;
+
+    @Inject
+    AnswerCommentService answerCommentService;
+
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
-        return null;
+        // Validar informações obrigatórias
+        Optional<Post> post = findOptionalByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationPostId(), createPostRequestDto.getPostType());
+        if (post.isPresent()) {
+            throw new InconsistentIntegratedDataException("There is already a post with integrationPostId " + post.get().getIntegrationPostId());
+        }
+
+        // Se integrationUserId não for nulo, validar se existe. Se for nulo validar sessionUserId não nulo
+        // Criar usuário com sessionUserId se não existir
+        User user = null;
+
+        return switch (createPostRequestDto.getPostType()) {
+            case QUESTION -> questionService.save(createPostRequestDto, user);
+            case ANSWER -> answerService.save(createPostRequestDto, user);
+            case QUESTION_COMMENT -> questionCommentService.save(createPostRequestDto, user);
+            case ANSWER_COMMENT -> answerCommentService.save(createPostRequestDto, user);
+        };
     }
 
     @Transactional
     public Post update(UpdatePostRequestDto updatePostRequestDto) {
-        return null;
+        Post post = findByIntegrationPostIdAndPostType(updatePostRequestDto.getIntegrationPostId(), updatePostRequestDto.getPostType());
+
+        return switch (updatePostRequestDto.getPostType()) {
+            case QUESTION -> questionService.update((Question) post, updatePostRequestDto);
+            case ANSWER -> answerService.update((Answer) post, updatePostRequestDto);
+            case QUESTION_COMMENT -> questionCommentService.update((QuestionComment) post, updatePostRequestDto);
+            case ANSWER_COMMENT -> answerCommentService.update((AnswerComment) post, updatePostRequestDto);
+        };
     }
 
     public Post findByIntegrationPostId(String integrationPostId) {
@@ -53,6 +81,11 @@ public class PostService {
 
     public Optional<Post> findOptionalByIntegrationPostIdAndPostType(String integrationPostId, PostType postType) {
         return postRepository.findByIntegrationPostIdAndPostType(integrationPostId, postType);
+    }
+
+    @Transactional
+    public void registerViews(ViewsRequestDto viewsRequestDto) {
+
     }
 
     @Transactional
@@ -81,5 +114,15 @@ public class PostService {
 
         Post post = findByIntegrationPostId(hidePostRequestDto.getIntegrationPostId());
         postRepository.hideOrExposePost(post.getPostId(), hidePostRequestDto.isHidden());
+    }
+
+    @Transactional
+    public void registerVote(VoteRequestDto voteRequestDto) {
+
+    }
+
+    @Transactional
+    public void registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
+
     }
 }

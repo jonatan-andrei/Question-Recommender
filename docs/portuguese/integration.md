@@ -40,7 +40,6 @@ Endpoint para integração de uma lista de categorias com Question Recommender. 
 ### POST /tag
 Endpoint para integração de uma tag com Question Recommender.
 ```
-integrationTagId (String): Id da tag no sistema principal
 name (String): Nome da tag
 description (String): Descrição da tag (opcional)
 active (boolean): Se a tag deve ser considerada 

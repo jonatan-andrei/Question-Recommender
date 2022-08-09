@@ -28,24 +28,45 @@ public class PostResource {
         return ResponseEntity.ok(postService.update(updatePostRequestDto));
     }
 
-    @PUT()
+    @POST
+    @Path("/register-views")
+    public ResponseEntity registerViews(ViewsRequestDto viewsRequestDto) {
+        postService.registerViews(viewsRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PUT
     @Path("/register-best-answer")
     public ResponseEntity registerBestAnswer(BestAnswerRequestDto bestAnswerRequestDto) {
         postService.registerBestAnswer(bestAnswerRequestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PUT()
+    @PUT
     @Path("/register-duplicate_question")
     public ResponseEntity registerDuplicateQuestion(DuplicateQuestionRequestDto duplicateQuestionRequestDto) {
         postService.registerDuplicateQuestion(duplicateQuestionRequestDto);
         return ResponseEntity.ok().build();
     }
 
-    @PUT()
+    @PUT
     @Path("/hidden")
     public ResponseEntity hideOrExposePost(HidePostRequestDto hidePostRequestDto) {
         postService.hideOrExposePost(hidePostRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @POST
+    @Path("/register-vote")
+    public ResponseEntity registerVote(VoteRequestDto voteRequestDto) {
+        postService.registerVote(voteRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @POST
+    @Path("/register-question-follower")
+    public ResponseEntity registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
+        postService.registerQuestionFollower(questionFollowerRequestDto);
         return ResponseEntity.ok().build();
     }
 }

@@ -1,6 +1,10 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.dto.CreatePostRequestDto;
+import jonatan.andrei.dto.UpdatePostRequestDto;
+import jonatan.andrei.factory.QuestionFactory;
 import jonatan.andrei.model.Question;
+import jonatan.andrei.model.User;
 import jonatan.andrei.repository.QuestionRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -12,6 +16,21 @@ public class QuestionService {
 
     @Inject
     QuestionRepository questionRepository;
+
+    @Inject
+    QuestionCategoryService questionCategoryService;
+
+    public Question save(CreatePostRequestDto createPostRequestDto, User user) {
+        Question question = QuestionFactory.newQuestion(createPostRequestDto, user.getUserId());
+        question = questionRepository.save(question);
+        questionCategoryService.save(question, createPostRequestDto.getIntegrationCategoriesIds());
+        // Salvar QuestionTags
+        return question;
+    }
+
+    public Question update(Question existingQuestion, UpdatePostRequestDto updatePostRequestDto) {
+        return null;
+    }
 
     @Transactional
     public void registerDuplicateQuestion(Long postId, Long duplicateQuestionId) {

@@ -38,7 +38,7 @@ public class CreatePostRequestDto {
 
     List<String> integrationCategoriesIds;
 
-    List<String> integrationTagsIds;
+    List<String> tags;
 
     private String integrationUserId;
 

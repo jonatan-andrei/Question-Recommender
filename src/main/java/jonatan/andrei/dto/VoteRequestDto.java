@@ -1,34 +1,28 @@
 package jonatan.andrei.dto;
 
-import jonatan.andrei.domain.PostType;
+import jonatan.andrei.domain.VoteType;
+import jonatan.andrei.domain.VoteTypeRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePostRequestDto {
+public class VoteRequestDto {
 
     @NotBlank
     private String integrationPostId;
 
     @NotBlank
-    private PostType postType;
+    private String integrationUserId;
 
-    private String title;
-
-    private String contentOrDescription;
-
-    private String url;
-
-    List<String> integrationCategoriesIds;
-
-    List<String> tags;
+    @NotNull
+    private VoteTypeRequest voteType;
 
 }

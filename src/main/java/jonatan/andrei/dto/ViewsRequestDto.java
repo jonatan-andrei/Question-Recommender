@@ -6,19 +6,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagRequestDto {
+public class ViewsRequestDto {
 
     @NotBlank
-    private String name;
+    private String integrationQuestionId;
 
-    private String description;
+    private List<String> integrationUsersId;
 
-    private boolean active;
+    @NotNull
+    private Integer totalViews;
+
 }
-
-

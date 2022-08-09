@@ -40,6 +40,34 @@ public class CategoryService {
         return categories.stream().map(category -> saveOrUpdate(category)).collect(Collectors.toList());
     }
 
+    public void incrementQuestionCountByCategoriesIds(List<Long> categoriesIds) {
+        categoryRepository.incrementQuestionCount(categoriesIds);
+    }
+
+    public void decrementQuestionCountByCategoriesIds(List<Long> categoriesIds) {
+        categoryRepository.decrementQuestionCount(categoriesIds);
+    }
+
+    public List<Category> findByIntegrationCategoriesIds(List<String> integrationCategoriesIds) {
+        List<Category> categories = categoryRepository.findByintegrationCategoryIdIn(integrationCategoriesIds);
+        validateIfAllCategoriesWereFound(integrationCategoriesIds, categories);
+        return categories;
+    }
+
+    private void validateIfAllCategoriesWereFound(List<String> integrationCategoriesIds, List<Category> categories) {
+        List<String> integrationCategoriesIdsFound = categories.stream()
+                .map(Category::getIntegrationCategoryId)
+                .collect(Collectors.toList());
+
+        Optional<String> categoryNotFound = integrationCategoriesIds.stream()
+                .filter(c -> !integrationCategoriesIdsFound.contains(c))
+                .findFirst();
+
+        if (categoryNotFound.isPresent()) {
+            throw new InconsistentIntegratedDataException("Not found category with integrationCategoryId " + categoryNotFound.get());
+        }
+    }
+
     private void validateRequiredData(CategoryRequestDto categoryRequestDto) {
         if (isNull(categoryRequestDto.getIntegrationCategoryId())) {
             throw new RequiredDataException("Attribute 'integrationCategoryId' is required");

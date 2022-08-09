@@ -11,14 +11,13 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagRequestDto {
+public class QuestionFollowerRequestDto {
 
     @NotBlank
-    private String name;
+    private String integrationQuestionId;
 
-    private String description;
+    @NotBlank
+    private String integrationUserId;
 
-    private boolean active;
+    private boolean followed;
 }
-
-

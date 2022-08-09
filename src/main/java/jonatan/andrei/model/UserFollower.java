@@ -12,15 +12,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="follower_user")
-public class FollowerUser {
+@Table(name="user_follower")
+public class UserFollower {
 
     @Id
     @SequenceGenerator(name = "followerUserSeq", sequenceName = "follower_user_id_seq", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "followerUserSeq")
     @NotNull
-    @Column(name = "follower_user_id")
-    private Long followerUserId;
+    @Column(name = "user_follower_id")
+    private Long userFollowerId;
 
     @NotNull
     @Column(name = "user_id")
