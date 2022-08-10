@@ -154,4 +154,77 @@ public class UserServiceTest {
         Assertions.assertEquals("Not found user with integrationUserId 2", exception.getMessage());
     }
 
+    @Test
+    public void findUserByIntegrationUserIdOrCreateBySessionId_findUserByIntegrationUserId() {
+        // Arrange
+        String integrationUserId = "1";
+        String sessionId = "abc";
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+
+        // Act
+        User result = userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+
+        // Assert
+        Assertions.assertEquals(user.getUserId(), result.getUserId());
+    }
+
+    @Test
+    public void findUserByIntegrationUserIdOrCreateBySessionId_integrationUserIdNotFound() {
+        // Arrange
+        String integrationUserId = "1";
+        String sessionId = "abc";
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+        });
+
+        Assertions.assertEquals("Not found user with integrationUserId 1", exception.getMessage());
+    }
+
+    @Test
+    public void findUserByIntegrationUserIdOrCreateBySessionId_integrationUserIdNullAndSessionIdNull() {
+        // Arrange
+        String integrationUserId = null;
+        String sessionId = null;
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+        });
+
+        Assertions.assertEquals("At least one of the fields must be informed: integrationUserId or sessionId", exception.getMessage());
+    }
+
+    @Test
+    public void findUserByIntegrationUserIdOrCreateBySessionId_findUserBySessionId() {
+        // Arrange
+        String integrationUserId = null;
+        String sessionId = "abc";
+        User user = userTestUtils.saveWithIntegrationUserIdAndSessionId(null, sessionId);
+
+        // Act
+        User result = userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+
+        // Assert
+        Assertions.assertTrue(nonNull(result));
+        Assertions.assertEquals(sessionId, result.getSessionId());
+    }
+
+    @Test
+    public void findUserByIntegrationUserIdOrCreateBySessionId_createBySessionId() {
+        // Arrange
+        String integrationUserId = null;
+        String sessionId = "abc";
+
+        // Act
+        User result = userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+
+        // Assert
+        Assertions.assertTrue(nonNull(result));
+        Assertions.assertEquals(sessionId, result.getSessionId());
+    }
+
 }

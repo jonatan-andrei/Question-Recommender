@@ -18,8 +18,13 @@ public class UserTestUtils {
     }
 
     public User saveWithIntegrationUserId(String integrationUserId) {
+        return saveWithIntegrationUserIdAndSessionId(integrationUserId, null);
+    }
+
+    public User saveWithIntegrationUserIdAndSessionId(String integrationUserId, String sessionId) {
         return userRepository.save(User.builder()
                 .integrationUserId(integrationUserId)
+                .sessionId(sessionId)
                 .registrationDate(LocalDateTime.now())
                 .integrationDate(LocalDateTime.now())
                 .anonymous(false)
