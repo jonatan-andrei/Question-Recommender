@@ -21,7 +21,6 @@ public class UserFollowerRequestDto {
     @NotBlank
     private String integrationFollowerUserId;
 
-    @NotNull
     private LocalDateTime startDate;
 
     private boolean followed;

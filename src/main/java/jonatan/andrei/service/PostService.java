@@ -10,6 +10,7 @@ import jonatan.andrei.repository.PostRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -107,6 +108,11 @@ public class PostService {
     }
 
     @Transactional
+    public void registerDuplicateQuestion(List<DuplicateQuestionRequestDto> duplicateQuestions) {
+        duplicateQuestions.stream().forEach(dq -> registerDuplicateQuestion(duplicateQuestions));
+    }
+
+    @Transactional
     public void hideOrExposePost(HidePostRequestDto hidePostRequestDto) {
         if (isNull(hidePostRequestDto.getIntegrationPostId())) {
             throw new RequiredDataException("Attribute 'integrationPostId' is required");
@@ -123,6 +129,8 @@ public class PostService {
 
     @Transactional
     public void registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
-
+        // Adiciona ou remove
+        // Valida se usuário e pergunta existem
+        // Atualiza o número de seguidores na pergunta
     }
 }

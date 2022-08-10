@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import java.util.List;
 
 @Path("/post")
 @ApplicationScoped
@@ -46,6 +47,13 @@ public class PostResource {
     @Path("/register-duplicate_question")
     public ResponseEntity registerDuplicateQuestion(DuplicateQuestionRequestDto duplicateQuestionRequestDto) {
         postService.registerDuplicateQuestion(duplicateQuestionRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PUT
+    @Path("/register-duplicate_question/list")
+    public ResponseEntity registerDuplicateQuestion(List<DuplicateQuestionRequestDto> duplicateQuestions) {
+        postService.registerDuplicateQuestion(duplicateQuestions);
         return ResponseEntity.ok().build();
     }
 

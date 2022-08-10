@@ -10,6 +10,9 @@ integrationQuestionId (String): Id da pergunta no sistema principal
 integrationDuplicateQuestionId (String): Id da pergunta da qual a integrationQuestionId é duplicada
 ```
 
+### PUT /post/register-duplicate_question/list
+Endpoint para marcar ou desmarcar uma lista de perguntas como duplicadas. Os dados que devem ser enviados são iguais ao endpoint PUT /post/register-duplicate_question.
+
 ### PUT /post/hidden
 Endpoint para ocultar ou tornar novamente visível publicação
 ```
@@ -19,6 +22,18 @@ hidden (boolean): Se a publicação deve ficar oculta
 
 ## Usuários
 TODO
+
+### POST /user/register-follower
+Endpoint para registrar um seguidor.
+```
+integrationUserId (String): Id do usuário no sistema principal.
+integrationFollowerUserId (String): Id do usuário seguidor no sistema principal.
+startDate (LocalDateTime): Data que o usuário começou a seguir.
+followed (boolean): Se o usuário ainda segue o outro. O envio como 'false' removerá o vínculo.
+```
+
+### POST /user/register-follower/list
+Endpoint para registrar uma lista de seguidores. Os dados que devem ser enviados são iguais ao endpoint POST /user/register-follower.
 
 ## Categorias
 
