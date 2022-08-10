@@ -29,8 +29,8 @@ public class User {
     private String integrationUserId;
 
     @Size(min = 1, max = 100)
-    @Column(name = "original_session_id")
-    private String originalSessionId;
+    @Column(name = "session_id")
+    private String sessionId;
 
     @NotNull
     @Column(name = "registration_date")
@@ -55,7 +55,6 @@ public class User {
     @Column(name = "email_notification_enable")
     private boolean emailNotificationEnable;
 
-    @NotNull
     @Column(name = "email_notification_hour")
     private Integer emailNotificationHour;
 

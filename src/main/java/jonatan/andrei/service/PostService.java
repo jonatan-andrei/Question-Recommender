@@ -34,6 +34,9 @@ public class PostService {
     @Inject
     AnswerCommentService answerCommentService;
 
+    @Inject
+    UserService userService;
+
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
         // Validar informações obrigatórias
@@ -42,9 +45,7 @@ public class PostService {
             throw new InconsistentIntegratedDataException("There is already a post with integrationPostId " + post.get().getIntegrationPostId());
         }
 
-        // Se integrationUserId não for nulo, validar se existe. Se for nulo validar sessionUserId não nulo
-        // Criar usuário com sessionUserId se não existir
-        User user = null;
+        User user = userService.findUserByIntegrationUserIdOrCreateBySessionId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getSessionUserId());
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);
@@ -91,9 +92,10 @@ public class PostService {
 
     @Transactional
     public void registerBestAnswer(BestAnswerRequestDto bestAnswerRequestDto) {
-        // Verifica se pergunta existe
+        Question question = (Question) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
+        Answer answer = (Answer) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationAnswerId(), PostType.ANSWER);
+
         // Verifica se já existe uma melhor resposta para a pergunta (caso seja true o selected)
-        // Verifica se resposta existe
         // Verifica se é resposta da pergunta
         answerService.registerBestAnswer(null, bestAnswerRequestDto.isSelected());
     }
