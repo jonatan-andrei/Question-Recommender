@@ -94,10 +94,12 @@ public class PostService {
     public void registerBestAnswer(BestAnswerRequestDto bestAnswerRequestDto) {
         Question question = (Question) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
         Answer answer = (Answer) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationAnswerId(), PostType.ANSWER);
+        answerService.registerBestAnswer(question, answer, bestAnswerRequestDto.isSelected());
+    }
 
-        // Verifica se já existe uma melhor resposta para a pergunta (caso seja true o selected)
-        // Verifica se é resposta da pergunta
-        answerService.registerBestAnswer(null, bestAnswerRequestDto.isSelected());
+    @Transactional
+    public void registerBestAnswer(List<BestAnswerRequestDto> bestAnswers) {
+        bestAnswers.forEach(ba -> registerBestAnswer(ba));
     }
 
     @Transactional
@@ -126,7 +128,8 @@ public class PostService {
 
     @Transactional
     public void registerVote(VoteRequestDto voteRequestDto) {
-
+        // Verifica se usuário já votou, se sim exclui e se não for do tipo REMOVED insere de novo
+        // Atualiza número de votos no post
     }
 
     @Transactional

@@ -3,6 +3,17 @@
 ## Posts
 TODO
 
+### PUT /post/register-best-answer
+Endpoint para marcar ou desmarcar uma resposta como a melhor para uma pergunta.
+```
+integrationQuestionId (String): Id da pergunta no sistema principal
+integrationAnswerId (String): Id da resposta no sistema principal
+selected (boolean): Se a resposta está selecionada
+```
+
+### PUT /post/register-best-answer
+Endpoint para marcar ou desmarcar uma lista de respostas como a melhores para perguntas. Os dados que devem ser enviados são iguais ao endpoint PUT /post/register-best-answer.
+
 ### PUT /post/register-duplicate_question
 Endpoint para marcar ou desmarcar uma pergunta como duplicada
 ```

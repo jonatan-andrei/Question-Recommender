@@ -44,6 +44,13 @@ public class PostResource {
     }
 
     @PUT
+    @Path("/register-best-answer/list")
+    public ResponseEntity registerBestAnswer(List<BestAnswerRequestDto> bestAnswers) {
+        postService.registerBestAnswer(bestAnswers);
+        return ResponseEntity.ok().build();
+    }
+
+    @PUT
     @Path("/register-duplicate_question")
     public ResponseEntity registerDuplicateQuestion(DuplicateQuestionRequestDto duplicateQuestionRequestDto) {
         postService.registerDuplicateQuestion(duplicateQuestionRequestDto);
