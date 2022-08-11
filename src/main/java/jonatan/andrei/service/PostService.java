@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -56,7 +57,13 @@ public class PostService {
     }
 
     @Transactional
+    public List<Post> save(List<CreatePostRequestDto> posts) {
+        return posts.stream().map(p -> save(p)).collect(Collectors.toList());
+    }
+
+    @Transactional
     public Post update(UpdatePostRequestDto updatePostRequestDto) {
+        // Validar informações obrigatórias
         Post post = findByIntegrationPostIdAndPostType(updatePostRequestDto.getIntegrationPostId(), updatePostRequestDto.getPostType());
 
         return switch (updatePostRequestDto.getPostType()) {
@@ -133,9 +140,19 @@ public class PostService {
     }
 
     @Transactional
+    public void registerVote(List<VoteRequestDto> votes) {
+        votes.forEach(v -> registerVote(v));
+    }
+
+    @Transactional
     public void registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
         // Adiciona ou remove
         // Valida se usuário e pergunta existem
         // Atualiza o número de seguidores na pergunta
+    }
+
+    @Transactional
+    public void registerQuestionFollower(List<QuestionFollowerRequestDto> questionFollowers) {
+        questionFollowers.forEach(qf -> registerQuestionFollower(qf));
     }
 }
