@@ -1,6 +1,7 @@
 package jonatan.andrei.model;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import javax.validation.constraints.Size;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @PrimaryKeyJoinColumn(name="post_id")
 @Table(name="answer_comment")
 public class AnswerComment extends Post {

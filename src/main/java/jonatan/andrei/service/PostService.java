@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -44,19 +45,28 @@ public class PostService {
         if (post.isPresent()) {
             throw new InconsistentIntegratedDataException("There is already a post with integrationPostId " + post.get().getIntegrationPostId());
         }
+        Post parentPost = nonNull(createPostRequestDto.getIntegrationParentPostId())
+                ? findByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationParentPostId(), createPostRequestDto.getIntegrationParentPostType())
+                : null;
 
         User user = userService.findUserByIntegrationUserIdOrCreateBySessionId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getSessionUserId());
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);
-            case ANSWER -> answerService.save(createPostRequestDto, user);
-            case QUESTION_COMMENT -> questionCommentService.save(createPostRequestDto, user);
-            case ANSWER_COMMENT -> answerCommentService.save(createPostRequestDto, user);
+            case ANSWER -> answerService.save(createPostRequestDto, user, (Question) parentPost);
+            case QUESTION_COMMENT -> questionCommentService.save(createPostRequestDto, user, (Question) parentPost);
+            case ANSWER_COMMENT -> answerCommentService.save(createPostRequestDto, user, (Answer) parentPost);
         };
     }
 
     @Transactional
+    public List<Post> save(List<CreatePostRequestDto> posts) {
+        return posts.stream().map(p -> save(p)).collect(Collectors.toList());
+    }
+
+    @Transactional
     public Post update(UpdatePostRequestDto updatePostRequestDto) {
+        // Validar informações obrigatórias
         Post post = findByIntegrationPostIdAndPostType(updatePostRequestDto.getIntegrationPostId(), updatePostRequestDto.getPostType());
 
         return switch (updatePostRequestDto.getPostType()) {
@@ -87,17 +97,23 @@ public class PostService {
 
     @Transactional
     public void registerViews(ViewsRequestDto viewsRequestDto) {
-
+        // Valida se post existe
+        // Valida se usuários existem
+        // Atualiza tags relacionadas a pergunta com view do usuário
+        // Atualiza categorias relacionadas a pergunta com view do usuário
+        // Atualiza total de visualizações da pergunta
     }
 
     @Transactional
     public void registerBestAnswer(BestAnswerRequestDto bestAnswerRequestDto) {
         Question question = (Question) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
         Answer answer = (Answer) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationAnswerId(), PostType.ANSWER);
+        answerService.registerBestAnswer(question, answer, bestAnswerRequestDto.isSelected());
+    }
 
-        // Verifica se já existe uma melhor resposta para a pergunta (caso seja true o selected)
-        // Verifica se é resposta da pergunta
-        answerService.registerBestAnswer(null, bestAnswerRequestDto.isSelected());
+    @Transactional
+    public void registerBestAnswer(List<BestAnswerRequestDto> bestAnswers) {
+        bestAnswers.forEach(ba -> registerBestAnswer(ba));
     }
 
     @Transactional
@@ -126,7 +142,13 @@ public class PostService {
 
     @Transactional
     public void registerVote(VoteRequestDto voteRequestDto) {
+        // Verifica se usuário já votou, se sim exclui e se não for do tipo REMOVED insere de novo
+        // Atualiza número de votos no post
+    }
 
+    @Transactional
+    public void registerVote(List<VoteRequestDto> votes) {
+        votes.forEach(v -> registerVote(v));
     }
 
     @Transactional
@@ -134,5 +156,10 @@ public class PostService {
         // Adiciona ou remove
         // Valida se usuário e pergunta existem
         // Atualiza o número de seguidores na pergunta
+    }
+
+    @Transactional
+    public void registerQuestionFollower(List<QuestionFollowerRequestDto> questionFollowers) {
+        questionFollowers.forEach(qf -> registerQuestionFollower(qf));
     }
 }

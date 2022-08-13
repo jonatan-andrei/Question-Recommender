@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -30,6 +31,11 @@ public class UserService {
     @Transactional
     public User save(CreateUserRequestDto createUserRequestDto) {
         return null;
+    }
+
+    @Transactional
+    public List<User> save(List<CreateUserRequestDto> users) {
+        return users.stream().map(u -> save(u)).collect(Collectors.toList());
     }
 
     @Transactional

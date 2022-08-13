@@ -2,6 +2,7 @@ package jonatan.andrei.service;
 
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
+import jonatan.andrei.model.Answer;
 import jonatan.andrei.model.AnswerComment;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.User;
@@ -16,7 +17,7 @@ public class AnswerCommentService {
     @Inject
     AnswerCommentRepository answerCommentRepository;
 
-    public AnswerComment save(CreatePostRequestDto createPostRequestDto, User user) {
+    public AnswerComment save(CreatePostRequestDto createPostRequestDto, User user, Answer answer) {
         return null;
     }
 

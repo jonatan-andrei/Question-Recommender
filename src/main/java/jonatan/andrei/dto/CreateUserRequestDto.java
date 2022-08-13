@@ -19,7 +19,7 @@ public class CreateUserRequestDto {
     @NotBlank
     private String integrationUserId;
 
-    private String originalSessionId;
+    private String sessionId;
 
     @NotNull
     private LocalDateTime registrationDate;

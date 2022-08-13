@@ -24,6 +24,12 @@ public class PostResource {
         return ResponseEntity.ok(postService.save(createPostRequestDto));
     }
 
+    @POST
+    @Path("/list")
+    public ResponseEntity<List<Post>> save(List<CreatePostRequestDto> posts) {
+        return ResponseEntity.ok(postService.save(posts));
+    }
+
     @PUT
     public ResponseEntity<Post> update(UpdatePostRequestDto updatePostRequestDto) {
         return ResponseEntity.ok(postService.update(updatePostRequestDto));
@@ -40,6 +46,13 @@ public class PostResource {
     @Path("/register-best-answer")
     public ResponseEntity registerBestAnswer(BestAnswerRequestDto bestAnswerRequestDto) {
         postService.registerBestAnswer(bestAnswerRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PUT
+    @Path("/register-best-answer/list")
+    public ResponseEntity registerBestAnswer(List<BestAnswerRequestDto> bestAnswers) {
+        postService.registerBestAnswer(bestAnswers);
         return ResponseEntity.ok().build();
     }
 
@@ -72,9 +85,23 @@ public class PostResource {
     }
 
     @POST
+    @Path("/register-vote/list")
+    public ResponseEntity registerVote(List<VoteRequestDto> votes) {
+        postService.registerVote(votes);
+        return ResponseEntity.ok().build();
+    }
+
+    @POST
     @Path("/register-question-follower")
     public ResponseEntity registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
         postService.registerQuestionFollower(questionFollowerRequestDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @POST
+    @Path("/register-question-follower/list")
+    public ResponseEntity registerQuestionFollower(List<QuestionFollowerRequestDto> questionFollowers) {
+        postService.registerQuestionFollower(questionFollowers);
         return ResponseEntity.ok().build();
     }
 }

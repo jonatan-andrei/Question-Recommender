@@ -2,6 +2,7 @@ package jonatan.andrei.service;
 
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
+import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.model.Answer;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.User;
@@ -17,7 +18,7 @@ public class AnswerService {
     @Inject
     AnswerRepository answerRepository;
 
-    public Answer save(CreatePostRequestDto createPostRequestDto, User user) {
+    public Answer save(CreatePostRequestDto createPostRequestDto, User user, Question question) {
         return null;
     }
 
@@ -26,7 +27,15 @@ public class AnswerService {
     }
 
     @Transactional
-    public void registerBestAnswer(Long postId, boolean selected) {
-        answerRepository.registerBestAnswer(postId, selected);
+    public void registerBestAnswer(Question question, Answer answer, boolean selected) {
+        if (!answer.getQuestionId().equals(question.getPostId())) {
+            throw new InconsistentIntegratedDataException("Answer " + answer.getIntegrationPostId() + " is not an answer to question " + question.getIntegrationPostId());
+        }
+
+        if (selected && answerRepository.findByQuestionIdAndBestAnswer(question.getPostId(), true).isPresent()) {
+            throw new InconsistentIntegratedDataException("Question " + question.getIntegrationPostId() + " already has a best answer selected");
+        }
+
+        answerRepository.registerBestAnswer(answer.getPostId(), selected);
     }
 }

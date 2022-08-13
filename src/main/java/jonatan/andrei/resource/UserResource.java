@@ -26,6 +26,12 @@ public class UserResource {
         return ResponseEntity.ok(userService.save(createUserRequestDto));
     }
 
+    @POST
+    @Path("/list")
+    public ResponseEntity<List<User>> save(List<CreateUserRequestDto> users) {
+        return ResponseEntity.ok(userService.save(users));
+    }
+
     @PUT
     public ResponseEntity<User> update(UpdateUserRequestDto updateUserRequestDto) {
         return ResponseEntity.ok(userService.update(updateUserRequestDto));
