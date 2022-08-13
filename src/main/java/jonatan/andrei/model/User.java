@@ -44,9 +44,6 @@ public class User {
     @Column(name = "anonymous")
     private boolean anonymous;
 
-    @Column(name = "anonymous_user_id")
-    private Long anonymousUserId;
-
     @NotNull
     @Column(name = "active")
     private boolean active;

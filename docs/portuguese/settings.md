@@ -29,10 +29,6 @@ Indica se o conteúdo do seu sistema é classificado por tags. Se habilitado, ta
 Indica se o conteúdo do seu sistema é classificado por categorias. Se habilitado, categorias serão utilizadas nas recomendações.<br/>
 ``Valor default: true``
 
-`` software.settings.enable_words ``<br/>
-Se habilitado, palavras serão utilizadas nas recomendações.<br/>
-``Valor default: true``
-
 ### Integration settings - Configurações da integração
 `` integration.settings.enable_user_notifications ``<br/>
 Indica se você deseja enviar notificações pelo sistema ao usuário.<br/>
@@ -94,10 +90,6 @@ Se o usuário ficar esse período sem gerar nenhum conteúdo, não serão mais g
 `` recommendation.settings.days_of_user_inactivity_to_suspend_emails``<br/>
 Se o usuário ficar esse período sem gerar nenhum conteúdo, não serão mais geradas recomendações por email para ele.<br/>
 ``Valor default: 60``
-
-`` recommendation.settings.minimum_word_size_considered``<br/>
-Tamanho mínimo de palavra que deve ser considerada. <br/>
-``Valor default: 2``
 
 
 
