@@ -18,7 +18,7 @@ public class AnswerService {
     @Inject
     AnswerRepository answerRepository;
 
-    public Answer save(CreatePostRequestDto createPostRequestDto, User user) {
+    public Answer save(CreatePostRequestDto createPostRequestDto, User user, Question question) {
         return null;
     }
 

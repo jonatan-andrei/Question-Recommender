@@ -16,7 +16,7 @@ public class QuestionCommentService {
     @Inject
     QuestionCommentRepository questionCommentRepository;
 
-    public QuestionComment save(CreatePostRequestDto createPostRequestDto, User user) {
+    public QuestionComment save(CreatePostRequestDto createPostRequestDto, User user, Question question) {
         return null;
     }
 

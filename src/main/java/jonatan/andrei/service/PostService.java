@@ -45,14 +45,17 @@ public class PostService {
         if (post.isPresent()) {
             throw new InconsistentIntegratedDataException("There is already a post with integrationPostId " + post.get().getIntegrationPostId());
         }
+        Post parentPost = nonNull(createPostRequestDto.getIntegrationParentPostId())
+                ? findByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationParentPostId(), createPostRequestDto.getIntegrationParentPostType())
+                : null;
 
         User user = userService.findUserByIntegrationUserIdOrCreateBySessionId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getSessionUserId());
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);
-            case ANSWER -> answerService.save(createPostRequestDto, user);
-            case QUESTION_COMMENT -> questionCommentService.save(createPostRequestDto, user);
-            case ANSWER_COMMENT -> answerCommentService.save(createPostRequestDto, user);
+            case ANSWER -> answerService.save(createPostRequestDto, user, (Question) parentPost);
+            case QUESTION_COMMENT -> questionCommentService.save(createPostRequestDto, user, (Question) parentPost);
+            case ANSWER_COMMENT -> answerCommentService.save(createPostRequestDto, user, (Answer) parentPost);
         };
     }
 
@@ -94,7 +97,11 @@ public class PostService {
 
     @Transactional
     public void registerViews(ViewsRequestDto viewsRequestDto) {
-
+        // Valida se post existe
+        // Valida se usuários existem
+        // Atualiza tags relacionadas a pergunta com view do usuário
+        // Atualiza categorias relacionadas a pergunta com view do usuário
+        // Atualiza total de visualizações da pergunta
     }
 
     @Transactional
