@@ -155,76 +155,76 @@ public class UserServiceTest {
     }
 
     @Test
-    public void findUserByIntegrationUserIdOrCreateBySessionId_findUserByIntegrationUserId() {
+    public void findUserByIntegrationUserIdOrCreateByAnonymousId_findUserByIntegrationUserId() {
         // Arrange
         String integrationUserId = "1";
-        String sessionId = "abc";
+        String integrationAnonymousUserId = "abc";
         User user = userTestUtils.saveWithIntegrationUserId("1");
 
         // Act
-        User result = userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+        User result = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(integrationUserId, integrationAnonymousUserId);
 
         // Assert
         Assertions.assertEquals(user.getUserId(), result.getUserId());
     }
 
     @Test
-    public void findUserByIntegrationUserIdOrCreateBySessionId_integrationUserIdNotFound() {
+    public void findUserByIntegrationUserIdOrCreateByAnonymousId_integrationUserIdNotFound() {
         // Arrange
         String integrationUserId = "1";
-        String sessionId = "abc";
+        String integrationAnonymousUserId = "abc";
 
         // Assert
         Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
             // Act
-            userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+            userService.findUserByIntegrationUserIdOrCreateByAnonymousId(integrationUserId, integrationAnonymousUserId);
         });
 
         Assertions.assertEquals("Not found user with integrationUserId 1", exception.getMessage());
     }
 
     @Test
-    public void findUserByIntegrationUserIdOrCreateBySessionId_integrationUserIdNullAndSessionIdNull() {
+    public void findUserByIntegrationUserIdOrCreateByAnonymousId_integrationUserIdNullAndIntegrationAnonymousUserIdNull() {
         // Arrange
         String integrationUserId = null;
-        String sessionId = null;
+        String integrationAnonymousUserId = null;
 
         // Assert
         Exception exception = assertThrows(RequiredDataException.class, () -> {
             // Act
-            userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+            userService.findUserByIntegrationUserIdOrCreateByAnonymousId(integrationUserId, integrationAnonymousUserId);
         });
 
-        Assertions.assertEquals("At least one of the fields must be informed: integrationUserId or sessionId", exception.getMessage());
+        Assertions.assertEquals("At least one of the fields must be informed: integrationUserId or integrationAnonymousUserId", exception.getMessage());
     }
 
     @Test
-    public void findUserByIntegrationUserIdOrCreateBySessionId_findUserBySessionId() {
+    public void findUserByIntegrationUserIdOrCreateByAnonymousId_findUserByIntegrationAnonymousUserId() {
         // Arrange
         String integrationUserId = null;
-        String sessionId = "abc";
-        User user = userTestUtils.saveWithIntegrationUserIdAndSessionId(null, sessionId);
+        String integrationAnonymousUserId = "abc";
+        User user = userTestUtils.saveWithIntegrationUserIdAndIntegrationAnonymousUserId(null, integrationAnonymousUserId);
 
         // Act
-        User result = userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+        User result = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(integrationUserId, integrationAnonymousUserId);
 
         // Assert
         Assertions.assertTrue(nonNull(result));
-        Assertions.assertEquals(sessionId, result.getSessionId());
+        Assertions.assertEquals(integrationAnonymousUserId, result.getIntegrationAnonymousUserId());
     }
 
     @Test
-    public void findUserByIntegrationUserIdOrCreateBySessionId_createBySessionId() {
+    public void findUserByIntegrationUserIdOrCreateByAnonymousId_createByIntegrationAnonymousUserId() {
         // Arrange
         String integrationUserId = null;
-        String sessionId = "abc";
+        String integrationAnonymousUserId = "abc";
 
         // Act
-        User result = userService.findUserByIntegrationUserIdOrCreateBySessionId(integrationUserId, sessionId);
+        User result = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(integrationUserId, integrationAnonymousUserId);
 
         // Assert
         Assertions.assertTrue(nonNull(result));
-        Assertions.assertEquals(sessionId, result.getSessionId());
+        Assertions.assertEquals(integrationAnonymousUserId, result.getIntegrationAnonymousUserId());
     }
 
 }

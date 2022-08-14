@@ -16,7 +16,7 @@ url (String): Link da pergunta.
 integrationCategoriesIds (List-String): Categorias da pergunta.
 tags(List-String): Tags da pergunta.
 integrationUserId: Id do usuário no sistema principal.
-sessionUserId: Id da sessão do usuário no sistema principal, caso seja a publicação seja anônima.
+integrationAnonymousUserId: Id da sessão do usuário no sistema principal, caso seja a publicação seja anônima.
 ```
 
 ### POST /post/list
@@ -99,7 +99,7 @@ Endpoint para registrar lista de usuários seguindo perguntas. Os dados que deve
 Endpoint para registrar um usuário.
 ```
 integrationUserId (String): Id do usuário no sistema principal.
-sessionId (String): Id da sessão do usuário no sistema principal.
+integrationAnonymousUserId (String): Id da sessão do usuário no sistema principal.
 registrationDate (LocalDateTime): Data de cadastro do usuário.
 emailNotificationEnable (boolean): Se o usuário permite notificações por email.
 emailNotificationTime (Integer): A hora do dia para envio das notificações por email (opcional).

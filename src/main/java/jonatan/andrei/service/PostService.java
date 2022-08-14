@@ -49,7 +49,7 @@ public class PostService {
                 ? findByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationParentPostId(), createPostRequestDto.getIntegrationParentPostType())
                 : null;
 
-        User user = userService.findUserByIntegrationUserIdOrCreateBySessionId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getSessionUserId());
+        User user = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getIntegrationAnonymousUserId());
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);

@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 
 public class UserFactory {
 
-    public static User newUserWithSessionId(String sessionId) {
+    public static User newUserWithIntegrationAnonymousUserId(String integrationAnonymousUserId) {
         return User.builder()
-                .sessionId(sessionId)
+                .integrationAnonymousUserId(integrationAnonymousUserId)
                 .registrationDate(LocalDateTime.now())
                 .integrationDate(LocalDateTime.now())
                 .anonymous(true)

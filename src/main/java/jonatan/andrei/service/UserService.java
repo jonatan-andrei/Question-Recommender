@@ -71,14 +71,14 @@ public class UserService {
         return userRepository.findByIntegrationUserId(integrationUserId);
     }
 
-    public User findUserByIntegrationUserIdOrCreateBySessionId(String integrationUserId, String sessionId) {
+    public User findUserByIntegrationUserIdOrCreateByAnonymousId(String integrationUserId, String integrationAnonymousUserId) {
         if (nonNull(integrationUserId)) {
             return findByIntegrationUserId(integrationUserId);
-        } else if (nonNull(sessionId)) {
-            Optional<User> userWithSessionId = userRepository.findByIntegrationUserIdAndSessionId(null, sessionId);
-            return userWithSessionId.orElse(userRepository.save(UserFactory.newUserWithSessionId(sessionId)));
+        } else if (nonNull(integrationAnonymousUserId)) {
+            Optional<User> anonymousUser = userRepository.findByIntegrationUserIdAndIntegrationAnonymousUserId(null, integrationAnonymousUserId);
+            return anonymousUser.orElse(userRepository.save(UserFactory.newUserWithIntegrationAnonymousUserId(integrationAnonymousUserId)));
         } else {
-            throw new RequiredDataException("At least one of the fields must be informed: integrationUserId or sessionId");
+            throw new RequiredDataException("At least one of the fields must be informed: integrationUserId or integrationAnonymousUserId");
         }
     }
 }

@@ -29,8 +29,8 @@ public class User {
     private String integrationUserId;
 
     @Size(min = 1, max = 100)
-    @Column(name = "session_id")
-    private String sessionId;
+    @Column(name = "integration_anonymous_user_id")
+    private String integrationAnonymousUserId;
 
     @NotNull
     @Column(name = "registration_date")

@@ -42,6 +42,6 @@ public class CreatePostRequestDto {
 
     private String integrationUserId;
 
-    private String sessionUserId;
+    private String integrationAnonymousUserId;
 
 }
