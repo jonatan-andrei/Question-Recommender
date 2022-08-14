@@ -2,6 +2,8 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jonatan.andrei.dto.CreateUserRequestDto;
+import jonatan.andrei.dto.UpdateUserRequestDto;
 import jonatan.andrei.dto.UserFollowerRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
@@ -31,6 +33,109 @@ public class UserServiceTest {
 
     @Inject
     UserTestUtils userTestUtils;
+
+    @Test
+    public void save_saveUser() {
+        // Arrange
+        CreateUserRequestDto createUserRequestDto = CreateUserRequestDto.builder()
+                .integrationUserId("1")
+                .integrationAnonymousUserId("abc")
+                .registrationDate(LocalDateTime.now())
+                .emailNotificationEnable(true)
+                .emailNotificationHour(17)
+                .notificationEnable(true)
+                .recommendationEnable(true)
+                .build();
+
+        // Act
+        User user = userService.save(createUserRequestDto);
+
+        // Assert
+        assertEquals(createUserRequestDto.getIntegrationUserId(), user.getIntegrationUserId());
+        assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
+        assertEquals(createUserRequestDto.isEmailNotificationEnable(), user.isEmailNotificationEnable());
+        assertEquals(createUserRequestDto.getEmailNotificationHour(), user.getEmailNotificationHour());
+        assertEquals(createUserRequestDto.isNotificationEnable(), user.isNotificationEnable());
+        assertEquals(createUserRequestDto.isRecommendationEnable(), user.isRecommendationEnable());
+    }
+
+    @Test
+    public void save_saveUserWithIntegrationAnonymousUserId() {
+        // Arrange
+        User anonymousUser = userTestUtils.saveWithIntegrationAnonymousUserId("abc");
+
+        CreateUserRequestDto createUserRequestDto = CreateUserRequestDto.builder()
+                .integrationUserId("1")
+                .integrationAnonymousUserId(anonymousUser.getIntegrationAnonymousUserId())
+                .registrationDate(LocalDateTime.now())
+                .emailNotificationEnable(true)
+                .emailNotificationHour(17)
+                .notificationEnable(true)
+                .recommendationEnable(true)
+                .build();
+
+        // Act
+        User user = userService.save(createUserRequestDto);
+
+        // Assert
+        assertEquals(createUserRequestDto.getIntegrationUserId(), user.getIntegrationUserId());
+        assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
+        assertEquals(createUserRequestDto.isEmailNotificationEnable(), user.isEmailNotificationEnable());
+        assertEquals(createUserRequestDto.getEmailNotificationHour(), user.getEmailNotificationHour());
+        assertEquals(createUserRequestDto.isNotificationEnable(), user.isNotificationEnable());
+        assertEquals(createUserRequestDto.isRecommendationEnable(), user.isRecommendationEnable());
+        assertEquals(true, user.isActive());
+        assertEquals(false, user.isAnonymous());
+    }
+
+    @Test
+    public void save_userAlreadyExists() {
+        // Arrange
+        User existingUser = userTestUtils.saveWithIntegrationUserId("1");
+        CreateUserRequestDto createUserRequestDto = CreateUserRequestDto.builder()
+                .integrationUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            User user = userService.save(createUserRequestDto);
+        });
+
+        Assertions.assertEquals("There is already a user with integrationUserId 1", exception.getMessage());
+    }
+
+    @Test
+    public void update_updateUser() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+        UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
+                .integrationUserId("1")
+                .active(false)
+                .build();
+
+        // Act
+        User result = userService.update(updateUserRequestDto);
+
+        // Assert
+        assertFalse(result.isActive());
+    }
+
+    @Test
+    public void update_integrationUserIdNotFound() {
+        // Arrange
+        UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
+                .integrationUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            User user = userService.update(updateUserRequestDto);
+        });
+
+        Assertions.assertEquals("Not found user with integrationUserId 1", exception.getMessage());
+    }
 
     @Test
     public void registerFollower_follow() {

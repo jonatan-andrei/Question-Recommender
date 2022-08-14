@@ -25,8 +25,6 @@ public class CreatePostRequestDto {
     @NotNull
     private PostType postType;
 
-    private PostType integrationParentPostType;
-
     @NotBlank
     private LocalDateTime publicationDate;
 

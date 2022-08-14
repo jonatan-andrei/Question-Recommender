@@ -29,7 +29,11 @@ public class QuestionService {
     }
 
     public Question update(Question existingQuestion, UpdatePostRequestDto updatePostRequestDto) {
-        return null;
+        Question question = QuestionFactory.overwrite(existingQuestion, updatePostRequestDto);
+        question = questionRepository.save(question);
+        questionCategoryService.update(question, updatePostRequestDto.getIntegrationCategoriesIds());
+        // Atualizar QuestionTags
+        return question;
     }
 
     @Transactional

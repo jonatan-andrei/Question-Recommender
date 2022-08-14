@@ -6,6 +6,7 @@ import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.model.*;
 import jonatan.andrei.repository.PostRepository;
+import org.springframework.util.CollectionUtils;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -40,13 +41,14 @@ public class PostService {
 
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
-        // Validar informações obrigatórias
-        Optional<Post> post = findOptionalByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationPostId(), createPostRequestDto.getPostType());
+        validateRequiredDataToSave(createPostRequestDto);
+        PostType postType = createPostRequestDto.getPostType();
+        Optional<Post> post = findOptionalByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationPostId(), postType);
         if (post.isPresent()) {
             throw new InconsistentIntegratedDataException("There is already a post with integrationPostId " + post.get().getIntegrationPostId());
         }
-        Post parentPost = nonNull(createPostRequestDto.getIntegrationParentPostId())
-                ? findByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationParentPostId(), createPostRequestDto.getIntegrationParentPostType())
+        Post parentPost = nonNull(postType.getParentPostType())
+                ? findByIntegrationPostIdAndPostType(createPostRequestDto.getIntegrationParentPostId(), postType.getParentPostType())
                 : null;
 
         User user = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getIntegrationAnonymousUserId());
@@ -66,7 +68,7 @@ public class PostService {
 
     @Transactional
     public Post update(UpdatePostRequestDto updatePostRequestDto) {
-        // Validar informações obrigatórias
+        validateRequiredDataToUpdate(updatePostRequestDto);
         Post post = findByIntegrationPostIdAndPostType(updatePostRequestDto.getIntegrationPostId(), updatePostRequestDto.getPostType());
 
         return switch (updatePostRequestDto.getPostType()) {
@@ -161,5 +163,61 @@ public class PostService {
     @Transactional
     public void registerQuestionFollower(List<QuestionFollowerRequestDto> questionFollowers) {
         questionFollowers.forEach(qf -> registerQuestionFollower(qf));
+    }
+
+    private void validateRequiredDataToSave(CreatePostRequestDto createPostRequestDto) {
+        validateIntegrationPostIdInformed(createPostRequestDto.getIntegrationPostId());
+        validatePostTypeInformed(createPostRequestDto.getPostType());
+        validateTitleInformed(createPostRequestDto.getPostType(), createPostRequestDto.getTitle());
+        validateContentOrDescriptionInformed(createPostRequestDto.getPostType(), createPostRequestDto.getContentOrDescription());
+        validateCategoriesOrTagsInformed(createPostRequestDto.getPostType(), createPostRequestDto.getIntegrationCategoriesIds(), createPostRequestDto.getTags());
+        validateIntegrationParentPostIdInformed(createPostRequestDto.getPostType(), createPostRequestDto.getIntegrationParentPostId());
+
+    }
+
+    private void validateRequiredDataToUpdate(UpdatePostRequestDto updatePostRequestDto) {
+        validateIntegrationPostIdInformed(updatePostRequestDto.getIntegrationPostId());
+        validatePostTypeInformed(updatePostRequestDto.getPostType());
+        validateTitleInformed(updatePostRequestDto.getPostType(), updatePostRequestDto.getTitle());
+        validateContentOrDescriptionInformed(updatePostRequestDto.getPostType(), updatePostRequestDto.getContentOrDescription());
+        validateCategoriesOrTagsInformed(updatePostRequestDto.getPostType(), updatePostRequestDto.getIntegrationCategoriesIds(), updatePostRequestDto.getTags());
+    }
+
+    private void validateIntegrationPostIdInformed(String integrationPostId) {
+        if (isNull(integrationPostId)) {
+            throw new RequiredDataException("Attribute 'integrationPostId' is required");
+        }
+    }
+
+    private void validateIntegrationParentPostIdInformed(PostType postType, String integrationParentPostId) {
+        if (!postType.equals(PostType.QUESTION) && isNull(integrationParentPostId)) {
+            throw new RequiredDataException("Attribute 'integrationParentPostId' is required to postType " + postType);
+        }
+    }
+
+    private void validatePostTypeInformed(PostType postType) {
+        if (isNull(postType)) {
+            throw new RequiredDataException("Attribute 'postType' is required");
+        }
+    }
+
+    private void validateTitleInformed(PostType postType, String title) {
+        if (postType.equals(PostType.QUESTION) && isNull(title)) {
+            throw new RequiredDataException("Attribute 'title' is required to postType " + postType);
+        }
+    }
+
+    private void validateContentOrDescriptionInformed(PostType postType, String contentOrDescription) {
+        if (!postType.equals(PostType.QUESTION) && isNull(contentOrDescription)) {
+            throw new RequiredDataException("Attribute 'contentOrDescription' is required to postType " + postType);
+        }
+    }
+
+    private void validateCategoriesOrTagsInformed(PostType postType, List<String> integrationCategoriesIds, List<String> tags) {
+        if (postType.equals(PostType.QUESTION)
+                && CollectionUtils.isEmpty(integrationCategoriesIds)
+                && CollectionUtils.isEmpty(tags)) {
+            throw new RequiredDataException("At least one of the fields must be informed: integrationCategoriesIds or tags");
+        }
     }
 }

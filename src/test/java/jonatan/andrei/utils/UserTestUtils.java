@@ -36,4 +36,18 @@ public class UserTestUtils {
                 .lastActivityDate(LocalDateTime.now())
                 .build());
     }
+
+    public User saveWithIntegrationAnonymousUserId(String integrationAnonymousUserId) {
+        return userRepository.save(User.builder()
+                .integrationAnonymousUserId(integrationAnonymousUserId)
+                .registrationDate(LocalDateTime.now())
+                .integrationDate(LocalDateTime.now())
+                .anonymous(false)
+                .active(false)
+                .emailNotificationEnable(false)
+                .notificationEnable(false)
+                .recommendationEnable(false)
+                .lastActivityDate(LocalDateTime.now())
+                .build());
+    }
 }

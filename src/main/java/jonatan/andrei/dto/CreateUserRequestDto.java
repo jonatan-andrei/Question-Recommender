@@ -26,7 +26,7 @@ public class CreateUserRequestDto {
 
     private boolean emailNotificationEnable;
 
-    private Integer emailNotificationTime;
+    private Integer emailNotificationHour;
 
     private boolean notificationEnable;
 

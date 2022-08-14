@@ -2,6 +2,7 @@ package jonatan.andrei.service;
 
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
+import jonatan.andrei.factory.QuestionCommentFactory;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.QuestionComment;
 import jonatan.andrei.model.User;
@@ -17,10 +18,12 @@ public class QuestionCommentService {
     QuestionCommentRepository questionCommentRepository;
 
     public QuestionComment save(CreatePostRequestDto createPostRequestDto, User user, Question question) {
-        return null;
+        return questionCommentRepository.save(
+                QuestionCommentFactory.createQuestionComment(createPostRequestDto, question.getPostId(), user.getUserId()));
     }
 
     public QuestionComment update(QuestionComment existingQuestionComment, UpdatePostRequestDto updatePostRequestDto) {
-        return null;
+        return questionCommentRepository.save(
+                QuestionCommentFactory.overwrite(existingQuestionComment, updatePostRequestDto));
     }
 }

@@ -8,7 +8,6 @@ Endpoint para salvar um post.
 integrationPostId (String): Id da publicação no sistema principal.
 integrationParentPostId (String): Id da pergunta ou resposta onde está a resposta ou comentário.
 postType (String): Tipo da publicação. Valores possíveis: QUESTION, ANSWER, QUESTION_COMMENT, ANSWER_COMMENT.
-integrationParentPostType (String): Tipo da publicação onde está a resposta ou comentário. Valores possíveis: QUESTION, ANSWER, QUESTION_COMMENT, ANSWER_COMMENT.
 publicationDate (LocalDateTime): Data da publicação.
 title (String): Título da pergunta.
 contentOrDescription (String): Conteúdo da resposta ou comentário ou descrição da pergunta.
@@ -102,7 +101,7 @@ integrationUserId (String): Id do usuário no sistema principal.
 integrationAnonymousUserId (String): Id da sessão do usuário no sistema principal.
 registrationDate (LocalDateTime): Data de cadastro do usuário.
 emailNotificationEnable (boolean): Se o usuário permite notificações por email.
-emailNotificationTime (Integer): A hora do dia para envio das notificações por email (opcional).
+emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
 notificationEnable (boolean): Se o usuário permite notificações.
 recommendationEnable (boolean): Se o usuário permite recomendações.
 explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
@@ -120,7 +119,7 @@ Endpoint para atualizar um usuário.
 integrationUserId (String): Id do usuário no sistema principal.
 active (boolean): Se usuário está ativo.
 emailNotificationEnable (boolean): Se o usuário permite notificações por email.
-emailNotificationTime (Integer): A hora do dia para envio das notificações por email (opcional).
+emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
 notificationEnable (boolean): Se o usuário permite notificações.
 recommendationEnable (boolean): Se o usuário permite recomendações.
 explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.

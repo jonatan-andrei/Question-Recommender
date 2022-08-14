@@ -3,6 +3,7 @@ package jonatan.andrei.service;
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
+import jonatan.andrei.factory.AnswerFactory;
 import jonatan.andrei.model.Answer;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.User;
@@ -19,11 +20,13 @@ public class AnswerService {
     AnswerRepository answerRepository;
 
     public Answer save(CreatePostRequestDto createPostRequestDto, User user, Question question) {
-        return null;
+        return answerRepository.save(
+                AnswerFactory.createAnswer(createPostRequestDto, question.getPostId(), user.getUserId()));
     }
 
     public Answer update(Answer existingAnswer, UpdatePostRequestDto updatePostRequestDto) {
-        return null;
+        return answerRepository.save(
+                AnswerFactory.overwrite(existingAnswer, updatePostRequestDto));
     }
 
     @Transactional

@@ -9,6 +9,8 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     Optional<User> findByIntegrationUserId(String integrationUserId);
 
+    Optional<User> findByIntegrationAnonymousUserId(String integrationAnonymousUserId);
+
     Optional<User> findByIntegrationUserIdAndIntegrationAnonymousUserId(String integrationUserId, String integrationAnonymousUserId);
 
 }

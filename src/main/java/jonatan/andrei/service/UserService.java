@@ -30,7 +30,19 @@ public class UserService {
 
     @Transactional
     public User save(CreateUserRequestDto createUserRequestDto) {
-        return null;
+        validateIntegrationUserIdInformed(createUserRequestDto.getIntegrationUserId());
+        if (userRepository.findByIntegrationUserId(createUserRequestDto.getIntegrationUserId()).isPresent()) {
+            throw new InconsistentIntegratedDataException("There is already a user with integrationUserId " + createUserRequestDto.getIntegrationUserId());
+        }
+        Optional<User> anonymousUser = nonNull(createUserRequestDto.getIntegrationAnonymousUserId())
+                ? userRepository.findByIntegrationAnonymousUserId(createUserRequestDto.getIntegrationAnonymousUserId())
+                : Optional.empty();
+
+        if (anonymousUser.isPresent()) {
+            return userRepository.save(UserFactory.overwriteWithAnonymousUser(anonymousUser.get(), createUserRequestDto));
+        } else {
+            return userRepository.save(UserFactory.newUser(createUserRequestDto));
+        }
     }
 
     @Transactional
@@ -40,7 +52,9 @@ public class UserService {
 
     @Transactional
     public User update(UpdateUserRequestDto updateUserRequestDto) {
-        return null;
+        validateIntegrationUserIdInformed(updateUserRequestDto.getIntegrationUserId());
+        User user = findByIntegrationUserId(updateUserRequestDto.getIntegrationUserId());
+        return userRepository.save(UserFactory.overwrite(user, updateUserRequestDto));
     }
 
     @Transactional
@@ -79,6 +93,12 @@ public class UserService {
             return anonymousUser.orElse(userRepository.save(UserFactory.newUserWithIntegrationAnonymousUserId(integrationAnonymousUserId)));
         } else {
             throw new RequiredDataException("At least one of the fields must be informed: integrationUserId or integrationAnonymousUserId");
+        }
+    }
+
+    private void validateIntegrationUserIdInformed(String integrationUserId) {
+        if (isNull(integrationUserId)) {
+            throw new RequiredDataException("Attribute 'integrationUserId' is required");
         }
     }
 }
