@@ -20,7 +20,7 @@ import static java.util.Objects.isNull;
 public class CategoryService {
 
     @Inject
-    private CategoryRepository categoryRepository;
+    CategoryRepository categoryRepository;
 
     @Transactional
     public Category saveOrUpdate(CategoryRequestDto categoryRequestDto) {

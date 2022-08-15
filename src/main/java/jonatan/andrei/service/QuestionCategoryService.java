@@ -15,10 +15,14 @@ import java.util.stream.Collectors;
 public class QuestionCategoryService {
 
     @Inject
-    private CategoryService categoryService;
+    CategoryService categoryService;
 
     @Inject
-    private QuestionCategoryRepository questionCategoryRepository;
+    QuestionCategoryRepository questionCategoryRepository;
+
+    public List<QuestionCategory> findByQuestionId(Long questionId) {
+        return questionCategoryRepository.findByQuestionId(questionId);
+    }
 
     public void save(Question question, List<String> integrationCategoriesIds) {
         if (integrationCategoriesIds.isEmpty()) {

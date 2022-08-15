@@ -5,7 +5,6 @@ import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.dto.TagRequestDto;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.model.Tag;
-import jonatan.andrei.repository.TagRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,13 +15,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
 @TestTransaction
-public class TagServiceTest {
+public class TagServiceTest extends AbstractServiceTest {
 
     @Inject
     TagService tagService;
-
-    @Inject
-    TagRepository tagRepository;
 
     @Test
     public void saveOrUpdate_saveNewTag() {

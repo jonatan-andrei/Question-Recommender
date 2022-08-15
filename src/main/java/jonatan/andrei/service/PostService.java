@@ -99,11 +99,14 @@ public class PostService {
 
     @Transactional
     public void registerViews(ViewsRequestDto viewsRequestDto) {
-        // Valida se post existe
-        // Valida se usuários existem
-        // Atualiza tags relacionadas a pergunta com view do usuário
-        // Atualiza categorias relacionadas a pergunta com view do usuário
-        // Atualiza total de visualizações da pergunta
+        Question question = (Question) findByIntegrationPostIdAndPostType(viewsRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
+        question.setViews(viewsRequestDto.getTotalViews());
+        postRepository.save(question);
+        List<QuestionTag> tags = questionService.findQuestionTags(question.getPostId());
+        List<QuestionCategory> categories = questionService.findQuestionCategories(question.getPostId());
+        List<User> users = userService.findByIntegrationUserIdIn(viewsRequestDto.getIntegrationUsersId());
+        userService.updateQuestionCategoriesViews(users, categories);
+        userService.updateQuestionTagsViews(users, tags);
     }
 
     @Transactional

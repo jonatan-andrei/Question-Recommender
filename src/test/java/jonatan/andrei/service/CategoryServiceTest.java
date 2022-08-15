@@ -6,7 +6,6 @@ import jonatan.andrei.dto.CategoryRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.model.Category;
-import jonatan.andrei.repository.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,13 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @QuarkusTest
 @TestTransaction
-public class CategoryServiceTest {
+public class CategoryServiceTest extends AbstractServiceTest {
 
     @Inject
     CategoryService categoryService;
-
-    @Inject
-    CategoryRepository categoryRepository;
 
     @Test
     public void saveOrUpdate_saveNewCategory() {

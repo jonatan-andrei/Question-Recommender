@@ -9,8 +9,6 @@ import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.model.User;
 import jonatan.andrei.model.UserFollower;
-import jonatan.andrei.repository.UserFollowerRepository;
-import jonatan.andrei.utils.UserTestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,16 +21,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestTransaction
-public class UserServiceTest {
+public class UserServiceTest extends AbstractServiceTest {
 
     @Inject
     UserService userService;
-
-    @Inject
-    UserFollowerRepository userFollowerRepository;
-
-    @Inject
-    UserTestUtils userTestUtils;
 
     @Test
     public void save_saveUser() {

@@ -5,7 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @TestTransaction
-public class QuestionCategoryServiceTest {
+public class QuestionCategoryServiceTest extends AbstractServiceTest {
 
 
 }

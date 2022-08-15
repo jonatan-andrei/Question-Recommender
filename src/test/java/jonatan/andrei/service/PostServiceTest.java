@@ -5,43 +5,143 @@ import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.dto.BestAnswerRequestDto;
 import jonatan.andrei.dto.DuplicateQuestionRequestDto;
 import jonatan.andrei.dto.HidePostRequestDto;
+import jonatan.andrei.dto.ViewsRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
-import jonatan.andrei.model.Answer;
-import jonatan.andrei.model.Question;
-import jonatan.andrei.repository.AnswerRepository;
-import jonatan.andrei.repository.QuestionRepository;
-import jonatan.andrei.utils.AnswerTestUtils;
-import jonatan.andrei.utils.QuestionTestUtils;
+import jonatan.andrei.factory.QuestionCategoryFactory;
+import jonatan.andrei.factory.QuestionTagFactory;
+import jonatan.andrei.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import java.util.ArrayList;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
 @TestTransaction
-public class PostServiceTest {
+public class PostServiceTest extends AbstractServiceTest {
 
     @Inject
     PostService postService;
 
-    @Inject
-    QuestionTestUtils questionTestUtils;
+    @Test
+    public void registerViews_updateTotalViews() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        ViewsRequestDto viewsRequestDto = ViewsRequestDto.builder()
+                .integrationQuestionId(question.getIntegrationPostId())
+                .totalViews(10)
+                .integrationUsersId(new ArrayList<>())
+                .build();
 
-    @Inject
-    AnswerTestUtils answerTestUtils;
+        // Act
+        postService.registerViews(viewsRequestDto);
+        entityManager.flush();
+        entityManager.clear();
 
-    @Inject
-    QuestionRepository questionRepository;
+        // Assert
+        Question result = questionRepository.findByIntegrationPostId("1");
+        assertEquals(10, result.getViews());
+    }
 
-    @Inject
-    AnswerRepository answerRepository;
+    @Test
+    public void registerViews_updateQuestionCategoriesViews() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("100");
 
-    @Inject
-    EntityManager entityManager;
+        Category category1 = categoryTestUtils.saveWithIntegrationCategoryId("a");
+        questionCategoryRepository.save(QuestionCategoryFactory.newQuestionCategory(question, category1));
+        Category category2 = categoryTestUtils.saveWithIntegrationCategoryId("b");
+        questionCategoryRepository.save(QuestionCategoryFactory.newQuestionCategory(question, category2));
+
+        User user1 = userTestUtils.saveWithIntegrationUserId("1");
+        userCategoryTestUtils.saveWithQuestionViews(user1, category1, 15);
+        userCategoryTestUtils.saveWithQuestionViews(user1, category2, 10);
+        User user2 = userTestUtils.saveWithIntegrationUserId("2");
+        userCategoryTestUtils.saveWithQuestionViews(user2, category1, 20);
+        User user3 = userTestUtils.saveWithIntegrationUserId("3");
+
+        ViewsRequestDto viewsRequestDto = ViewsRequestDto.builder()
+                .integrationQuestionId(question.getIntegrationPostId())
+                .totalViews(10)
+                .integrationUsersId(asList(user1.getIntegrationUserId(), user2.getIntegrationUserId(), user3.getIntegrationUserId()))
+                .build();
+
+        // Act
+        postService.registerViews(viewsRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        UserCategory user1Category1 = userCategoryRepository.findByUserIdAndCategoryId(user1.getUserId(), category1.getCategoryId());
+        assertEquals(16, user1Category1.getNumberQuestionsViewed());
+
+        UserCategory user1Category2 = userCategoryRepository.findByUserIdAndCategoryId(user1.getUserId(), category2.getCategoryId());
+        assertEquals(11, user1Category2.getNumberQuestionsViewed());
+
+        UserCategory user2Category1 = userCategoryRepository.findByUserIdAndCategoryId(user2.getUserId(), category1.getCategoryId());
+        assertEquals(21, user2Category1.getNumberQuestionsViewed());
+
+        UserCategory user2Category2 = userCategoryRepository.findByUserIdAndCategoryId(user2.getUserId(), category2.getCategoryId());
+        assertEquals(1, user2Category2.getNumberQuestionsViewed());
+
+        UserCategory user3Category1 = userCategoryRepository.findByUserIdAndCategoryId(user3.getUserId(), category1.getCategoryId());
+        assertEquals(1, user3Category1.getNumberQuestionsViewed());
+
+        UserCategory user3Category2 = userCategoryRepository.findByUserIdAndCategoryId(user3.getUserId(), category2.getCategoryId());
+        assertEquals(1, user3Category2.getNumberQuestionsViewed());
+    }
+
+    @Test
+    public void registerViews_updateQuestionTagsViews() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("100");
+
+        Tag tag1 = tagTestUtils.saveWithName("a");
+        questionTagRepository.save(QuestionTagFactory.newQuestionTag(question, tag1));
+        Tag tag2 = tagTestUtils.saveWithName("b");
+        questionTagRepository.save(QuestionTagFactory.newQuestionTag(question, tag2));
+
+        User user1 = userTestUtils.saveWithIntegrationUserId("1");
+        userTagTestUtils.saveWithQuestionViews(user1, tag1, 15);
+        userTagTestUtils.saveWithQuestionViews(user1, tag2, 10);
+        User user2 = userTestUtils.saveWithIntegrationUserId("2");
+        userTagTestUtils.saveWithQuestionViews(user2, tag1, 20);
+        User user3 = userTestUtils.saveWithIntegrationUserId("3");
+
+        ViewsRequestDto viewsRequestDto = ViewsRequestDto.builder()
+                .integrationQuestionId(question.getIntegrationPostId())
+                .totalViews(10)
+                .integrationUsersId(asList(user1.getIntegrationUserId(), user2.getIntegrationUserId(), user3.getIntegrationUserId()))
+                .build();
+
+        // Act
+        postService.registerViews(viewsRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        UserTag user1Tag1 = userTagRepository.findByUserIdAndTagId(user1.getUserId(), tag1.getTagId());
+        assertEquals(16, user1Tag1.getNumberQuestionsViewed());
+
+        UserTag user1Tag2 = userTagRepository.findByUserIdAndTagId(user1.getUserId(), tag2.getTagId());
+        assertEquals(11, user1Tag2.getNumberQuestionsViewed());
+
+        UserTag user2Tag1 = userTagRepository.findByUserIdAndTagId(user2.getUserId(), tag1.getTagId());
+        assertEquals(21, user2Tag1.getNumberQuestionsViewed());
+
+        UserTag user2Tag2 = userTagRepository.findByUserIdAndTagId(user2.getUserId(), tag2.getTagId());
+        assertEquals(1, user2Tag2.getNumberQuestionsViewed());
+
+        UserTag user3Tag1 =userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag1.getTagId());
+        assertEquals(1, user3Tag1.getNumberQuestionsViewed());
+
+        UserTag user3Tag2 =userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag2.getTagId());
+        assertEquals(1, user3Tag2.getNumberQuestionsViewed());
+    }
 
     @Test
     public void registerBestAnswer_registerBestAnswer() {

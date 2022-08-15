@@ -6,7 +6,7 @@ import jonatan.andrei.dto.UserFollowerRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.UserFactory;
-import jonatan.andrei.model.User;
+import jonatan.andrei.model.*;
 import jonatan.andrei.repository.UserRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,6 +27,12 @@ public class UserService {
 
     @Inject
     UserFollowerService userFollowerService;
+
+    @Inject
+    UserCategoryService userCategoryService;
+
+    @Inject
+    UserTagService userTagService;
 
     @Transactional
     public User save(CreateUserRequestDto createUserRequestDto) {
@@ -85,6 +91,10 @@ public class UserService {
         return userRepository.findByIntegrationUserId(integrationUserId);
     }
 
+    public List<User> findByIntegrationUserIdIn(List<String> integrationUsersIds) {
+        return userRepository.findByintegrationUserIdIn(integrationUsersIds);
+    }
+
     public User findUserByIntegrationUserIdOrCreateByAnonymousId(String integrationUserId, String integrationAnonymousUserId) {
         if (nonNull(integrationUserId)) {
             return findByIntegrationUserId(integrationUserId);
@@ -100,5 +110,13 @@ public class UserService {
         if (isNull(integrationUserId)) {
             throw new RequiredDataException("Attribute 'integrationUserId' is required");
         }
+    }
+
+    public void updateQuestionCategoriesViews(List<User> users, List<QuestionCategory> categories) {
+        userCategoryService.updateQuestionViews(users, categories);
+    }
+
+    public void updateQuestionTagsViews(List<User> users, List<QuestionTag> tags) {
+        userTagService.updateQuestionViews(users, tags);
     }
 }
