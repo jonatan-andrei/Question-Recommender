@@ -46,6 +46,10 @@ public class UserCategory {
     private Integer numberQuestionsAnswered;
 
     @NotNull
+    @Column(name = "number_questions_commented")
+    private Integer numberQuestionsCommented;
+
+    @NotNull
     @Column(name = "number_questions_followed")
     private Integer numberQuestionsFollowed;
 

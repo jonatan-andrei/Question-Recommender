@@ -19,7 +19,7 @@ public class UserTagService {
     @Inject
     UserTagRepository userTagRepository;
 
-    public void updateQuestionViews(List<User> users, List<QuestionTag> tags) {
+    public void updateNumberQuestionsViewed(List<User> users, List<QuestionTag> tags) {
         List<Long> tagsIds = tags.stream().map(QuestionTag::getTagId).collect(Collectors.toList());
         for (User user : users) {
             List<UserTag> userTags = userTagRepository.findByUserIdAndTagIdIn(user.getUserId(), tagsIds);

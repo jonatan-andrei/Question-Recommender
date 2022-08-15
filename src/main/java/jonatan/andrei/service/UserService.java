@@ -126,12 +126,12 @@ public class UserService {
         }
     }
 
-    public void updateQuestionCategoriesViews(List<User> users, List<QuestionCategory> categories) {
-        userCategoryService.updateQuestionViews(users, categories);
+    public void updateQuestionCategoriesViewed(List<User> users, List<QuestionCategory> categories) {
+        userCategoryService.updateNumberQuestionsViewed(users, categories);
     }
 
-    public void updateQuestionTagsViews(List<User> users, List<QuestionTag> tags) {
-        userTagService.updateQuestionViews(users, tags);
+    public void updateQuestionTagsViewed(List<User> users, List<QuestionTag> tags) {
+        userTagService.updateNumberQuestionsViewed(users, tags);
     }
 
     private void saveUserPreferences(UserPreferencesRequestDto userPreferences) {

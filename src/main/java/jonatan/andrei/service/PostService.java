@@ -105,8 +105,8 @@ public class PostService {
         List<QuestionTag> tags = questionService.findQuestionTags(question.getPostId());
         List<QuestionCategory> categories = questionService.findQuestionCategories(question.getPostId());
         List<User> users = userService.findByIntegrationUserIdIn(viewsRequestDto.getIntegrationUsersId());
-        userService.updateQuestionCategoriesViews(users, categories);
-        userService.updateQuestionTagsViews(users, tags);
+        userService.updateQuestionCategoriesViewed(users, categories);
+        userService.updateQuestionTagsViewed(users, tags);
     }
 
     @Transactional
