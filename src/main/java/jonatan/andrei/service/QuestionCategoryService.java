@@ -25,20 +25,6 @@ public class QuestionCategoryService {
     }
 
     public void save(Question question, List<String> integrationCategoriesIds) {
-        if (integrationCategoriesIds.isEmpty()) {
-            return;
-        }
-        List<Category> categories = categoryService.findByIntegrationCategoriesIds(integrationCategoriesIds);
-        List<QuestionCategory> questionCategories = categories.stream()
-                .map(c -> QuestionCategoryFactory.newQuestionCategory(question, c))
-                .collect(Collectors.toList());
-
-        questionCategoryRepository.saveAll(questionCategories);
-
-        incrementQuestionCountByQuestionCategories(questionCategories);
-    }
-
-    public void update(Question question, List<String> integrationCategoriesIds) {
         List<QuestionCategory> existingQuestionCategories = questionCategoryRepository.findByQuestionId(question.getPostId());
         List<Category> categories = categoryService.findByIntegrationCategoriesIds(integrationCategoriesIds);
 

@@ -30,6 +30,9 @@ public abstract class AbstractServiceTest {
     UserTagTestUtils userTagTestUtils;
 
     @Inject
+    QuestionCategoryTestUtils questionCategoryTestUtils;
+
+    @Inject
     QuestionRepository questionRepository;
 
     @Inject

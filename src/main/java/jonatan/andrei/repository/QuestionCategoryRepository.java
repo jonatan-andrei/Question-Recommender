@@ -8,4 +8,6 @@ import java.util.List;
 public interface QuestionCategoryRepository extends CrudRepository<QuestionCategory, Long> {
 
     List<QuestionCategory> findByQuestionId(Long questionId);
+
+    QuestionCategory findByQuestionIdAndCategoryId(Long questionId, Long categoryId);
 }

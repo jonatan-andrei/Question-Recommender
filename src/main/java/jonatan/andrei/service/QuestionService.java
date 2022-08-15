@@ -37,7 +37,7 @@ public class QuestionService {
     public Question update(Question existingQuestion, UpdatePostRequestDto updatePostRequestDto) {
         Question question = QuestionFactory.overwrite(existingQuestion, updatePostRequestDto);
         question = questionRepository.save(question);
-        questionCategoryService.update(question, updatePostRequestDto.getIntegrationCategoriesIds());
+        questionCategoryService.save(question, updatePostRequestDto.getIntegrationCategoriesIds());
         // Atualizar QuestionTags
         return question;
     }
