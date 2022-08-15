@@ -24,20 +24,6 @@ public class CreateUserRequestDto {
     @NotNull
     private LocalDateTime registrationDate;
 
-    private boolean emailNotificationEnable;
-
-    private Integer emailNotificationHour;
-
-    private boolean notificationEnable;
-
-    private boolean recommendationEnable;
-
-    private List<String> explicitIntegrationCategoriesIds;
-
-    private List<String> explicitTags;
-
-    private List<String> ignoredIntegrationCategoriesIds;
-
-    private List<String> ignoredTags;
+    private UserPreferencesRequestDto userPreferences;
 
 }

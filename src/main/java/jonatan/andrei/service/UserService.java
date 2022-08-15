@@ -3,10 +3,13 @@ package jonatan.andrei.service;
 import jonatan.andrei.dto.CreateUserRequestDto;
 import jonatan.andrei.dto.UpdateUserRequestDto;
 import jonatan.andrei.dto.UserFollowerRequestDto;
+import jonatan.andrei.dto.UserPreferencesRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.UserFactory;
-import jonatan.andrei.model.*;
+import jonatan.andrei.model.QuestionCategory;
+import jonatan.andrei.model.QuestionTag;
+import jonatan.andrei.model.User;
 import jonatan.andrei.repository.UserRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -37,6 +40,7 @@ public class UserService {
     @Transactional
     public User save(CreateUserRequestDto createUserRequestDto) {
         validateIntegrationUserIdInformed(createUserRequestDto.getIntegrationUserId());
+        validateUserPreferencesInformed(createUserRequestDto.getUserPreferences());
         if (userRepository.findByIntegrationUserId(createUserRequestDto.getIntegrationUserId()).isPresent()) {
             throw new InconsistentIntegratedDataException("There is already a user with integrationUserId " + createUserRequestDto.getIntegrationUserId());
         }
@@ -44,11 +48,12 @@ public class UserService {
                 ? userRepository.findByIntegrationAnonymousUserId(createUserRequestDto.getIntegrationAnonymousUserId())
                 : Optional.empty();
 
-        if (anonymousUser.isPresent()) {
-            return userRepository.save(UserFactory.overwriteWithAnonymousUser(anonymousUser.get(), createUserRequestDto));
-        } else {
-            return userRepository.save(UserFactory.newUser(createUserRequestDto));
-        }
+        User user = anonymousUser.isPresent()
+                ? UserFactory.overwriteWithAnonymousUser(anonymousUser.get(), createUserRequestDto)
+                : UserFactory.newUser(createUserRequestDto);
+        user = userRepository.save(user);
+        saveUserPreferences(createUserRequestDto.getUserPreferences());
+        return user;
     }
 
     @Transactional
@@ -59,8 +64,11 @@ public class UserService {
     @Transactional
     public User update(UpdateUserRequestDto updateUserRequestDto) {
         validateIntegrationUserIdInformed(updateUserRequestDto.getIntegrationUserId());
+        validateUserPreferencesInformed(updateUserRequestDto.getUserPreferences());
         User user = findByIntegrationUserId(updateUserRequestDto.getIntegrationUserId());
-        return userRepository.save(UserFactory.overwrite(user, updateUserRequestDto));
+        user = userRepository.save(UserFactory.overwrite(user, updateUserRequestDto));
+        saveUserPreferences(updateUserRequestDto.getUserPreferences());
+        return user;
     }
 
     @Transactional
@@ -112,11 +120,21 @@ public class UserService {
         }
     }
 
+    private void validateUserPreferencesInformed(UserPreferencesRequestDto userPreferences) {
+        if (isNull(userPreferences)) {
+            throw new RequiredDataException("Attribute 'userPreferences' is required");
+        }
+    }
+
     public void updateQuestionCategoriesViews(List<User> users, List<QuestionCategory> categories) {
         userCategoryService.updateQuestionViews(users, categories);
     }
 
     public void updateQuestionTagsViews(List<User> users, List<QuestionTag> tags) {
         userTagService.updateQuestionViews(users, tags);
+    }
+
+    private void saveUserPreferences(UserPreferencesRequestDto userPreferences) {
+
     }
 }

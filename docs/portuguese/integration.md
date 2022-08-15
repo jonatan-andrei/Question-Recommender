@@ -100,14 +100,14 @@ Endpoint para registrar um usuário.
 integrationUserId (String): Id do usuário no sistema principal.
 integrationAnonymousUserId (String): Id da sessão do usuário no sistema principal.
 registrationDate (LocalDateTime): Data de cadastro do usuário.
-emailNotificationEnable (boolean): Se o usuário permite notificações por email.
-emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
-notificationEnable (boolean): Se o usuário permite notificações.
-recommendationEnable (boolean): Se o usuário permite recomendações.
-explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
-explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
-ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
-ignoredTags (List-String): Tags que o usuário quer ignorar.
+userPreferences.emailNotificationEnable (boolean): Se o usuário permite notificações por email.
+userPreferences.emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
+userPreferences.notificationEnable (boolean): Se o usuário permite notificações.
+userPreferences.recommendationEnable (boolean): Se o usuário permite recomendações.
+userPreferences.explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
+userPreferences.explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
+userPreferences.ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
+userPreferences.ignoredTags (List-String): Tags que o usuário quer ignorar.
 ```
 
 ### POST /user/list
@@ -118,14 +118,14 @@ Endpoint para atualizar um usuário.
 ```
 integrationUserId (String): Id do usuário no sistema principal.
 active (boolean): Se usuário está ativo.
-emailNotificationEnable (boolean): Se o usuário permite notificações por email.
-emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
-notificationEnable (boolean): Se o usuário permite notificações.
-recommendationEnable (boolean): Se o usuário permite recomendações.
-explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
-explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
-ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
-ignoredTags (List-String): Tags que o usuário quer ignorar.
+userPreferences.emailNotificationEnable (boolean): Se o usuário permite notificações por email.
+userPreferences.emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
+userPreferences.notificationEnable (boolean): Se o usuário permite notificações.
+userPreferences.recommendationEnable (boolean): Se o usuário permite recomendações.
+userPreferences.explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
+userPreferences.explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
+userPreferences.ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
+userPreferences.ignoredTags (List-String): Tags que o usuário quer ignorar.
 ```
 
 ### POST /user/register-follower

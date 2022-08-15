@@ -5,6 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.dto.CreateUserRequestDto;
 import jonatan.andrei.dto.UpdateUserRequestDto;
 import jonatan.andrei.dto.UserFollowerRequestDto;
+import jonatan.andrei.dto.UserPreferencesRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.model.User;
@@ -33,10 +34,12 @@ public class UserServiceTest extends AbstractServiceTest {
                 .integrationUserId("1")
                 .integrationAnonymousUserId("abc")
                 .registrationDate(LocalDateTime.now())
-                .emailNotificationEnable(true)
-                .emailNotificationHour(17)
-                .notificationEnable(true)
-                .recommendationEnable(true)
+                .userPreferences(UserPreferencesRequestDto.builder()
+                        .emailNotificationEnable(true)
+                        .emailNotificationHour(17)
+                        .notificationEnable(true)
+                        .recommendationEnable(true)
+                        .build())
                 .build();
 
         // Act
@@ -45,10 +48,10 @@ public class UserServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createUserRequestDto.getIntegrationUserId(), user.getIntegrationUserId());
         assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
-        assertEquals(createUserRequestDto.isEmailNotificationEnable(), user.isEmailNotificationEnable());
-        assertEquals(createUserRequestDto.getEmailNotificationHour(), user.getEmailNotificationHour());
-        assertEquals(createUserRequestDto.isNotificationEnable(), user.isNotificationEnable());
-        assertEquals(createUserRequestDto.isRecommendationEnable(), user.isRecommendationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());
+        assertEquals(createUserRequestDto.getUserPreferences().isNotificationEnable(), user.isNotificationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().isRecommendationEnable(), user.isRecommendationEnable());
     }
 
     @Test
@@ -60,10 +63,12 @@ public class UserServiceTest extends AbstractServiceTest {
                 .integrationUserId("1")
                 .integrationAnonymousUserId(anonymousUser.getIntegrationAnonymousUserId())
                 .registrationDate(LocalDateTime.now())
-                .emailNotificationEnable(true)
-                .emailNotificationHour(17)
-                .notificationEnable(true)
-                .recommendationEnable(true)
+                .userPreferences(UserPreferencesRequestDto.builder()
+                        .emailNotificationEnable(true)
+                        .emailNotificationHour(17)
+                        .notificationEnable(true)
+                        .recommendationEnable(true)
+                        .build())
                 .build();
 
         // Act
@@ -72,10 +77,10 @@ public class UserServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createUserRequestDto.getIntegrationUserId(), user.getIntegrationUserId());
         assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
-        assertEquals(createUserRequestDto.isEmailNotificationEnable(), user.isEmailNotificationEnable());
-        assertEquals(createUserRequestDto.getEmailNotificationHour(), user.getEmailNotificationHour());
-        assertEquals(createUserRequestDto.isNotificationEnable(), user.isNotificationEnable());
-        assertEquals(createUserRequestDto.isRecommendationEnable(), user.isRecommendationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());
+        assertEquals(createUserRequestDto.getUserPreferences().isNotificationEnable(), user.isNotificationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().isRecommendationEnable(), user.isRecommendationEnable());
         assertEquals(true, user.isActive());
         assertEquals(false, user.isAnonymous());
     }
@@ -86,6 +91,7 @@ public class UserServiceTest extends AbstractServiceTest {
         User existingUser = userTestUtils.saveWithIntegrationUserId("1");
         CreateUserRequestDto createUserRequestDto = CreateUserRequestDto.builder()
                 .integrationUserId("1")
+                .userPreferences(UserPreferencesRequestDto.builder().build())
                 .build();
 
         // Assert
@@ -104,6 +110,7 @@ public class UserServiceTest extends AbstractServiceTest {
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                 .integrationUserId("1")
                 .active(false)
+                .userPreferences(UserPreferencesRequestDto.builder().build())
                 .build();
 
         // Act
@@ -118,6 +125,7 @@ public class UserServiceTest extends AbstractServiceTest {
         // Arrange
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                 .integrationUserId("1")
+                .userPreferences(UserPreferencesRequestDto.builder().build())
                 .build();
 
         // Assert

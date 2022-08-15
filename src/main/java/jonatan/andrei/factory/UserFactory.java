@@ -16,10 +16,10 @@ public class UserFactory {
                 .integrationDate(LocalDateTime.now())
                 .anonymous(false)
                 .active(true)
-                .emailNotificationEnable(createUserRequestDto.isEmailNotificationEnable())
-                .emailNotificationHour(createUserRequestDto.getEmailNotificationHour())
-                .notificationEnable(createUserRequestDto.isNotificationEnable())
-                .recommendationEnable(createUserRequestDto.isRecommendationEnable())
+                .emailNotificationEnable(createUserRequestDto.getUserPreferences().isEmailNotificationEnable())
+                .emailNotificationHour(createUserRequestDto.getUserPreferences().getEmailNotificationHour())
+                .notificationEnable(createUserRequestDto.getUserPreferences().isNotificationEnable())
+                .recommendationEnable(createUserRequestDto.getUserPreferences().isRecommendationEnable())
                 .lastActivityDate(LocalDateTime.now())
                 .build();
     }
@@ -29,20 +29,20 @@ public class UserFactory {
         user.setRegistrationDate(createUserRequestDto.getRegistrationDate());
         user.setAnonymous(false);
         user.setActive(true);
-        user.setEmailNotificationEnable(createUserRequestDto.isEmailNotificationEnable());
-        user.setEmailNotificationHour(createUserRequestDto.getEmailNotificationHour());
-        user.setNotificationEnable(createUserRequestDto.isNotificationEnable());
-        user.setRecommendationEnable(createUserRequestDto.isRecommendationEnable());
+        user.setEmailNotificationEnable(createUserRequestDto.getUserPreferences().isEmailNotificationEnable());
+        user.setEmailNotificationHour(createUserRequestDto.getUserPreferences().getEmailNotificationHour());
+        user.setNotificationEnable(createUserRequestDto.getUserPreferences().isNotificationEnable());
+        user.setRecommendationEnable(createUserRequestDto.getUserPreferences().isRecommendationEnable());
         user.setLastActivityDate(LocalDateTime.now());
         return user;
     }
 
     public static User overwrite(User user, UpdateUserRequestDto updateUserRequestDto) {
         user.setActive(updateUserRequestDto.isActive());
-        user.setEmailNotificationEnable(updateUserRequestDto.isEmailNotificationEnable());
-        user.setEmailNotificationHour(updateUserRequestDto.getEmailNotificationHour());
-        user.setNotificationEnable(updateUserRequestDto.isNotificationEnable());
-        user.setRecommendationEnable(updateUserRequestDto.isRecommendationEnable());
+        user.setEmailNotificationEnable(updateUserRequestDto.getUserPreferences().isEmailNotificationEnable());
+        user.setEmailNotificationHour(updateUserRequestDto.getUserPreferences().getEmailNotificationHour());
+        user.setNotificationEnable(updateUserRequestDto.getUserPreferences().isNotificationEnable());
+        user.setRecommendationEnable(updateUserRequestDto.getUserPreferences().isRecommendationEnable());
         user.setLastActivityDate(LocalDateTime.now());
         return user;
     }

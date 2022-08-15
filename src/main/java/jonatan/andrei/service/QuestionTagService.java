@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.model.Question;
 import jonatan.andrei.model.QuestionTag;
 import jonatan.andrei.repository.QuestionTagRepository;
 
@@ -15,5 +16,9 @@ public class QuestionTagService {
 
     public List<QuestionTag> findByQuestionId(Long questionId) {
         return questionTagRepository.findByQuestionId(questionId);
+    }
+
+    public void save(Question question, List<String> tags) {
+
     }
 }
