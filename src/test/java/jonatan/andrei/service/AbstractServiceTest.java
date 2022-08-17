@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.dto.VoteRequestDto;
 import jonatan.andrei.repository.*;
 import jonatan.andrei.utils.*;
 
@@ -58,6 +59,9 @@ public abstract class AbstractServiceTest {
 
     @Inject
     UserFollowerRepository userFollowerRepository;
+
+    @Inject
+    VoteRepository voteRepository;
 
     @Inject
     EntityManager entityManager;

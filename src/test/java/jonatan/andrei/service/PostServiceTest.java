@@ -2,10 +2,9 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jonatan.andrei.dto.BestAnswerRequestDto;
-import jonatan.andrei.dto.DuplicateQuestionRequestDto;
-import jonatan.andrei.dto.HidePostRequestDto;
-import jonatan.andrei.dto.ViewsRequestDto;
+import jonatan.andrei.domain.VoteType;
+import jonatan.andrei.domain.VoteTypeRequest;
+import jonatan.andrei.dto.*;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.QuestionCategoryFactory;
@@ -15,9 +14,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.isNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
@@ -136,10 +137,10 @@ public class PostServiceTest extends AbstractServiceTest {
         UserTag user2Tag2 = userTagRepository.findByUserIdAndTagId(user2.getUserId(), tag2.getTagId());
         assertEquals(1, user2Tag2.getNumberQuestionsViewed());
 
-        UserTag user3Tag1 =userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag1.getTagId());
+        UserTag user3Tag1 = userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag1.getTagId());
         assertEquals(1, user3Tag1.getNumberQuestionsViewed());
 
-        UserTag user3Tag2 =userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag2.getTagId());
+        UserTag user3Tag2 = userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag2.getTagId());
         assertEquals(1, user3Tag2.getNumberQuestionsViewed());
     }
 
@@ -421,5 +422,298 @@ public class PostServiceTest extends AbstractServiceTest {
         Assertions.assertEquals("Not found post with integrationPostId 1", exception.getMessage());
     }
 
+    @Test
+    public void registerVote_saveUpvote() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(post.getIntegrationPostId())
+                .voteType(VoteTypeRequest.UPVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Act
+        postService.registerVote(voteRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        post = postService.findByIntegrationPostId(post.getIntegrationPostId());
+        assertEquals(1, post.getUpvotes());
+        assertEquals(0, post.getDownvotes());
+        Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
+        assertEquals(VoteType.UPVOTE, vote.getVoteType());
+    }
+
+    @Test
+    public void registerVote_saveDownvote() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(post.getIntegrationPostId())
+                .voteType(VoteTypeRequest.DOWNVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Act
+        postService.registerVote(voteRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        post = postService.findByIntegrationPostId(post.getIntegrationPostId());
+        assertEquals(0, post.getUpvotes());
+        assertEquals(1, post.getDownvotes());
+        Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
+        assertEquals(VoteType.DOWNVOTE, vote.getVoteType());
+    }
+
+    @Test
+    public void registerVote_NotRemoveVoteNotExist() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(post.getIntegrationPostId())
+                .voteType(VoteTypeRequest.REMOVED)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Act
+        postService.registerVote(voteRequestDto);
+
+        // Assert
+        post = postService.findByIntegrationPostId(post.getIntegrationPostId());
+        assertEquals(0, post.getUpvotes());
+        assertEquals(0, post.getDownvotes());
+        assertTrue(voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).isEmpty());
+    }
+
+    @Test
+    public void registerVote_removeUpvote() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        question.setUpvotes(10);
+        question = questionRepository.save(question);
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Vote existingVote = voteRepository.save(Vote.builder()
+                        .postId(question.getPostId())
+                        .userId(user.getUserId())
+                        .voteType(VoteType.UPVOTE)
+                        .voteDate(LocalDateTime.now())
+                .build());
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(question.getIntegrationPostId())
+                .voteType(VoteTypeRequest.REMOVED)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Act
+        postService.registerVote(voteRequestDto);
+
+        // Assert
+        Post post = postService.findByIntegrationPostId(question.getIntegrationPostId());
+        assertEquals(9, post.getUpvotes());
+        assertEquals(0, post.getDownvotes());
+        assertTrue(voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).isEmpty());
+    }
+
+    @Test
+    public void registerVote_removeDownvote() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        question.setDownvotes(10);
+        question = questionRepository.save(question);
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Vote existingVote = voteRepository.save(Vote.builder()
+                .postId(question.getPostId())
+                .userId(user.getUserId())
+                .voteType(VoteType.DOWNVOTE)
+                .voteDate(LocalDateTime.now())
+                .build());
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(question.getIntegrationPostId())
+                .voteType(VoteTypeRequest.REMOVED)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Act
+        postService.registerVote(voteRequestDto);
+
+        // Assert
+        Post post = postService.findByIntegrationPostId(question.getIntegrationPostId());
+        assertEquals(0, post.getUpvotes());
+        assertEquals(9, post.getDownvotes());
+        assertTrue(voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).isEmpty());
+    }
+
+    @Test
+    public void registerVote_validateIntegrationPostIdRequired() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .voteType(VoteTypeRequest.UPVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.registerVote(voteRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'integrationPostId' is required", exception.getMessage());
+    }
+
+    @Test
+    public void registerVote_validateIntegrationUserIdRequired() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationPostId(post.getIntegrationPostId())
+                .voteType(VoteTypeRequest.UPVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.registerVote(voteRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'integrationUserId' is required", exception.getMessage());
+    }
+
+    @Test
+    public void registerVote_validateVoteTypeRequired() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(post.getIntegrationPostId())
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.registerVote(voteRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'voteType' is required", exception.getMessage());
+    }
+
+    @Test
+    public void registerVote_removeUpvoteAndSaveDownvote() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        question.setUpvotes(10);
+        question = questionRepository.save(question);
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Vote existingVote = voteRepository.save(Vote.builder()
+                .postId(question.getPostId())
+                .userId(user.getUserId())
+                .voteType(VoteType.UPVOTE)
+                .voteDate(LocalDateTime.now())
+                .build());
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(question.getIntegrationPostId())
+                .voteType(VoteTypeRequest.DOWNVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Act
+        postService.registerVote(voteRequestDto);
+
+        // Assert
+        Post post = postService.findByIntegrationPostId(question.getIntegrationPostId());
+        assertEquals(9, post.getUpvotes());
+        assertEquals(1, post.getDownvotes());
+        Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
+        assertEquals(VoteType.DOWNVOTE, vote.getVoteType());
+    }
+
+    @Test
+    public void registerVote_removeDownvoteAndSaveUpvote() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        question.setDownvotes(10);
+        question = questionRepository.save(question);
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Vote existingVote = voteRepository.save(Vote.builder()
+                .postId(question.getPostId())
+                .userId(user.getUserId())
+                .voteType(VoteType.DOWNVOTE)
+                .voteDate(LocalDateTime.now())
+                .build());
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId(question.getIntegrationPostId())
+                .voteType(VoteTypeRequest.UPVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Act
+        postService.registerVote(voteRequestDto);
+
+        // Assert
+        Post post = postService.findByIntegrationPostId(question.getIntegrationPostId());
+        assertEquals(1, post.getUpvotes());
+        assertEquals(9, post.getDownvotes());
+        Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
+        assertEquals(VoteType.UPVOTE, vote.getVoteType());
+    }
+
+    @Test
+    public void registerVote_userNotFound() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId("11")
+                .integrationPostId(post.getIntegrationPostId())
+                .voteType(VoteTypeRequest.UPVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            postService.registerVote(voteRequestDto);
+        });
+
+        Assertions.assertEquals("Not found user with integrationUserId 11", exception.getMessage());
+    }
+
+    @Test
+    public void registerVote_postNotFound() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+        VoteRequestDto voteRequestDto = VoteRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationPostId("1")
+                .voteType(VoteTypeRequest.UPVOTE)
+                .voteDate(LocalDateTime.now())
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            postService.registerVote(voteRequestDto);
+        });
+
+        Assertions.assertEquals("Not found post with integrationPostId 1", exception.getMessage());
+    }
 
 }

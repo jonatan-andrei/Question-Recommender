@@ -39,6 +39,9 @@ public class PostService {
     @Inject
     UserService userService;
 
+    @Inject
+    VoteService voteService;
+
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
         validateRequiredDataToSave(createPostRequestDto);
@@ -147,8 +150,11 @@ public class PostService {
 
     @Transactional
     public void registerVote(VoteRequestDto voteRequestDto) {
-        // Verifica se usuário já votou, se sim exclui e se não for do tipo REMOVED insere de novo
-        // Atualiza número de votos no post
+        voteService.validateVoteRequest(voteRequestDto);
+        Post post = findByIntegrationPostId(voteRequestDto.getIntegrationPostId());
+        User user = userService.findByIntegrationUserId(voteRequestDto.getIntegrationUserId());
+        post = voteService.registerVote(voteRequestDto, user, post);
+        postRepository.save(post);
     }
 
     @Transactional
