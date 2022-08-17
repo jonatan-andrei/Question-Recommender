@@ -5,7 +5,7 @@ import jonatan.andrei.model.Tag;
 
 public class TagFactory {
 
-    public static Tag newTag(TagRequestDto tagRequestDto){
+    public static Tag newTag(TagRequestDto tagRequestDto) {
         return Tag.builder()
                 .name(tagRequestDto.getName())
                 .description(tagRequestDto.getDescription())
@@ -14,7 +14,15 @@ public class TagFactory {
                 .build();
     }
 
-    public static Tag overwrite (Tag existingTag, TagRequestDto tagRequestDto){
+    public static Tag newTag(String tagName) {
+        return Tag.builder()
+                .name(tagName)
+                .active(true)
+                .questionCount(0)
+                .build();
+    }
+
+    public static Tag overwrite(Tag existingTag, TagRequestDto tagRequestDto) {
         existingTag.setActive(tagRequestDto.isActive());
         existingTag.setName(tagRequestDto.getName());
         existingTag.setDescription(tagRequestDto.getDescription());

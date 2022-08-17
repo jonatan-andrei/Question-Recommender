@@ -34,6 +34,9 @@ public abstract class AbstractServiceTest {
     QuestionCategoryTestUtils questionCategoryTestUtils;
 
     @Inject
+    QuestionTagTestUtils questionTagTestUtils;
+
+    @Inject
     QuestionRepository questionRepository;
 
     @Inject

@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -32,9 +33,29 @@ public class TagService {
 
     }
 
+    public void incrementQuestionCountByTagsIds(List<Long> tagsIds) {
+        tagRepository.incrementQuestionCount(tagsIds);
+    }
+
+    public void decrementQuestionCountByTagsIds(List<Long> tagsIds) {
+        tagRepository.decrementQuestionCount(tagsIds);
+    }
+
     @Transactional
     public List<Tag> saveOrUpdate(List<TagRequestDto> tags) {
         return tags.stream().map(tag -> saveOrUpdate(tag)).collect(Collectors.toList());
+    }
+
+    public List<Tag> findOrCreateTags(List<String> tagsName) {
+        List<Tag> tags = tagRepository.findByNameIn(tagsName);
+        tagsName.forEach(tag -> {
+            Optional<Tag> foundTag = tags.stream().filter(t -> t.getName().equals(tag))
+                    .findFirst();
+            if (foundTag.isEmpty()) {
+                tags.add(tagRepository.save(TagFactory.newTag(tag)));
+            }
+        });
+        return tags;
     }
 
     private void validateRequiredData(TagRequestDto tagRequestDto) {

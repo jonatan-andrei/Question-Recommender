@@ -9,4 +9,6 @@ public interface QuestionTagRepository extends CrudRepository<QuestionTag, Long>
 
     List<QuestionTag> findByQuestionId(Long questionId);
 
+    QuestionTag findByQuestionIdAndTagId(Long questionId, Long tagId);
+
 }
