@@ -42,6 +42,9 @@ public class PostService {
     @Inject
     VoteService voteService;
 
+    @Inject
+    QuestionFollowerService questionFollowerService;
+
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
         validateRequiredDataToSave(createPostRequestDto);
@@ -164,9 +167,11 @@ public class PostService {
 
     @Transactional
     public void registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
-        // Adiciona ou remove
-        // Valida se usuário e pergunta existem
-        // Atualiza o número de seguidores na pergunta
+        questionFollowerService.validateQuestionFollowerRequest(questionFollowerRequestDto);
+        Question question = (Question) findByIntegrationPostIdAndPostType(questionFollowerRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
+        User user = userService.findByIntegrationUserId(questionFollowerRequestDto.getIntegrationUserId());
+        question = questionFollowerService.registerQuestionFollower(questionFollowerRequestDto, user, question);
+        postRepository.save(question);
     }
 
     @Transactional

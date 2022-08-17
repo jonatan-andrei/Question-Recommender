@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,4 +21,6 @@ public class QuestionFollowerRequestDto {
     private String integrationUserId;
 
     private boolean followed;
+
+    private LocalDateTime startDate;
 }

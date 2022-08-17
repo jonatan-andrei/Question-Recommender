@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
-import static java.util.Objects.isNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
@@ -502,10 +501,10 @@ public class PostServiceTest extends AbstractServiceTest {
         question = questionRepository.save(question);
         User user = userTestUtils.saveWithIntegrationUserId("11");
         Vote existingVote = voteRepository.save(Vote.builder()
-                        .postId(question.getPostId())
-                        .userId(user.getUserId())
-                        .voteType(VoteType.UPVOTE)
-                        .voteDate(LocalDateTime.now())
+                .postId(question.getPostId())
+                .userId(user.getUserId())
+                .voteType(VoteType.UPVOTE)
+                .voteDate(LocalDateTime.now())
                 .build());
         VoteRequestDto voteRequestDto = VoteRequestDto.builder()
                 .integrationUserId(user.getIntegrationUserId())
@@ -714,6 +713,139 @@ public class PostServiceTest extends AbstractServiceTest {
         });
 
         Assertions.assertEquals("Not found post with integrationPostId 1", exception.getMessage());
+    }
+
+    @Test
+    public void registerQuestionFollower_follow() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        question.setFollowers(10);
+        questionRepository.save(question);
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        QuestionFollowerRequestDto questionFollowerRequestDto = QuestionFollowerRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationQuestionId(question.getIntegrationPostId())
+                .startDate(LocalDateTime.now())
+                .followed(true)
+                .build();
+
+        // Act
+        postService.registerQuestionFollower(questionFollowerRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        assertEquals(11, questionRepository.findById(question.getPostId()).get().getFollowers());
+        assertTrue(questionFollowerRepository.findByUserIdAndQuestionId(user.getUserId(), question.getPostId()).isPresent());
+    }
+
+    @Test
+    public void registerQuestionFollower_unfollow() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        question.setFollowers(10);
+        questionRepository.save(question);
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        questionFollowerRepository.save(QuestionFollower.builder()
+                .questionId(question.getPostId())
+                .userId(user.getUserId())
+                .startDate(LocalDateTime.now())
+                .build());
+        QuestionFollowerRequestDto questionFollowerRequestDto = QuestionFollowerRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationQuestionId(question.getIntegrationPostId())
+                .startDate(LocalDateTime.now())
+                .followed(false)
+                .build();
+
+        // Act
+        postService.registerQuestionFollower(questionFollowerRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        assertEquals(9, questionRepository.findById(question.getPostId()).get().getFollowers());
+        assertTrue(questionFollowerRepository.findByUserIdAndQuestionId(user.getUserId(), question.getPostId()).isEmpty());
+    }
+
+    @Test
+    public void registerQuestionFollower_userNotFound() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        QuestionFollowerRequestDto questionFollowerRequestDto = QuestionFollowerRequestDto.builder()
+                .integrationUserId("11")
+                .integrationQuestionId(post.getIntegrationPostId())
+                .startDate(LocalDateTime.now())
+                .followed(true)
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            postService.registerQuestionFollower(questionFollowerRequestDto);
+        });
+
+        Assertions.assertEquals("Not found user with integrationUserId 11", exception.getMessage());
+    }
+
+    @Test
+    public void registerQuestionFollower_postNotFound() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+        QuestionFollowerRequestDto questionFollowerRequestDto = QuestionFollowerRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationQuestionId("1")
+                .startDate(LocalDateTime.now())
+                .followed(true)
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            postService.registerQuestionFollower(questionFollowerRequestDto);
+        });
+
+        Assertions.assertEquals("Not found post with integrationPostId 1", exception.getMessage());
+    }
+
+    @Test
+    public void registerQuestionFollower_validateIntegrationQuestionIdRequired() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        QuestionFollowerRequestDto questionFollowerRequestDto = QuestionFollowerRequestDto.builder()
+                .integrationUserId(user.getIntegrationUserId())
+                .startDate(LocalDateTime.now())
+                .followed(true)
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.registerQuestionFollower(questionFollowerRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'integrationQuestionId' is required", exception.getMessage());
+    }
+
+    @Test
+    public void registerQuestionFollower_validateIntegrationUserIdRequired() {
+        // Arrange
+        Post post = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        QuestionFollowerRequestDto questionFollowerRequestDto = QuestionFollowerRequestDto.builder()
+                .integrationQuestionId(post.getIntegrationPostId())
+                .startDate(LocalDateTime.now())
+                .followed(true)
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.registerQuestionFollower(questionFollowerRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'integrationUserId' is required", exception.getMessage());
     }
 
 }

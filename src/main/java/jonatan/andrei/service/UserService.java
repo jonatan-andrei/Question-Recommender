@@ -135,6 +135,8 @@ public class UserService {
     }
 
     private void saveUserPreferences(UserPreferencesRequestDto userPreferences) {
-
+        // Buscar quais categorias o usuário já tem como explícitas
+        // Remover as que não estão na nova lista
+        // Criar as que ainda não existem
     }
 }

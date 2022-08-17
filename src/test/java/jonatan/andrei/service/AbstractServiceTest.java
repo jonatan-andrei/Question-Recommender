@@ -61,6 +61,9 @@ public abstract class AbstractServiceTest {
     UserFollowerRepository userFollowerRepository;
 
     @Inject
+    QuestionFollowerRepository questionFollowerRepository;
+
+    @Inject
     VoteRepository voteRepository;
 
     @Inject

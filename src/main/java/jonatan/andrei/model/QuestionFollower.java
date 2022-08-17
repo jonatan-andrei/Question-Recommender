@@ -31,6 +31,6 @@ public class QuestionFollower {
     private Long userId;
 
     @NotNull
-    @Column(name = "date_followed")
-    private LocalDateTime dateFollowed;
+    @Column(name = "start_date")
+    private LocalDateTime startDate;
 }

@@ -87,6 +87,7 @@ Endpoint para registrar que um usuário seguiu uma pergunta.
 integrationQuestionId (String): Id da publicação no sistema principal.
 integrationUserId (String): Id do usuário no sistema principal.
 followed (boolean): Se usuário está seguindo.
+startDate (LocalDateTime): Data que o usuário começou a seguir.
 ```
 
 ### POST /post/register-question-follower/list
