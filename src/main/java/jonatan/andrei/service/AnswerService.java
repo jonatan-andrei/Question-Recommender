@@ -30,6 +30,7 @@ public class AnswerService {
         Answer answer = answerRepository.save(
                 AnswerFactory.createAnswer(createPostRequestDto, question.getPostId(), user.getUserId()));
         userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_ANSWERED, UserActionUpdateType.INCREASE);
+        userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_ANSWERED, UserActionUpdateType.INCREASE);
         return answer;
     }
 

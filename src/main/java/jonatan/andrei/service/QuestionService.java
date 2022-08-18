@@ -30,7 +30,7 @@ public class QuestionService {
         Question question = QuestionFactory.newQuestion(createPostRequestDto, user.getUserId());
         question = questionRepository.save(question);
         questionCategoryService.save(question, createPostRequestDto.getIntegrationCategoriesIds(), user);
-        questionTagService.save(question, createPostRequestDto.getTags());
+        questionTagService.save(question, createPostRequestDto.getTags(), user);
         return question;
     }
 
@@ -46,7 +46,7 @@ public class QuestionService {
         Question question = QuestionFactory.overwrite(existingQuestion, updatePostRequestDto);
         question = questionRepository.save(question);
         questionCategoryService.save(question, updatePostRequestDto.getIntegrationCategoriesIds(), user);
-        questionTagService.save(question, updatePostRequestDto.getTags());
+        questionTagService.save(question, updatePostRequestDto.getTags(), user);
         return question;
     }
 

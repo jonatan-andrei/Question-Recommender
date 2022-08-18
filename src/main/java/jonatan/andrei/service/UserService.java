@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.UserPreference;
 import jonatan.andrei.dto.CreateUserRequestDto;
 import jonatan.andrei.dto.UpdateUserRequestDto;
 import jonatan.andrei.dto.UserFollowerRequestDto;
@@ -7,9 +8,7 @@ import jonatan.andrei.dto.UserPreferencesRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.UserFactory;
-import jonatan.andrei.model.QuestionCategory;
-import jonatan.andrei.model.QuestionTag;
-import jonatan.andrei.model.User;
+import jonatan.andrei.model.*;
 import jonatan.andrei.repository.UserRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,6 +31,12 @@ public class UserService {
     UserFollowerService userFollowerService;
 
     @Inject
+    CategoryService categoryService;
+
+    @Inject
+    TagService tagService;
+
+    @Inject
     UserCategoryService userCategoryService;
 
     @Inject
@@ -52,7 +57,7 @@ public class UserService {
                 ? UserFactory.overwriteWithAnonymousUser(anonymousUser.get(), createUserRequestDto)
                 : UserFactory.newUser(createUserRequestDto);
         user = userRepository.save(user);
-        saveUserPreferences(createUserRequestDto.getUserPreferences());
+        saveUserPreferences(user, createUserRequestDto.getUserPreferences());
         return user;
     }
 
@@ -67,7 +72,7 @@ public class UserService {
         validateUserPreferencesInformed(updateUserRequestDto.getUserPreferences());
         User user = findByIntegrationUserId(updateUserRequestDto.getIntegrationUserId());
         user = userRepository.save(UserFactory.overwrite(user, updateUserRequestDto));
-        saveUserPreferences(updateUserRequestDto.getUserPreferences());
+        saveUserPreferences(user, updateUserRequestDto.getUserPreferences());
         return user;
     }
 
@@ -138,9 +143,14 @@ public class UserService {
         return userRepository.findById(userId).orElse(null);
     }
 
-    private void saveUserPreferences(UserPreferencesRequestDto userPreferences) {
-        // Buscar quais categorias o usuário já tem como explícitas
-        // Remover as que não estão na nova lista
-        // Criar as que ainda não existem
+    private void saveUserPreferences(User user, UserPreferencesRequestDto userPreferences) {
+        List<Category> explicitCategories = categoryService.findByIntegrationCategoriesIds(userPreferences.getExplicitIntegrationCategoriesIds());
+        userCategoryService.saveUserPreferences(user, explicitCategories, UserPreference.EXPLICIT);
+        List<Category> ignoredCategories = categoryService.findByIntegrationCategoriesIds(userPreferences.getIgnoredIntegrationCategoriesIds());
+        userCategoryService.saveUserPreferences(user, ignoredCategories, UserPreference.IGNORED);
+        List<Tag> explicitTags = tagService.findOrCreateTags(userPreferences.getExplicitTags());
+        userTagService.saveUserPreferences(user, explicitTags, UserPreference.EXPLICIT);
+        List<Tag> ignoredTags = tagService.findOrCreateTags(userPreferences.getIgnoredTags());
+        userTagService.saveUserPreferences(user, ignoredTags, UserPreference.IGNORED);
     }
 }

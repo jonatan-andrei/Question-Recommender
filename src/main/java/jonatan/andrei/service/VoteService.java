@@ -31,7 +31,7 @@ public class VoteService {
     public Post registerVote(VoteRequestDto voteRequestDto, User user, Post post, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
         Optional<Vote> existingVote = findByUserIdAndPostId(user, post);
         if (existingVote.isPresent()) {
-            removeExistingVote(existingVote.get(), post, user, questionCategories);
+            removeExistingVote(existingVote.get(), post, user, questionCategories, questionTags);
         }
         if (voteRequestDto.getVoteType().equals(VoteTypeRequest.REMOVED)) {
             return post;
@@ -43,6 +43,7 @@ public class VoteService {
             post.setDownvotes(post.getDownvotes() + 1);
         }
         userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.INCREASE);
+        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.INCREASE);
         return post;
     }
 
@@ -50,7 +51,7 @@ public class VoteService {
         return voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId());
     }
 
-    public void removeExistingVote(Vote existingVote, Post post, User user, List<QuestionCategory> questionCategories) {
+    public void removeExistingVote(Vote existingVote, Post post, User user, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
         if (existingVote.getVoteType().equals(VoteType.UPVOTE)) {
             post.setUpvotes(post.getUpvotes() - 1);
         } else {
@@ -58,6 +59,7 @@ public class VoteService {
         }
         voteRepository.delete(existingVote);
         userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.DECREASE);
+        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.DECREASE);
     }
 
     public void validateVoteRequest(VoteRequestDto voteRequestDto) {

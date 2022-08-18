@@ -45,6 +45,22 @@ public class PostService {
     @Inject
     QuestionFollowerService questionFollowerService;
 
+    // TODO teste salvando categoria de usuário em pergunta
+
+    // TODO teste salvando categoria de usuário em resposta
+
+    // TODO teste salvando categoria de usuário em comentário de resposta
+
+    // TODO teste salvando categoria de usuário em comentário de pergunta
+
+    // TODO teste salvando tags de usuário em pergunta
+
+    // TODO teste salvando tags de usuário em resposta
+
+    // TODO teste salvando tags de usuário em comentário de resposta
+
+    // TODO teste salvando tags de usuário em comentário de pergunta
+
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
         validateRequiredDataToSave(createPostRequestDto);
@@ -58,8 +74,9 @@ public class PostService {
                 : null;
 
         User user = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getIntegrationAnonymousUserId());
-        List<QuestionCategory> questionCategories = PostType.QUESTION.equals(postType.getParentPostType()) ? questionService.findCategoriesByQuestionId(parentPost.getPostId()) : null;
-        List<QuestionTag> questionTags = PostType.QUESTION.equals(postType.getParentPostType()) ? questionService.findTagsByQuestionId(parentPost.getPostId()) : null;
+        Long originQuestionId = nonNull(parentPost) ? findOriginQuestionByPost(parentPost) : null;
+        List<QuestionCategory> questionCategories = PostType.QUESTION.equals(postType) ? null : questionService.findCategoriesByQuestionId(originQuestionId);
+        List<QuestionTag> questionTags = PostType.QUESTION.equals(postType) ? null : questionService.findTagsByQuestionId(originQuestionId);
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);

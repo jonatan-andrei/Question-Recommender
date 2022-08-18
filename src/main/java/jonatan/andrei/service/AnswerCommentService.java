@@ -28,6 +28,7 @@ public class AnswerCommentService {
         AnswerComment answerComment = answerCommentRepository.save(
                 AnswerCommentFactory.createAnswerComment(createPostRequestDto, answer.getPostId(), user.getUserId()));
         userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_COMMENTED, UserActionUpdateType.INCREASE);
+        userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_COMMENTED, UserActionUpdateType.INCREASE);
         return answerComment;
     }
 

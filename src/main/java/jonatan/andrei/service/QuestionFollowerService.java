@@ -33,10 +33,12 @@ public class QuestionFollowerService {
             questionFollowerRepository.save(QuestionFollowerFactory.newQuestionFollower(questionFollowerRequestDto, user, question));
             question.setFollowers(question.getFollowers() + 1);
             userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.INCREASE);
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.INCREASE);
         } else if (existingQuestionFollower.isPresent() && !questionFollowerRequestDto.isFollowed()) {
             questionFollowerRepository.delete(existingQuestionFollower.get());
             question.setFollowers(question.getFollowers() - 1);
             userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.DECREASE);
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.DECREASE);
         }
         return question;
     }

@@ -1,9 +1,12 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.factory.QuestionTagFactory;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.QuestionTag;
 import jonatan.andrei.model.Tag;
+import jonatan.andrei.model.User;
 import jonatan.andrei.repository.QuestionTagRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -18,13 +21,16 @@ public class QuestionTagService {
     QuestionTagRepository questionTagRepository;
 
     @Inject
+    UserTagService userTagService;
+
+    @Inject
     TagService tagService;
 
     public List<QuestionTag> findByQuestionId(Long questionId) {
         return questionTagRepository.findByQuestionId(questionId);
     }
 
-    public void save(Question question, List<String> tagsName) {
+    public void save(Question question, List<String> tagsName, User user) {
         List<QuestionTag> existingQuestionTags = questionTagRepository.findByQuestionId(question.getPostId());
         List<Tag> tags = tagService.findOrCreateTags(tagsName);
 
@@ -36,27 +42,29 @@ public class QuestionTagService {
                 .map(t -> QuestionTagFactory.newQuestionTag(question, t))
                 .collect(Collectors.toList());
         questionTagRepository.saveAll(questionTagsToInsert);
-        incrementQuestionCountByQuestionTags(questionTagsToInsert);
+        incrementQuestionCountByQuestionTags(questionTagsToInsert, user);
 
         List<Long> tagsIds = tags.stream().map(Tag::getTagId).collect(Collectors.toList());
         List<QuestionTag> questionTagsToDelete = existingQuestionTags.stream()
                 .filter(qt -> !tagsIds.contains(qt.getTagId()))
                 .collect(Collectors.toList());
         questionTagRepository.deleteAll(questionTagsToDelete);
-        decrementQuestionCountByQuestionTags(questionTagsToDelete);
+        decrementQuestionCountByQuestionTags(questionTagsToDelete, user);
     }
 
-    private void incrementQuestionCountByQuestionTags(List<QuestionTag> questionTags) {
+    private void incrementQuestionCountByQuestionTags(List<QuestionTag> questionTags, User user) {
         if (!questionTags.isEmpty()) {
             tagService.incrementQuestionCountByTagsIds(questionTags.stream()
                     .map(QuestionTag::getTagId).collect(Collectors.toList()));
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_ASKED, UserActionUpdateType.INCREASE);
         }
     }
 
-    private void decrementQuestionCountByQuestionTags(List<QuestionTag> questionTags) {
+    private void decrementQuestionCountByQuestionTags(List<QuestionTag> questionTags, User user) {
         if (!questionTags.isEmpty()) {
             tagService.decrementQuestionCountByTagsIds(questionTags.stream()
                     .map(QuestionTag::getTagId).collect(Collectors.toList()));
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_ASKED, UserActionUpdateType.DECREASE);
         }
     }
 }

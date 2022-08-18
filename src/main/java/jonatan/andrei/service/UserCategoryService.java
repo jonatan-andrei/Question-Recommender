@@ -2,11 +2,9 @@ package jonatan.andrei.service;
 
 import jonatan.andrei.domain.UserAction;
 import jonatan.andrei.domain.UserActionUpdateType;
+import jonatan.andrei.domain.UserPreference;
 import jonatan.andrei.factory.UserCategoryFactory;
-import jonatan.andrei.model.Post;
-import jonatan.andrei.model.QuestionCategory;
-import jonatan.andrei.model.User;
-import jonatan.andrei.model.UserCategory;
+import jonatan.andrei.model.*;
 import jonatan.andrei.repository.UserCategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -65,6 +63,25 @@ public class UserCategoryService {
         userCategoryRepository.saveAll(userCategories);
     }
 
+    public void saveUserPreferences(User user, List<Category> categories, UserPreference userPreference) {
+        List<UserCategory> userCategories = findOrCreateUserCategories(categories, user.getUserId());
+        userCategories.forEach(uc -> updateUserPreference(uc, userPreference, true));
+
+        List<UserCategory> userCategoriesToUpdateToFalse = findUserCategoriesToUpdateToFalse(user, userPreference, categories);
+        userCategoriesToUpdateToFalse.forEach(uc -> updateUserPreference(uc, userPreference, false));
+        userCategories.addAll(userCategoriesToUpdateToFalse);
+
+        userCategoryRepository.saveAll(userCategories);
+    }
+
+    private void updateUserPreference(UserCategory userCategory, UserPreference userPreference, boolean active) {
+        if (userPreference.equals(UserPreference.EXPLICIT)) {
+            userCategory.setExplicitRecommendation(active);
+        } else {
+            userCategory.setIgnored(active);
+        }
+    }
+
     private UserCategory findOrCreateUserCategory(List<UserCategory> userCategories, Long userId, Long categoryId) {
         UserCategory userCategory = userCategories.stream().filter(
                 uc -> uc.getCategoryId().equals(categoryId)).findFirst().orElse(null);
@@ -73,5 +90,22 @@ public class UserCategoryService {
             userCategories.add(userCategory);
         }
         return userCategory;
+    }
+
+    private List<UserCategory> findOrCreateUserCategories(List<Category> categories, Long userId) {
+        List<Long> categoriesIds = categories.stream().map(Category::getCategoryId).collect(Collectors.toList());
+        List<UserCategory> existingUserCategories = userCategoryRepository.findByUserIdAndCategoryIdIn(userId, categoriesIds);
+        return categories.stream().map(c -> findOrCreateUserCategory(existingUserCategories, userId, c.getCategoryId()))
+                .collect(Collectors.toList());
+    }
+
+    private List<UserCategory> findUserCategoriesToUpdateToFalse(User user, UserPreference userPreference, List<Category> categories) {
+        List<UserCategory> existingUserCategoriesByType = UserPreference.EXPLICIT.equals(userPreference)
+                ? userCategoryRepository.findByUserIdAndExplicitRecommendation(user.getUserId(), true)
+                : userCategoryRepository.findByUserIdAndIgnored(user.getUserId(), true);
+        List<Long> categoriesIds = categories.stream().map(Category::getCategoryId).collect(Collectors.toList());
+        return existingUserCategoriesByType.stream()
+                .filter(uc -> !categoriesIds.contains(uc.getCategoryId()))
+                .collect(Collectors.toList());
     }
 }

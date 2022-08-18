@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.Collections;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -39,6 +40,10 @@ public class UserServiceTest extends AbstractServiceTest {
                         .emailNotificationHour(17)
                         .notificationEnable(true)
                         .recommendationEnable(true)
+                        .explicitIntegrationCategoriesIds(Collections.EMPTY_LIST)
+                        .ignoredIntegrationCategoriesIds(Collections.EMPTY_LIST)
+                        .explicitTags(Collections.EMPTY_LIST)
+                        .ignoredTags(Collections.EMPTY_LIST)
                         .build())
                 .build();
 
@@ -68,6 +73,10 @@ public class UserServiceTest extends AbstractServiceTest {
                         .emailNotificationHour(17)
                         .notificationEnable(true)
                         .recommendationEnable(true)
+                        .explicitIntegrationCategoriesIds(Collections.EMPTY_LIST)
+                        .ignoredIntegrationCategoriesIds(Collections.EMPTY_LIST)
+                        .explicitTags(Collections.EMPTY_LIST)
+                        .ignoredTags(Collections.EMPTY_LIST)
                         .build())
                 .build();
 
@@ -110,7 +119,12 @@ public class UserServiceTest extends AbstractServiceTest {
         UpdateUserRequestDto updateUserRequestDto = UpdateUserRequestDto.builder()
                 .integrationUserId("1")
                 .active(false)
-                .userPreferences(UserPreferencesRequestDto.builder().build())
+                .userPreferences(UserPreferencesRequestDto.builder()
+                        .explicitIntegrationCategoriesIds(Collections.EMPTY_LIST)
+                        .ignoredIntegrationCategoriesIds(Collections.EMPTY_LIST)
+                        .explicitTags(Collections.EMPTY_LIST)
+                        .ignoredTags(Collections.EMPTY_LIST)
+                        .build())
                 .build();
 
         // Act
