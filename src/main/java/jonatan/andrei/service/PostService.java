@@ -58,12 +58,17 @@ public class PostService {
                 : null;
 
         User user = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getIntegrationAnonymousUserId());
+        List<QuestionCategory> questionCategories = PostType.QUESTION.equals(postType.getParentPostType()) ? questionService.findCategoriesByQuestionId(parentPost.getPostId()) : null;
+        List<QuestionTag> questionTags = PostType.QUESTION.equals(postType.getParentPostType()) ? questionService.findTagsByQuestionId(parentPost.getPostId()) : null;
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);
-            case ANSWER -> answerService.save(createPostRequestDto, user, (Question) parentPost);
-            case QUESTION_COMMENT -> questionCommentService.save(createPostRequestDto, user, (Question) parentPost);
-            case ANSWER_COMMENT -> answerCommentService.save(createPostRequestDto, user, (Answer) parentPost);
+            case ANSWER ->
+                    answerService.save(createPostRequestDto, user, (Question) parentPost, questionCategories, questionTags);
+            case QUESTION_COMMENT ->
+                    questionCommentService.save(createPostRequestDto, user, (Question) parentPost, questionCategories, questionTags);
+            case ANSWER_COMMENT ->
+                    answerCommentService.save(createPostRequestDto, user, (Answer) parentPost, questionCategories, questionTags);
         };
     }
 
@@ -76,9 +81,10 @@ public class PostService {
     public Post update(UpdatePostRequestDto updatePostRequestDto) {
         validateRequiredDataToUpdate(updatePostRequestDto);
         Post post = findByIntegrationPostIdAndPostType(updatePostRequestDto.getIntegrationPostId(), updatePostRequestDto.getPostType());
+        User user = userService.findById(post.getUserId());
 
         return switch (updatePostRequestDto.getPostType()) {
-            case QUESTION -> questionService.update((Question) post, updatePostRequestDto);
+            case QUESTION -> questionService.update((Question) post, updatePostRequestDto, user);
             case ANSWER -> answerService.update((Answer) post, updatePostRequestDto);
             case QUESTION_COMMENT -> questionCommentService.update((QuestionComment) post, updatePostRequestDto);
             case ANSWER_COMMENT -> answerCommentService.update((AnswerComment) post, updatePostRequestDto);
@@ -156,8 +162,28 @@ public class PostService {
         voteService.validateVoteRequest(voteRequestDto);
         Post post = findByIntegrationPostId(voteRequestDto.getIntegrationPostId());
         User user = userService.findByIntegrationUserId(voteRequestDto.getIntegrationUserId());
-        post = voteService.registerVote(voteRequestDto, user, post);
+        Long originQuestionId = findOriginQuestionByPost(post);
+        List<QuestionCategory> questionCategories = questionService.findQuestionCategories(originQuestionId);
+        List<QuestionTag> questionTags = questionService.findTagsByQuestionId(originQuestionId);
+        post = voteService.registerVote(voteRequestDto, user, post, questionCategories, questionTags);
         postRepository.save(post);
+    }
+
+    private Long findOriginQuestionByPost(Post post) {
+        switch (post.getPostType()) {
+            case QUESTION:
+                return post.getPostId();
+            case ANSWER:
+                Answer answer = (Answer) post;
+                return answer.getQuestionId();
+            case QUESTION_COMMENT:
+                QuestionComment questionComment = (QuestionComment) post;
+                return questionComment.getQuestionId();
+            case ANSWER_COMMENT:
+                AnswerComment answerComment = (AnswerComment) post;
+                return answerService.findById(answerComment.getAnswerId()).getQuestionId();
+        }
+        return null;
     }
 
     @Transactional
@@ -169,8 +195,10 @@ public class PostService {
     public void registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
         questionFollowerService.validateQuestionFollowerRequest(questionFollowerRequestDto);
         Question question = (Question) findByIntegrationPostIdAndPostType(questionFollowerRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
+        List<QuestionCategory> questionCategories = questionService.findQuestionCategories(question.getPostId());
+        List<QuestionTag> questionTags = questionService.findTagsByQuestionId(question.getPostId());
         User user = userService.findByIntegrationUserId(questionFollowerRequestDto.getIntegrationUserId());
-        question = questionFollowerService.registerQuestionFollower(questionFollowerRequestDto, user, question);
+        question = questionFollowerService.registerQuestionFollower(questionFollowerRequestDto, user, question, questionCategories, questionTags);
         postRepository.save(question);
     }
 

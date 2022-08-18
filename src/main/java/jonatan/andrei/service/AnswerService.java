@@ -1,17 +1,18 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.factory.AnswerFactory;
-import jonatan.andrei.model.Answer;
-import jonatan.andrei.model.Question;
-import jonatan.andrei.model.User;
+import jonatan.andrei.model.*;
 import jonatan.andrei.repository.AnswerRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @ApplicationScoped
 public class AnswerService {
@@ -19,14 +20,26 @@ public class AnswerService {
     @Inject
     AnswerRepository answerRepository;
 
-    public Answer save(CreatePostRequestDto createPostRequestDto, User user, Question question) {
-        return answerRepository.save(
+    @Inject
+    UserCategoryService userCategoryService;
+
+    @Inject
+    UserTagService userTagService;
+
+    public Answer save(CreatePostRequestDto createPostRequestDto, User user, Question question, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
+        Answer answer = answerRepository.save(
                 AnswerFactory.createAnswer(createPostRequestDto, question.getPostId(), user.getUserId()));
+        userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_ANSWERED, UserActionUpdateType.INCREASE);
+        return answer;
     }
 
     public Answer update(Answer existingAnswer, UpdatePostRequestDto updatePostRequestDto) {
         return answerRepository.save(
                 AnswerFactory.overwrite(existingAnswer, updatePostRequestDto));
+    }
+
+    public Answer findById(Long postId){
+        return answerRepository.findById(postId).orElse(null);
     }
 
     @Transactional

@@ -29,15 +29,23 @@ public class QuestionService {
     public Question save(CreatePostRequestDto createPostRequestDto, User user) {
         Question question = QuestionFactory.newQuestion(createPostRequestDto, user.getUserId());
         question = questionRepository.save(question);
-        questionCategoryService.save(question, createPostRequestDto.getIntegrationCategoriesIds());
+        questionCategoryService.save(question, createPostRequestDto.getIntegrationCategoriesIds(), user);
         questionTagService.save(question, createPostRequestDto.getTags());
         return question;
     }
 
-    public Question update(Question existingQuestion, UpdatePostRequestDto updatePostRequestDto) {
+    public List<QuestionCategory> findCategoriesByQuestionId(Long questionId) {
+        return questionCategoryService.findByQuestionId(questionId);
+    }
+
+    public List<QuestionTag> findTagsByQuestionId(Long questionId) {
+        return questionTagService.findByQuestionId(questionId);
+    }
+
+    public Question update(Question existingQuestion, UpdatePostRequestDto updatePostRequestDto, User user) {
         Question question = QuestionFactory.overwrite(existingQuestion, updatePostRequestDto);
         question = questionRepository.save(question);
-        questionCategoryService.save(question, updatePostRequestDto.getIntegrationCategoriesIds());
+        questionCategoryService.save(question, updatePostRequestDto.getIntegrationCategoriesIds(), user);
         questionTagService.save(question, updatePostRequestDto.getTags());
         return question;
     }
