@@ -45,22 +45,6 @@ public class PostService {
     @Inject
     QuestionFollowerService questionFollowerService;
 
-    // TODO teste salvando categoria de usuário em pergunta
-
-    // TODO teste salvando categoria de usuário em resposta
-
-    // TODO teste salvando categoria de usuário em comentário de resposta
-
-    // TODO teste salvando categoria de usuário em comentário de pergunta
-
-    // TODO teste salvando tags de usuário em pergunta
-
-    // TODO teste salvando tags de usuário em resposta
-
-    // TODO teste salvando tags de usuário em comentário de resposta
-
-    // TODO teste salvando tags de usuário em comentário de pergunta
-
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
         validateRequiredDataToSave(createPostRequestDto);
@@ -276,7 +260,7 @@ public class PostService {
         if (postType.equals(PostType.QUESTION)
                 && CollectionUtils.isEmpty(integrationCategoriesIds)
                 && CollectionUtils.isEmpty(tags)) {
-            throw new RequiredDataException("At least one of the fields must be informed: integrationCategoriesIds or tags");
+            throw new RequiredDataException("At least one of the fields must be informed: 'integrationCategoriesIds' or 'tags'");
         }
     }
 }

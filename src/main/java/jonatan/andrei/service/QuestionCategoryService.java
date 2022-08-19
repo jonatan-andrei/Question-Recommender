@@ -11,7 +11,10 @@ import jonatan.andrei.repository.QuestionCategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -32,7 +35,7 @@ public class QuestionCategoryService {
 
     public void save(Question question, List<String> integrationCategoriesIds, User user) {
         List<QuestionCategory> existingQuestionCategories = questionCategoryRepository.findByQuestionId(question.getPostId());
-        List<Category> categories = categoryService.findByIntegrationCategoriesIds(integrationCategoriesIds);
+        List<Category> categories = categoryService.findByIntegrationCategoriesIds(Optional.ofNullable(integrationCategoriesIds).orElse(Collections.EMPTY_LIST));
 
         List<Long> existingQuestionCategoriesIds = existingQuestionCategories.stream()
                 .map(QuestionCategory::getCategoryId)

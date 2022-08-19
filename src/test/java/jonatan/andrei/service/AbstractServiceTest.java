@@ -25,6 +25,12 @@ public abstract class AbstractServiceTest {
     AnswerTestUtils answerTestUtils;
 
     @Inject
+    QuestionCommentTestUtils questionCommentTestUtils;
+
+    @Inject
+    AnswerCommentTestUtils answerCommentTestUtils;
+
+    @Inject
     UserCategoryTestUtils userCategoryTestUtils;
 
     @Inject

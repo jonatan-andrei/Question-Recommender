@@ -11,7 +11,9 @@ import jonatan.andrei.repository.QuestionTagRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -32,7 +34,7 @@ public class QuestionTagService {
 
     public void save(Question question, List<String> tagsName, User user) {
         List<QuestionTag> existingQuestionTags = questionTagRepository.findByQuestionId(question.getPostId());
-        List<Tag> tags = tagService.findOrCreateTags(tagsName);
+        List<Tag> tags = tagService.findOrCreateTags(Optional.ofNullable(tagsName).orElse(Collections.EMPTY_LIST));
 
         List<Long> existingQuestionTagsIds = existingQuestionTags.stream()
                 .map(QuestionTag::getTagId)
