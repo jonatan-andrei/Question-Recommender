@@ -1,17 +1,17 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.domain.VoteType;
 import jonatan.andrei.domain.VoteTypeRequest;
 import jonatan.andrei.dto.VoteRequestDto;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.VoteFactory;
-import jonatan.andrei.model.Post;
-import jonatan.andrei.model.User;
-import jonatan.andrei.model.Vote;
+import jonatan.andrei.model.*;
 import jonatan.andrei.repository.VoteRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -22,10 +22,16 @@ public class VoteService {
     @Inject
     VoteRepository voteRepository;
 
-    public Post registerVote(VoteRequestDto voteRequestDto, User user, Post post) {
+    @Inject
+    UserCategoryService userCategoryService;
+
+    @Inject
+    UserTagService userTagService;
+
+    public Post registerVote(VoteRequestDto voteRequestDto, User user, Post post, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
         Optional<Vote> existingVote = findByUserIdAndPostId(user, post);
         if (existingVote.isPresent()) {
-            removeExistingVote(existingVote.get(), post);
+            removeExistingVote(existingVote.get(), post, user, questionCategories, questionTags);
         }
         if (voteRequestDto.getVoteType().equals(VoteTypeRequest.REMOVED)) {
             return post;
@@ -36,6 +42,8 @@ public class VoteService {
         } else {
             post.setDownvotes(post.getDownvotes() + 1);
         }
+        userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.INCREASE);
+        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.INCREASE);
         return post;
     }
 
@@ -43,13 +51,15 @@ public class VoteService {
         return voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId());
     }
 
-    public void removeExistingVote(Vote existingVote, Post post) {
+    public void removeExistingVote(Vote existingVote, Post post, User user, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
         if (existingVote.getVoteType().equals(VoteType.UPVOTE)) {
             post.setUpvotes(post.getUpvotes() - 1);
         } else {
             post.setDownvotes(post.getDownvotes() - 1);
         }
         voteRepository.delete(existingVote);
+        userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.DECREASE);
+        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.DECREASE);
     }
 
     public void validateVoteRequest(VoteRequestDto voteRequestDto) {

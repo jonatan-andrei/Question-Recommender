@@ -12,6 +12,7 @@ public class UserTagFactory {
                 .numberQuestionsViewed(0)
                 .numberAnswersVoted(0)
                 .numberQuestionsAnswered(0)
+                .numberQuestionsCommented(0)
                 .numberQuestionsFollowed(0)
                 .numberAnswersVoted(0)
                 .numberCommentsVoted(0)

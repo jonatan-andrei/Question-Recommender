@@ -2,6 +2,7 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jonatan.andrei.domain.PostType;
 import jonatan.andrei.domain.VoteType;
 import jonatan.andrei.domain.VoteTypeRequest;
 import jonatan.andrei.dto.*;
@@ -26,6 +27,679 @@ public class PostServiceTest extends AbstractServiceTest {
 
     @Inject
     PostService postService;
+
+    @Test
+    public void save_saveQuestion() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .title("Title")
+                .contentOrDescription("Description")
+                .integrationCategoriesIds(asList())
+                .tags(asList("a"))
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Act
+        Question question = (Question) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), question.getIntegrationPostId());
+        assertEquals(createPostRequestDto.getPostType(), question.getPostType());
+        assertEquals(createPostRequestDto.getPublicationDate(), question.getPublicationDate());
+        assertEquals(createPostRequestDto.getTitle(), question.getTitle());
+        assertEquals(createPostRequestDto.getContentOrDescription(), question.getDescription());
+    }
+
+    @Test
+    public void save_saveAnswer() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.ANSWER)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationAnonymousUserId("11")
+                .integrationParentPostId(question.getIntegrationPostId())
+                .build();
+
+        // Act
+        Answer answer = (Answer) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), answer.getIntegrationPostId());
+        assertEquals(createPostRequestDto.getPostType(), answer.getPostType());
+        assertEquals(createPostRequestDto.getPublicationDate(), answer.getPublicationDate());
+        assertEquals(createPostRequestDto.getContentOrDescription(), answer.getContent());
+        assertEquals(question.getPostId(), answer.getQuestionId());
+    }
+
+    @Test
+    public void save_saveQuestionComment() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.QUESTION_COMMENT)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationAnonymousUserId("11")
+                .integrationParentPostId(question.getIntegrationPostId())
+                .build();
+
+        // Act
+        QuestionComment questionComment = (QuestionComment) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), questionComment.getIntegrationPostId());
+        assertEquals(createPostRequestDto.getPostType(), questionComment.getPostType());
+        assertEquals(createPostRequestDto.getPublicationDate(), questionComment.getPublicationDate());
+        assertEquals(createPostRequestDto.getContentOrDescription(), questionComment.getContent());
+        assertEquals(question.getPostId(), questionComment.getQuestionId());
+    }
+
+    @Test
+    public void save_saveAnswerComment() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("3")
+                .postType(PostType.ANSWER_COMMENT)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationAnonymousUserId("11")
+                .integrationParentPostId(answer.getIntegrationPostId())
+                .build();
+
+        // Act
+        AnswerComment answerComment = (AnswerComment) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), answerComment.getIntegrationPostId());
+        assertEquals(createPostRequestDto.getPostType(), answerComment.getPostType());
+        assertEquals(createPostRequestDto.getPublicationDate(), answerComment.getPublicationDate());
+        assertEquals(createPostRequestDto.getContentOrDescription(), answerComment.getContent());
+        assertEquals(answer.getPostId(), answerComment.getAnswerId());
+    }
+
+    @Test
+    public void save_postAlreadyRegister() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .title("Title")
+                .contentOrDescription("Description")
+                .integrationCategoriesIds(asList())
+                .tags(asList("a"))
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("There is already a post with integrationPostId 1", exception.getMessage());
+    }
+
+    @Test
+    public void save_parentPostNotFound() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.ANSWER)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationAnonymousUserId("1")
+                .integrationParentPostId("11")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("Not found post with integrationPostId 11", exception.getMessage());
+    }
+
+    @Test
+    public void save_validateIntegrationPostIdInformed() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .postType(PostType.QUESTION)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .title("Title")
+                .contentOrDescription("Description")
+                .integrationCategoriesIds(asList())
+                .tags(asList("a"))
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'integrationPostId' is required", exception.getMessage());
+    }
+
+    @Test
+    public void save_validatePostTypeInformed() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .title("Title")
+                .contentOrDescription("Description")
+                .integrationCategoriesIds(asList())
+                .tags(asList("a"))
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'postType' is required", exception.getMessage());
+    }
+
+    @Test
+    public void save_validateTitleInformed() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Description")
+                .integrationCategoriesIds(asList())
+                .tags(asList("a"))
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'title' is required to postType QUESTION", exception.getMessage());
+    }
+
+    @Test
+    public void save_validateContentOrDescriptionInformed() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.ANSWER)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'contentOrDescription' is required to postType ANSWER", exception.getMessage());
+    }
+
+    @Test
+    public void save_validateCategoriesOrTagsInformed() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .title("Title")
+                .contentOrDescription("Description")
+                .integrationCategoriesIds(asList())
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("At least one of the fields must be informed: 'integrationCategoriesIds' or 'tags'", exception.getMessage());
+    }
+
+    @Test
+    public void save_validateIntegrationParentPostIdInformed() {
+        // Arrange
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.ANSWER)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationAnonymousUserId("1")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.save(createPostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'integrationParentPostId' is required to postType ANSWER", exception.getMessage());
+    }
+
+    @Test
+    public void save_saveQuestionAndUserCategories() {
+        // Arrange
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("a");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .title("Title")
+                .contentOrDescription("Description")
+                .integrationCategoriesIds(asList(category.getIntegrationCategoryId()))
+                .integrationUserId("11")
+                .build();
+
+        // Act
+        Question question = (Question) postService.save(createPostRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), question.getIntegrationPostId());
+        UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
+        assertEquals(1, userCategory.getNumberQuestionsAsked());
+    }
+
+    @Test
+    public void save_saveQuestionAndUserTags() {
+        // Arrange
+        Tag tagA = tagTestUtils.saveWithName("a");
+        Tag tagB = tagTestUtils.saveWithName("b");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .title("Title")
+                .contentOrDescription("Description")
+                .tags(asList(tagA.getName(), tagB.getName()))
+                .integrationUserId("11")
+                .build();
+
+        // Act
+        Question question = (Question) postService.save(createPostRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), question.getIntegrationPostId());
+        UserTag userTagA = userTagRepository.findByUserIdAndTagId(user.getUserId(), tagA.getTagId());
+        assertEquals(1, userTagA.getNumberQuestionsAsked());
+        UserTag userTagB = userTagRepository.findByUserIdAndTagId(user.getUserId(), tagB.getTagId());
+        assertEquals(1, userTagB.getNumberQuestionsAsked());
+    }
+
+    @Test
+    public void save_saveAnswerAndUserCategories() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("a");
+        questionCategoryTestUtils.saveQuestionCategories(question, asList(category));
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.ANSWER)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationParentPostId(question.getIntegrationPostId())
+                .build();
+
+        // Act
+        Answer answer = (Answer) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), answer.getIntegrationPostId());
+        UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
+        assertEquals(1, userCategory.getNumberQuestionsAnswered());
+    }
+
+    @Test
+    public void save_saveAnswerAndUserTags() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Tag tag = tagTestUtils.saveWithName("a");
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.ANSWER)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationParentPostId(question.getIntegrationPostId())
+                .build();
+
+        // Act
+        Answer answer = (Answer) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), answer.getIntegrationPostId());
+        UserTag userTag = userTagRepository.findByUserIdAndTagId(user.getUserId(), tag.getTagId());
+        assertEquals(1, userTag.getNumberQuestionsAnswered());
+    }
+
+    @Test
+    public void save_saveQuestionCommentAndUserCategories() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("a");
+        questionCategoryTestUtils.saveQuestionCategories(question, asList(category));
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.QUESTION_COMMENT)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationParentPostId(question.getIntegrationPostId())
+                .build();
+
+        // Act
+        QuestionComment questionComment = (QuestionComment) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), questionComment.getIntegrationPostId());
+        UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
+        assertEquals(1, userCategory.getNumberQuestionsCommented());
+    }
+
+    @Test
+    public void save_saveQuestionCommentAndUserTags() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Tag tag = tagTestUtils.saveWithName("a");
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.QUESTION_COMMENT)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationUserId(user.getIntegrationUserId())
+                .integrationParentPostId(question.getIntegrationPostId())
+                .build();
+
+        // Act
+        QuestionComment questionComment = (QuestionComment) postService.save(createPostRequestDto);
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), questionComment.getIntegrationPostId());
+        UserTag userTag = userTagRepository.findByUserIdAndTagId(user.getUserId(), tag.getTagId());
+        assertEquals(1, userTag.getNumberQuestionsCommented());
+    }
+
+    @Test
+    public void save_saveAnswerCommentAndUserCategories() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("a");
+        questionCategoryTestUtils.saveQuestionCategories(question, asList(category));
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("3")
+                .postType(PostType.ANSWER_COMMENT)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationUserId("11")
+                .integrationParentPostId(answer.getIntegrationPostId())
+                .build();
+
+        // Act
+        AnswerComment answerComment = (AnswerComment) postService.save(createPostRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), answerComment.getIntegrationPostId());
+        UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
+        assertEquals(1, userCategory.getNumberQuestionsCommented());
+    }
+
+    @Test
+    public void save_saveAnswerCommentAndUserTags() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("11");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Tag tag = tagTestUtils.saveWithName("a");
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        CreatePostRequestDto createPostRequestDto = CreatePostRequestDto.builder()
+                .integrationPostId("3")
+                .postType(PostType.ANSWER_COMMENT)
+                .publicationDate(LocalDateTime.now().minusDays(1))
+                .contentOrDescription("Content")
+                .integrationUserId("11")
+                .integrationParentPostId(answer.getIntegrationPostId())
+                .build();
+
+        // Act
+        AnswerComment answerComment = (AnswerComment) postService.save(createPostRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        assertEquals(createPostRequestDto.getIntegrationPostId(), answerComment.getIntegrationPostId());
+        UserTag userTag = userTagRepository.findByUserIdAndTagId(user.getUserId(), tag.getTagId());
+        assertEquals(1, userTag.getNumberQuestionsCommented());
+    }
+
+    @Test
+    public void update_updateQuestion() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .title("Updated title")
+                .contentOrDescription("Updated description")
+                .tags(asList("a"))
+                .build();
+
+        // Act
+        Question result = (Question) postService.update(updatePostRequestDto);
+
+        // Assert
+        assertEquals(question.getPostId(), result.getPostId());
+        assertEquals(updatePostRequestDto.getTitle(), result.getTitle());
+        assertEquals(updatePostRequestDto.getContentOrDescription(), result.getDescription());
+    }
+
+    @Test
+    public void update_updateAnswer() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.ANSWER)
+                .contentOrDescription("Updated content")
+                .build();
+
+        // Act
+        Answer result = (Answer) postService.update(updatePostRequestDto);
+
+        // Assert
+        assertEquals(answer.getPostId(), result.getPostId());
+        assertEquals(updatePostRequestDto.getContentOrDescription(), result.getContent());
+    }
+
+    @Test
+    public void update_updateQuestionComment() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        QuestionComment questionComment = questionCommentTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("2")
+                .postType(PostType.QUESTION_COMMENT)
+                .contentOrDescription("Updated content")
+                .build();
+
+        // Act
+        QuestionComment result = (QuestionComment) postService.update(updatePostRequestDto);
+
+        // Assert
+        assertEquals(questionComment.getPostId(), result.getPostId());
+        assertEquals(updatePostRequestDto.getContentOrDescription(), result.getContent());
+    }
+
+    @Test
+    public void update_updateAnswerComment() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        AnswerComment answerComment = answerCommentTestUtils.saveWithIntegrationPostIdAndAnswerId("3", answer.getPostId());
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("3")
+                .postType(PostType.ANSWER_COMMENT)
+                .contentOrDescription("Updated content")
+                .build();
+
+        // Act
+        AnswerComment result = (AnswerComment) postService.update(updatePostRequestDto);
+
+        // Assert
+        assertEquals(answerComment.getPostId(), result.getPostId());
+        assertEquals(updatePostRequestDto.getContentOrDescription(), result.getContent());
+    }
+
+    @Test
+    public void update_postNotFound() {
+        // Arrange
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .title("Updated title")
+                .contentOrDescription("Updated description")
+                .tags(asList("a"))
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
+            // Act
+            postService.update(updatePostRequestDto);
+        });
+
+        Assertions.assertEquals("Not found post with integrationPostId 1", exception.getMessage());
+    }
+
+    @Test
+    public void update_validateIntegrationPostIdInformed() {
+        // Arrange
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .postType(PostType.QUESTION)
+                .title("Updated title")
+                .contentOrDescription("Updated description")
+                .tags(asList("a"))
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.update(updatePostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'integrationPostId' is required", exception.getMessage());
+    }
+
+    @Test
+    public void update_validatePostTypeInformed() {
+        // Arrange
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("1")
+                .title("Updated title")
+                .contentOrDescription("Updated description")
+                .tags(asList("a"))
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.update(updatePostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'postType' is required", exception.getMessage());
+    }
+
+    @Test
+    public void update_validateTitleInformed() {
+        // Arrange
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .contentOrDescription("Updated description")
+                .tags(asList("a"))
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.update(updatePostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'title' is required to postType QUESTION", exception.getMessage());
+    }
+
+    @Test
+    public void update_validateContentOrDescriptionInformed() {
+        // Arrange
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.ANSWER)
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.update(updatePostRequestDto);
+        });
+
+        Assertions.assertEquals("Attribute 'contentOrDescription' is required to postType ANSWER", exception.getMessage());
+    }
+
+    @Test
+    public void update_validateCategoriesOrTagsInformed() {
+        // Arrange
+        UpdatePostRequestDto updatePostRequestDto = UpdatePostRequestDto.builder()
+                .integrationPostId("1")
+                .postType(PostType.QUESTION)
+                .title("Updated title")
+                .contentOrDescription("Updated description")
+                .build();
+
+        // Assert
+        Exception exception = assertThrows(RequiredDataException.class, () -> {
+            // Act
+            postService.update(updatePostRequestDto);
+        });
+
+        Assertions.assertEquals("At least one of the fields must be informed: 'integrationCategoriesIds' or 'tags'", exception.getMessage());
+    }
 
     @Test
     public void registerViews_updateTotalViews() {

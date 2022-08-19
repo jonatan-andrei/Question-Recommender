@@ -4,6 +4,7 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.Tag;
+import jonatan.andrei.model.User;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
@@ -25,9 +26,10 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
     public void save_withoutQuestionTags() {
         // Arrange
         Question question = questionTestUtils.saveWithIntegrationPostId("a");
+        User user = userTestUtils.saveWithIntegrationUserId("1");
 
         // Act
-        questionTagService.save(question, asList());
+        questionTagService.save(question, asList(), user);
         entityManager.flush();
         entityManager.clear();
     }
@@ -38,9 +40,10 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostId("1");
         Tag tag1 = tagTestUtils.saveWithName("a");
         Tag tag2 = tagTestUtils.saveWithName("b");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
 
         // Act
-        questionTagService.save(question, asList(tag1.getName(), tag2.getName()));
+        questionTagService.save(question, asList(tag1.getName(), tag2.getName()), user);
         entityManager.flush();
         entityManager.clear();
 
@@ -60,9 +63,10 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
         Tag tag3 = tagTestUtils.saveWithName("c");
         Tag tag4 = tagTestUtils.saveWithName("d");
         questionTagTestUtils.saveQuestionTags(question, asList(tag1, tag2, tag3, tag4));
+        User user = userTestUtils.saveWithIntegrationUserId("11");
 
         // Act
-        questionTagService.save(question, asList(tag1.getName(), tag3.getName()));
+        questionTagService.save(question, asList(tag1.getName(), tag3.getName()), user);
         entityManager.flush();
         entityManager.clear();
 
@@ -81,9 +85,10 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
     public void save_newTag() {
         // Arrange
         Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userTestUtils.saveWithIntegrationUserId("11");
 
         // Act
-        questionTagService.save(question, asList("a", "b"));
+        questionTagService.save(question, asList("a", "b"), user);
         entityManager.flush();
         entityManager.clear();
 

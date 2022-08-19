@@ -23,6 +23,10 @@ public class UserTagTestUtils {
         return UserTagFactory.newUserTag(user.getUserId(), tag.getTagId());
     }
 
+    public UserTag save(User user, Tag tag) {
+        return userTagRepository.save(build(user, tag));
+    }
+
     public UserTag saveWithQuestionViews(User user, Tag tag, Integer questionViews) {
         UserTag userTag = build(user, tag);
         userTag.setNumberQuestionsViewed(questionViews);

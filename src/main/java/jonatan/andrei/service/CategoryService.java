@@ -5,6 +5,7 @@ import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.CategoryFactory;
 import jonatan.andrei.model.Category;
+import jonatan.andrei.model.User;
 import jonatan.andrei.repository.CategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;

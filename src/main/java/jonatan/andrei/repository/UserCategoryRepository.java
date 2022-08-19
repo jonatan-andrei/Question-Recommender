@@ -10,4 +10,9 @@ public interface UserCategoryRepository extends CrudRepository<UserCategory, Lon
     List<UserCategory> findByUserIdAndCategoryIdIn(Long userId, List<Long> categoriesIds);
 
    UserCategory findByUserIdAndCategoryId(Long userId, Long categoryId);
+
+   List<UserCategory> findByUserIdAndExplicitRecommendation (Long userId, boolean explicitRecommendation);
+
+    List<UserCategory> findByUserIdAndIgnored (Long userId, boolean ignored);
+
 }

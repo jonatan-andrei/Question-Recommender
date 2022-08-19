@@ -23,6 +23,10 @@ public class UserCategoryTestUtils {
         return UserCategoryFactory.newUserCategory(user.getUserId(), category.getCategoryId());
     }
 
+    public UserCategory save(User user, Category category){
+        return userCategoryRepository.save(build(user, category));
+    }
+
     public UserCategory saveWithQuestionViews(User user, Category category, Integer questionViews) {
         UserCategory userCategory = build(user, category);
         userCategory.setNumberQuestionsViewed(questionViews);
