@@ -34,6 +34,7 @@ public class UserServiceTest extends AbstractServiceTest {
         CreateUserRequestDto createUserRequestDto = CreateUserRequestDto.builder()
                 .integrationUserId("1")
                 .integrationAnonymousUserId("abc")
+                .username("username")
                 .registrationDate(LocalDateTime.now())
                 .userPreferences(UserPreferencesRequestDto.builder()
                         .emailNotificationEnable(true)
@@ -52,6 +53,7 @@ public class UserServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(createUserRequestDto.getIntegrationUserId(), user.getIntegrationUserId());
+        assertEquals(createUserRequestDto.getUsername(), user.getUsername());
         assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
         assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
         assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());
@@ -67,6 +69,7 @@ public class UserServiceTest extends AbstractServiceTest {
         CreateUserRequestDto createUserRequestDto = CreateUserRequestDto.builder()
                 .integrationUserId("1")
                 .integrationAnonymousUserId(anonymousUser.getIntegrationAnonymousUserId())
+                .username("username")
                 .registrationDate(LocalDateTime.now())
                 .userPreferences(UserPreferencesRequestDto.builder()
                         .emailNotificationEnable(true)
@@ -85,6 +88,7 @@ public class UserServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(createUserRequestDto.getIntegrationUserId(), user.getIntegrationUserId());
+        assertEquals(createUserRequestDto.getUsername(), user.getUsername());
         assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
         assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
         assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());

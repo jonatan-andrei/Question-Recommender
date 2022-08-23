@@ -17,6 +17,8 @@ public class UpdateUserRequestDto {
     @NotBlank
     private String integrationUserId;
 
+    private String username;
+
     private boolean active;
 
     private UserPreferencesRequestDto userPreferences;

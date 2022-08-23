@@ -12,6 +12,7 @@ public class UserFactory {
         return User.builder()
                 .integrationUserId(createUserRequestDto.getIntegrationUserId())
                 .integrationAnonymousUserId(createUserRequestDto.getIntegrationAnonymousUserId())
+                .username(createUserRequestDto.getUsername())
                 .registrationDate(createUserRequestDto.getRegistrationDate())
                 .integrationDate(LocalDateTime.now())
                 .anonymous(false)
@@ -26,6 +27,7 @@ public class UserFactory {
 
     public static User overwriteWithAnonymousUser(User user, CreateUserRequestDto createUserRequestDto) {
         user.setIntegrationUserId(createUserRequestDto.getIntegrationUserId());
+        user.setUsername(createUserRequestDto.getUsername());
         user.setRegistrationDate(createUserRequestDto.getRegistrationDate());
         user.setAnonymous(false);
         user.setActive(true);
@@ -38,6 +40,7 @@ public class UserFactory {
     }
 
     public static User overwrite(User user, UpdateUserRequestDto updateUserRequestDto) {
+        user.setUsername(updateUserRequestDto.getUsername());
         user.setActive(updateUserRequestDto.isActive());
         user.setEmailNotificationEnable(updateUserRequestDto.getUserPreferences().isEmailNotificationEnable());
         user.setEmailNotificationHour(updateUserRequestDto.getUserPreferences().getEmailNotificationHour());

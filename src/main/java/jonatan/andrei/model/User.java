@@ -32,6 +32,9 @@ public class User {
     @Column(name = "integration_anonymous_user_id")
     private String integrationAnonymousUserId;
 
+    @Column(name = "username")
+    private String username;
+
     @NotNull
     @Column(name = "registration_date")
     private LocalDateTime registrationDate;
