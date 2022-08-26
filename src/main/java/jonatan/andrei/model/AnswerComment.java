@@ -21,8 +21,7 @@ import javax.validation.constraints.Size;
 public class AnswerComment extends Post {
 
     @NotNull
-    @Column(name = "content")
-    @Size(min = 1, max = 4000)
+    @Column(name = "content", length = 4000)
     private String content;
 
     @NotNull

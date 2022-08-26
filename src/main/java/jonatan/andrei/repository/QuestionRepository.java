@@ -1,10 +1,14 @@
 package jonatan.andrei.repository;
 
 import jonatan.andrei.model.Question;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface QuestionRepository extends CrudRepository<Question, Long> {
 

@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
 @Getter
@@ -12,7 +11,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="category")
+@Table(name = "category")
 public class Category {
 
     @Id
@@ -23,20 +22,17 @@ public class Category {
     private Long categoryId;
 
     @NotNull
-    @Column(name = "integration_category_id", unique = true)
-    @Size(min = 1, max = 100)
+    @Column(name = "integration_category_id", unique = true, length = 100)
     private String integrationCategoryId;
 
     @Column(name = "parent_category_id")
     private Long parentCategoryId;
 
     @NotNull
-    @Column(name = "name", unique = true)
-    @Size(min = 1, max = 100)
+    @Column(name = "name", unique = true, length = 100)
     private String name;
 
-    @Column(name = "description")
-    @Size(min = 1, max = 1000)
+    @Column(name = "description", length = 1000)
     private String description;
 
     @NotNull

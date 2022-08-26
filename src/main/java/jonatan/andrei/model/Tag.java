@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 @Entity
 @Getter
@@ -12,7 +11,7 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="tag")
+@Table(name = "tag")
 public class Tag {
 
     @Id
@@ -23,12 +22,10 @@ public class Tag {
     private Long tagId;
 
     @NotNull
-    @Column(name = "name", unique = true)
-    @Size(min = 1, max = 100)
+    @Column(name = "name", unique = true, length = 100)
     private String name;
 
-    @Column(name = "description")
-    @Size(min = 1, max = 1000)
+    @Column(name = "description", length = 1000)
     private String description;
 
     @NotNull

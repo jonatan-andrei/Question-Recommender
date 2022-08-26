@@ -24,12 +24,10 @@ public class User {
     private Long userId;
 
     @NotNull
-    @Size(min = 1, max = 100)
-    @Column(name = "integration_user_id", unique = true)
+    @Column(name = "integration_user_id", unique = true, length = 100)
     private String integrationUserId;
 
-    @Size(min = 1, max = 100)
-    @Column(name = "integration_anonymous_user_id")
+    @Column(name = "integration_anonymous_user_id", length = 100)
     private String integrationAnonymousUserId;
 
     @Column(name = "username")

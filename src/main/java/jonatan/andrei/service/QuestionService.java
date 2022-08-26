@@ -8,6 +8,7 @@ import jonatan.andrei.model.QuestionCategory;
 import jonatan.andrei.model.QuestionTag;
 import jonatan.andrei.model.User;
 import jonatan.andrei.repository.QuestionRepository;
+import jonatan.andrei.repository.custom.QuestionCustomRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,6 +20,9 @@ public class QuestionService {
 
     @Inject
     QuestionRepository questionRepository;
+
+    @Inject
+    QuestionCustomRepository questionCustomRepository;
 
     @Inject
     QuestionCategoryService questionCategoryService;
@@ -62,4 +66,9 @@ public class QuestionService {
     public List<QuestionTag> findQuestionTags(Long postId) {
         return questionTagService.findByQuestionId(postId);
     }
+
+    public List<String> findRecommendedList() {
+        return questionCustomRepository.findRecommendedList();
+    }
+
 }

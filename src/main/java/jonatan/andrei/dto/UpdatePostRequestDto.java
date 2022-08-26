@@ -27,8 +27,8 @@ public class UpdatePostRequestDto {
 
     private String url;
 
-    List<String> integrationCategoriesIds;
+    private List<String> integrationCategoriesIds;
 
-    List<String> tags;
+    private List<String> tags;
 
 }
