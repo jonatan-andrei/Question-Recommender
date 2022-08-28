@@ -23,12 +23,16 @@ public class QuestionTestUtils {
     }
 
     public Question saveWithIntegrationPostId(String integrationPostId) {
+        return saveWithIntegrationPostIdAndPublicationDate(integrationPostId, LocalDateTime.now());
+    }
+
+    public Question saveWithIntegrationPostIdAndPublicationDate(String integrationPostId, LocalDateTime publicationDate) {
         User user = userTestUtils.saveWithIntegrationUserId(integrationPostId);
         return questionRepository.save(Question.builder()
                 .integrationPostId(integrationPostId)
                 .postType(PostType.QUESTION)
                 .userId(user.getUserId())
-                .publicationDate(LocalDateTime.now())
+                .publicationDate(publicationDate)
                 .updateDate(LocalDateTime.now())
                 .integrationDate(LocalDateTime.now())
                 .hidden(false)

@@ -1,6 +1,7 @@
 package jonatan.andrei.service;
 
 import jonatan.andrei.dto.CreatePostRequestDto;
+import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
 import jonatan.andrei.factory.QuestionFactory;
 import jonatan.andrei.model.Question;
@@ -67,7 +68,7 @@ public class QuestionService {
         return questionTagService.findByQuestionId(postId);
     }
 
-    public List<String> findRecommendedList() {
+    public List<RecommendedQuestionOfPageDto> findRecommendedList() {
         return questionCustomRepository.findRecommendedList();
     }
 
