@@ -1,6 +1,6 @@
 package jonatan.andrei.service;
 
-import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
@@ -27,8 +27,8 @@ public class AnswerCommentService {
     public AnswerComment save(CreatePostRequestDto createPostRequestDto, User user, Answer answer, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
         AnswerComment answerComment = answerCommentRepository.save(
                 AnswerCommentFactory.createAnswerComment(createPostRequestDto, answer.getPostId(), user.getUserId()));
-        userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_COMMENTED, UserActionUpdateType.INCREASE);
-        userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_COMMENTED, UserActionUpdateType.INCREASE);
+        userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_COMMENTED, UserActionUpdateType.INCREASE);
+        userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_COMMENTED, UserActionUpdateType.INCREASE);
         return answerComment;
     }
 

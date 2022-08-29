@@ -1,6 +1,6 @@
 package jonatan.andrei.service;
 
-import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.QuestionFollowerRequestDto;
 import jonatan.andrei.exception.RequiredDataException;
@@ -32,13 +32,13 @@ public class QuestionFollowerService {
         if (existingQuestionFollower.isEmpty() && questionFollowerRequestDto.isFollowed()) {
             questionFollowerRepository.save(QuestionFollowerFactory.newQuestionFollower(questionFollowerRequestDto, user, question));
             question.setFollowers(question.getFollowers() + 1);
-            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.INCREASE);
-            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.INCREASE);
+            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_FOLLOWED, UserActionUpdateType.INCREASE);
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_FOLLOWED, UserActionUpdateType.INCREASE);
         } else if (existingQuestionFollower.isPresent() && !questionFollowerRequestDto.isFollowed()) {
             questionFollowerRepository.delete(existingQuestionFollower.get());
             question.setFollowers(question.getFollowers() - 1);
-            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.DECREASE);
-            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_FOLLOWED, UserActionUpdateType.DECREASE);
+            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_FOLLOWED, UserActionUpdateType.DECREASE);
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_FOLLOWED, UserActionUpdateType.DECREASE);
         }
         return question;
     }

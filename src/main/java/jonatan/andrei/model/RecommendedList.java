@@ -3,6 +3,7 @@ package jonatan.andrei.model;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -37,4 +38,8 @@ public class RecommendedList {
     @NotNull
     @Column(name = "list_date")
     private LocalDateTime listDate;
+
+    @NotNull
+    @Column(name = "length_question_list_page")
+    private Integer lengthQuestionListPage;
 }

@@ -1,6 +1,6 @@
 package jonatan.andrei.service;
 
-import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
@@ -29,8 +29,8 @@ public class AnswerService {
     public Answer save(CreatePostRequestDto createPostRequestDto, User user, Question question, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
         Answer answer = answerRepository.save(
                 AnswerFactory.createAnswer(createPostRequestDto, question.getPostId(), user.getUserId()));
-        userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_ANSWERED, UserActionUpdateType.INCREASE);
-        userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_ANSWERED, UserActionUpdateType.INCREASE);
+        userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_ANSWERED, UserActionUpdateType.INCREASE);
+        userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_ANSWERED, UserActionUpdateType.INCREASE);
         return answer;
     }
 

@@ -1,6 +1,6 @@
 package jonatan.andrei.service;
 
-import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.factory.QuestionCategoryFactory;
 import jonatan.andrei.model.Category;
@@ -11,7 +11,6 @@ import jonatan.andrei.repository.QuestionCategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class QuestionCategoryService {
         if (!questionCategories.isEmpty()) {
             categoryService.incrementQuestionCountByCategoriesIds(questionCategories.stream()
                     .map(QuestionCategory::getCategoryId).collect(Collectors.toList()));
-            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_ASKED, UserActionUpdateType.INCREASE);
+            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_ASKED, UserActionUpdateType.INCREASE);
         }
     }
 
@@ -67,7 +66,7 @@ public class QuestionCategoryService {
         if (!questionCategories.isEmpty()) {
             categoryService.decrementQuestionCountByCategoriesIds(questionCategories.stream()
                     .map(QuestionCategory::getCategoryId).collect(Collectors.toList()));
-            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserAction.QUESTION_ASKED, UserActionUpdateType.DECREASE);
+            userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_ASKED, UserActionUpdateType.DECREASE);
         }
     }
 

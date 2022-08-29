@@ -1,6 +1,6 @@
 package jonatan.andrei.service;
 
-import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.factory.QuestionTagFactory;
 import jonatan.andrei.model.Question;
@@ -58,7 +58,7 @@ public class QuestionTagService {
         if (!questionTags.isEmpty()) {
             tagService.incrementQuestionCountByTagsIds(questionTags.stream()
                     .map(QuestionTag::getTagId).collect(Collectors.toList()));
-            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_ASKED, UserActionUpdateType.INCREASE);
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_ASKED, UserActionUpdateType.INCREASE);
         }
     }
 
@@ -66,7 +66,7 @@ public class QuestionTagService {
         if (!questionTags.isEmpty()) {
             tagService.decrementQuestionCountByTagsIds(questionTags.stream()
                     .map(QuestionTag::getTagId).collect(Collectors.toList()));
-            userTagService.updateNumberQuestionsByAction(user, questionTags, UserAction.QUESTION_ASKED, UserActionUpdateType.DECREASE);
+            userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_ASKED, UserActionUpdateType.DECREASE);
         }
     }
 }

@@ -1,6 +1,6 @@
 package jonatan.andrei.service;
 
-import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.domain.UserPreference;
 import jonatan.andrei.factory.UserCategoryFactory;
@@ -22,26 +22,26 @@ public class UserCategoryService {
 
     public void updateNumberQuestionsViewed(List<User> users, List<QuestionCategory> categories) {
         for (User user : users) {
-            updateNumberQuestionsByAction(user, categories, UserAction.QUESTION_VIEWED, UserActionUpdateType.INCREASE);
+            updateNumberQuestionsByAction(user, categories, UserActionType.QUESTION_VIEWED, UserActionUpdateType.INCREASE);
         }
     }
 
     public void updateNumberQuestionsVoted(User user, Post post, List<QuestionCategory> categories, UserActionUpdateType userActionUpdateType) {
-        UserAction userAction = switch (post.getPostType()) {
-            case QUESTION -> UserAction.QUESTION_VOTED;
-            case ANSWER -> UserAction.ANSWER_VOTED;
-            case QUESTION_COMMENT, ANSWER_COMMENT -> UserAction.COMMENT_VOTED;
+        UserActionType userActionType = switch (post.getPostType()) {
+            case QUESTION -> UserActionType.QUESTION_VOTED;
+            case ANSWER -> UserActionType.ANSWER_VOTED;
+            case QUESTION_COMMENT, ANSWER_COMMENT -> UserActionType.COMMENT_VOTED;
         };
 
-        updateNumberQuestionsByAction(user, categories, userAction, userActionUpdateType);
+        updateNumberQuestionsByAction(user, categories, userActionType, userActionUpdateType);
     }
 
-    public void updateNumberQuestionsByAction(User user, List<QuestionCategory> categories, UserAction userAction, UserActionUpdateType userActionUpdateType) {
+    public void updateNumberQuestionsByAction(User user, List<QuestionCategory> categories, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
         List<Long> categoriesIds = categories.stream().map(QuestionCategory::getCategoryId).collect(Collectors.toList());
         List<UserCategory> userCategories = userCategoryRepository.findByUserIdAndCategoryIdIn(user.getUserId(), categoriesIds);
         for (Long category : categoriesIds) {
             UserCategory userCategory = findOrCreateUserCategory(userCategories, user.getUserId(), category);
-            switch (userAction) {
+            switch (userActionType) {
                 case QUESTION_ASKED ->
                         userCategory.setNumberQuestionsAsked(userCategory.getNumberQuestionsAsked() + userActionUpdateType.getValue());
                 case QUESTION_VIEWED ->

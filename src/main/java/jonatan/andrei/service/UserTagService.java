@@ -1,6 +1,6 @@
 package jonatan.andrei.service;
 
-import jonatan.andrei.domain.UserAction;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.domain.UserPreference;
 import jonatan.andrei.factory.UserTagFactory;
@@ -22,26 +22,26 @@ public class UserTagService {
 
     public void updateNumberQuestionsViewed(List<User> users, List<QuestionTag> tags) {
         for (User user : users) {
-            updateNumberQuestionsByAction(user, tags, UserAction.QUESTION_VIEWED, UserActionUpdateType.INCREASE);
+            updateNumberQuestionsByAction(user, tags, UserActionType.QUESTION_VIEWED, UserActionUpdateType.INCREASE);
         }
     }
 
     public void updateNumberQuestionsVoted(User user, Post post, List<QuestionTag> tags, UserActionUpdateType userActionUpdateType) {
-        UserAction userAction = switch (post.getPostType()) {
-            case QUESTION -> UserAction.QUESTION_VOTED;
-            case ANSWER -> UserAction.ANSWER_VOTED;
-            case QUESTION_COMMENT, ANSWER_COMMENT -> UserAction.COMMENT_VOTED;
+        UserActionType userActionType = switch (post.getPostType()) {
+            case QUESTION -> UserActionType.QUESTION_VOTED;
+            case ANSWER -> UserActionType.ANSWER_VOTED;
+            case QUESTION_COMMENT, ANSWER_COMMENT -> UserActionType.COMMENT_VOTED;
         };
 
-        updateNumberQuestionsByAction(user, tags, userAction, userActionUpdateType);
+        updateNumberQuestionsByAction(user, tags, userActionType, userActionUpdateType);
     }
 
-    public void updateNumberQuestionsByAction(User user, List<QuestionTag> tags, UserAction userAction, UserActionUpdateType userActionUpdateType) {
+    public void updateNumberQuestionsByAction(User user, List<QuestionTag> tags, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
         List<Long> tagsIds = tags.stream().map(QuestionTag::getTagId).collect(Collectors.toList());
         List<UserTag> userTags = userTagRepository.findByUserIdAndTagIdIn(user.getUserId(), tagsIds);
         for (Long tag : tagsIds) {
             UserTag userTag = findOrCreateUserTag(userTags, user.getUserId(), tag);
-            switch (userAction) {
+            switch (userActionType) {
                 case QUESTION_ASKED ->
                         userTag.setNumberQuestionsAsked(userTag.getNumberQuestionsAsked() + userActionUpdateType.getValue());
                 case QUESTION_VIEWED ->

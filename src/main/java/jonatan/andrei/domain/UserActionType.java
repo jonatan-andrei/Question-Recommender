@@ -1,6 +1,6 @@
 package jonatan.andrei.domain;
 
-public enum UserAction {
+public enum UserActionType {
 
     QUESTION_ASKED,
     QUESTION_VIEWED,

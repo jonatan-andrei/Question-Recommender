@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -17,8 +18,6 @@ public class RecommendedListResponseDto {
 
     private Integer pageNumber;
 
-    private String integrationUserId;
-
     private Integer totalNumberOfPages;
 
     private List<RecommendedQuestionResponseDto> questions;
@@ -30,6 +29,8 @@ public class RecommendedListResponseDto {
     public static class RecommendedQuestionResponseDto {
 
         private String integrationQuestionId;
+
+        private BigDecimal score;
 
     }
 

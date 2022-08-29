@@ -72,4 +72,8 @@ public class QuestionService {
         return questionCustomRepository.findRecommendedList();
     }
 
+    public Integer count() {
+        return (int) questionRepository.count();
+    }
+
 }

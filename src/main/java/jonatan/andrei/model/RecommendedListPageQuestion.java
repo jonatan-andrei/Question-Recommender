@@ -1,10 +1,10 @@
 package jonatan.andrei.model;
 
-import jonatan.andrei.domain.RecommendationType;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="recommended_list_page_question")
+@Table(name = "recommended_list_page_question")
 public class RecommendedListPageQuestion {
 
     @Id
@@ -31,7 +31,10 @@ public class RecommendedListPageQuestion {
     private Long questionId;
 
     @NotNull
-    @Column(name = "recommendation_type")
-    @Enumerated(EnumType.STRING)
-    private RecommendationType recommendationType;
+    @Column(name = "integration_question_id")
+    private String integrationQuestionId;
+
+    @NotNull
+    @Column(name = "score")
+    private BigDecimal score;
 }
