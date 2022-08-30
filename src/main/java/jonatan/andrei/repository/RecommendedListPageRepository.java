@@ -9,4 +9,6 @@ public interface RecommendedListPageRepository extends CrudRepository<Recommende
 
     List<RecommendedListPage> findByRecommendedListId(Long recommendedListId);
 
+    RecommendedListPage findByRecommendedListIdAndPageNumber(Long recommendedListId, Integer pageNumber);
+
 }

@@ -29,7 +29,6 @@ public class RecommendedListPageQuestionService {
     }
 
     public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, SettingsDto settings) {
-        lengthQuestionListPage = Optional.ofNullable(lengthQuestionListPage).orElse(settings.getDefaultLengthQuestionListPage());
         List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList(realPageNumber,
                         lengthQuestionListPage, recommendedListPage.getRecommendedListId(), settings)
                 .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPage.getRecommendedListPageId()))

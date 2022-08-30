@@ -12,4 +12,8 @@ import lombok.NoArgsConstructor;
 public class SettingsDto {
 
     private Integer defaultLengthQuestionListPage;
+
+    private Integer numberOfDaysQuestionIsRelevant;
+
+    private Integer publicationDateRelevanceQuestionListPage;
 }

@@ -79,5 +79,14 @@ public abstract class AbstractServiceTest {
     VoteRepository voteRepository;
 
     @Inject
+    RecommendedListRepository recommendedListRepository;
+
+    @Inject
+    RecommendedListPageRepository recommendedListPageRepository;
+
+    @Inject
+    RecommendedListPageQuestionRepository recommendedListPageQuestionRepository;
+
+    @Inject
     EntityManager entityManager;
 }

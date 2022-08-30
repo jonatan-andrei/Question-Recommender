@@ -33,19 +33,7 @@ public class RecommendedListService {
 
     @Inject
     RecommendedListPageService recommendedListPageService;
-
-    // Fazer paginação
-    // Adicionar configurações na consulta
-    // Criar base para testes da query de recomendações
-    // Testes do método defineRealPageNumberIgnoringExistingPages
-    // Teste do método findRecommendedList com nenhum registro
-    // Teste do método findRecommendedList com um registro
-    // Teste do método findRecommendedList com 22 registros (duas páginas)
-    // Teste do método findRecommendedList com lista não existente (exception)
-    // Teste do método findRecommendedList com página já gerada
-    // Teste do método findRecommendedList com pageNumber null (exception)
-    // Teste do método findRecommendedList com lista já existente mas página ainda não gerada
-
+    
     @Transactional
     public RecommendedListResponseDto findRecommendedList(Integer lengthQuestionListPage,
                                                           String integrationUserId,

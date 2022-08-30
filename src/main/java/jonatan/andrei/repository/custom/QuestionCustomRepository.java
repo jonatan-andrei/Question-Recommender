@@ -47,10 +47,10 @@ public class QuestionCustomRepository {
                  LIMIT :limit OFFSET :offset
                                 
                 """, Tuple.class);
-        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", 365);
+        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", settings.getNumberOfDaysQuestionIsRelevant());
         nativeQuery.setParameter("numberOfSecondsInDay", 86400);
         nativeQuery.setParameter("minimalRelevance", 1);
-        nativeQuery.setParameter("publicationDateRelevance", 100);
+        nativeQuery.setParameter("publicationDateRelevance", settings.getPublicationDateRelevanceQuestionListPage());
         nativeQuery.setParameter("recommendedListId", recommendedListId);
         nativeQuery.setParameter("limit", lengthQuestionListPage);
         nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionListPage);
