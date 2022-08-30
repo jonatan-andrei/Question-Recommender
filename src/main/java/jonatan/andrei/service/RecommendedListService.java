@@ -33,7 +33,7 @@ public class RecommendedListService {
 
     @Inject
     RecommendedListPageService recommendedListPageService;
-    
+
     @Transactional
     public RecommendedListResponseDto findRecommendedList(Integer lengthQuestionListPage,
                                                           String integrationUserId,

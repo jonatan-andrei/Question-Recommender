@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -104,4 +105,11 @@ public class PostResource {
         postService.registerQuestionFollower(questionFollowers);
         return ResponseEntity.ok().build();
     }
+
+    @GET
+    @Path("/{integrationPostId}")
+    public ResponseEntity<Post> findByIntegrationPostId(String integrationPostId) {
+        return ResponseEntity.ok(postService.findByIntegrationPostId(integrationPostId));
+    }
+
 }
