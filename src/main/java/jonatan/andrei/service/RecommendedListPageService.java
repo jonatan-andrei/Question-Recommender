@@ -1,6 +1,7 @@
 package jonatan.andrei.service;
 
 import jonatan.andrei.dto.RecommendedListResponseDto;
+import jonatan.andrei.dto.SettingsDto;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.RecommendedListResponseFactory;
 import jonatan.andrei.model.RecommendedList;
@@ -24,7 +25,7 @@ public class RecommendedListPageService {
     @Inject
     RecommendedListPageQuestionService recommendedListPageQuestionService;
 
-    public RecommendedListResponseDto findOrCreatePage(RecommendedList recommendedList, Integer pageNumber) {
+    public RecommendedListResponseDto findOrCreatePage(RecommendedList recommendedList, Integer pageNumber, Integer lengthQuestionListPage, SettingsDto settings) {
         if (isNull(pageNumber) || pageNumber < 1) {
             throw new RequiredDataException("Attribute 'pageNumber' is required and must be greater than zero");
         }
@@ -34,7 +35,7 @@ public class RecommendedListPageService {
         if (nonNull(recommendedListPage)) {
             // return the existing page
             List<RecommendedListResponseDto.RecommendedQuestionResponseDto> questions = recommendedListPageQuestionService.findByRecommendedListPageId(recommendedListPage.getRecommendedListPageId());
-            return RecommendedListResponseFactory.newRecommendedListResponseDto(recommendedList, pageNumber, questions);
+            return RecommendedListResponseFactory.newRecommendedListResponseDto(recommendedList, questions);
         } else {
             recommendedListPage = recommendedListPageRepository.save(RecommendedListPage.builder()
                     .recommendedListId(recommendedList.getRecommendedListId())
@@ -44,8 +45,8 @@ public class RecommendedListPageService {
 
         Integer realPageNumber = defineRealPageNumberIgnoringExistingPages(existingPages, pageNumber);
 
-        var questions = recommendedListPageQuestionService.newPage(recommendedListPage.getRecommendedListPageId());
-        return RecommendedListResponseFactory.newRecommendedListResponseDto(recommendedList, pageNumber, questions);
+        var questions = recommendedListPageQuestionService.newPage(recommendedListPage, lengthQuestionListPage, realPageNumber, settings);
+        return RecommendedListResponseFactory.newRecommendedListResponseDto(recommendedList, questions);
     }
 
     public Integer defineRealPageNumberIgnoringExistingPages(List<RecommendedListPage> pages, Integer pageNumber) {

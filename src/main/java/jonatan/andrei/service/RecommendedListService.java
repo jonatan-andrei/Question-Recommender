@@ -34,7 +34,6 @@ public class RecommendedListService {
     @Inject
     RecommendedListPageService recommendedListPageService;
 
-    // Escrever documentação
     // Fazer paginação
     // Adicionar configurações na consulta
     // Criar base para testes da query de recomendações
@@ -59,7 +58,7 @@ public class RecommendedListService {
                 ? createRecommendedList(lengthQuestionListPage, user.getUserId())
                 : findByRecommendedListId(recommendedListId);
 
-        return recommendedListPageService.findOrCreatePage(recommendedList, pageNumber);
+        return recommendedListPageService.findOrCreatePage(recommendedList, pageNumber, lengthQuestionListPage, settings);
     }
 
     private RecommendedList findByRecommendedListId(Long recommendedListId) {

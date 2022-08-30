@@ -1,8 +1,11 @@
 package jonatan.andrei.service;
 
+import io.quarkus.test.junit.QuarkusMock;
 import jonatan.andrei.dto.VoteRequestDto;
 import jonatan.andrei.repository.*;
 import jonatan.andrei.utils.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;

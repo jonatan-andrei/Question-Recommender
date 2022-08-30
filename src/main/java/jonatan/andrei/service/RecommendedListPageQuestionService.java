@@ -1,13 +1,16 @@
 package jonatan.andrei.service;
 
 import jonatan.andrei.dto.RecommendedListResponseDto;
+import jonatan.andrei.dto.SettingsDto;
 import jonatan.andrei.factory.RecommendedListPageFactory;
+import jonatan.andrei.model.RecommendedListPage;
 import jonatan.andrei.model.RecommendedListPageQuestion;
 import jonatan.andrei.repository.RecommendedListPageQuestionRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -25,9 +28,11 @@ public class RecommendedListPageQuestionService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(Long recommendedListPageId) {
-        List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList()
-                .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPageId))
+    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, SettingsDto settings) {
+        lengthQuestionListPage = Optional.ofNullable(lengthQuestionListPage).orElse(settings.getDefaultLengthQuestionListPage());
+        List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList(realPageNumber,
+                        lengthQuestionListPage, recommendedListPage.getRecommendedListId(), settings)
+                .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPage.getRecommendedListPageId()))
                 .collect(Collectors.toList());
         recommendedListPageQuestionRepository.saveAll(recommendedQuestions);
         return recommendedQuestions.stream()

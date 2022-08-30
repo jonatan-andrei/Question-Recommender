@@ -169,6 +169,26 @@ active (boolean): Se a tag deve ser considerada.
 ### POST /tag/list
 Endpoint para integração de uma lista de tags com Question Recommender. Os dados que devem ser enviados são iguais ao endpoint POST /tag.
 
+## Recomendações
+
+### GET recommended-list
+Endpoint para buscar lista de perguntas recomendadas para usuário.
+#### Entrada (queryParams):
+```
+lengthQuestionListPage (Integer): Tamanho da lista. Se não informado será utilizado o valor default (opcional).
+integrationUserId (String): Id do usuário no sistema principal.
+recommendedListId (Long): Id da lista de recomendações. É utilizado na busca de uma nova página de uma lista já existente (opcional).
+pageNumber (Integer): Número da página desejada (caso recommendedListId seja nulo informar 1 - primeira página).
+```
+#### Saída:
+```
+recommendedListId (Long): Id da lista de recomendações. É utilizado na busca de uma nova página de uma lista já existente.
+totalNumberOfPages (Integer): Número total de páginas da lista.
+questions (List): Lista de perguntas recomendadas:
+    integrationQuestionId (String): Id da publicação no sistema principal.
+    score (BigDecimal): Relevância da recomendação.
+```
+
 ## Notificações
 TODO
 

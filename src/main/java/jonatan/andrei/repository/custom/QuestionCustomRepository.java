@@ -1,6 +1,7 @@
 package jonatan.andrei.repository.custom;
 
 import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
+import jonatan.andrei.dto.SettingsDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -19,7 +20,7 @@ public class QuestionCustomRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    public List<RecommendedQuestionOfPageDto> findRecommendedList() {
+    public List<RecommendedQuestionOfPageDto> findRecommendedList(Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, SettingsDto settings) {
         Query nativeQuery = entityManager.createNativeQuery("""
                  SELECT q.post_id, p.integration_post_id,
                  
@@ -30,16 +31,29 @@ public class QuestionCustomRepository {
                  -- Considers that the date is irrelevant if the number of days is greater than the parameter
                  -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is relevant (eg: 365)
                  
-                 as score
-                 from question q
-                 inner join post p on p.post_id = q.post_id
-                 order by score desc, p.publication_date desc
+                 AS score
+                 FROM question q
+                 INNER JOIN post p on p.post_id = q.post_id
+                 
+                 WHERE 
+                    
+                    -- Checks that the question has not already been displayed on a previous page in the list
+                    p.post_id NOT IN 
+                    (SELECT rlpq.question_id FROM recommended_list_page_question rlpq INNER JOIN recommended_list_page rlp
+                    ON rlp.recommended_list_page_id = rlpq.recommended_list_page_id WHERE rlp.recommended_list_id = :recommendedListId
+                    )
+                 
+                 ORDER BY score DESC, p.publication_date DESC
+                 LIMIT :limit OFFSET :offset
                                 
                 """, Tuple.class);
         nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", 365);
         nativeQuery.setParameter("numberOfSecondsInDay", 86400);
         nativeQuery.setParameter("minimalRelevance", 1);
         nativeQuery.setParameter("publicationDateRelevance", 100);
+        nativeQuery.setParameter("recommendedListId", recommendedListId);
+        nativeQuery.setParameter("limit", lengthQuestionListPage);
+        nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionListPage);
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()
                 .map(t -> new RecommendedQuestionOfPageDto(

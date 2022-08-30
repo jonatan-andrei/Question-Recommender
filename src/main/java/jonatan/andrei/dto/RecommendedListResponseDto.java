@@ -16,8 +16,6 @@ public class RecommendedListResponseDto {
 
     private Long recommendedListId;
 
-    private Integer pageNumber;
-
     private Integer totalNumberOfPages;
 
     private List<RecommendedQuestionResponseDto> questions;
