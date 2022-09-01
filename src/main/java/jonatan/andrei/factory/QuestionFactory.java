@@ -25,6 +25,7 @@ public class QuestionFactory {
                 .followers(0)
                 .url(createPostRequestDto.getUrl())
                 .views(0)
+                .answers(0)
                 .build();
     }
 

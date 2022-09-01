@@ -17,4 +17,12 @@ public interface QuestionRepository extends CrudRepository<Question, Long> {
     @Modifying
     @Query("UPDATE Question SET duplicateQuestionId = :duplicateQuestionId WHERE postId = :postId")
     int registerDuplicateQuestion(@Param("postId") Long postId, @Param("duplicateQuestionId") Long duplicateQuestionId);
+
+    @Modifying
+    @Query("UPDATE Question SET bestAnswerId = :bestAnswerId WHERE postId = :postId")
+    int registerBestAnswer(@Param("postId") Long postId, @Param("bestAnswerId") Long bestAnswerId);
+
+    @Modifying
+    @Query("UPDATE Question SET answers = answers + 1 WHERE postId = :postId")
+    int updateNumberOfAnswers(@Param("postId") Long postId);
 }

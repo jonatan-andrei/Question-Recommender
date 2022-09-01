@@ -16,4 +16,8 @@ public class SettingsDto {
     private Integer numberOfDaysQuestionIsRelevant;
 
     private Integer publicationDateRelevanceQuestionListPage;
+
+    private Integer categoryExplicitRecommendationRelevanceQuestionListPage;
+
+    private Integer tagExplicitRecommendationRelevanceQuestionListPage;
 }

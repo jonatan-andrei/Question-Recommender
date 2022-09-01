@@ -17,11 +17,19 @@ public class SettingsService {
     @ConfigProperty(name = "relevance.question_list_page.publication_date")
     Integer publicationDateRelevanceQuestionListPage;
 
+    @ConfigProperty(name = "relevance.question_list_page.category_explicit_recommendation")
+    Integer categoryExplicitRecommendationRelevanceQuestionListPage;
+
+    @ConfigProperty(name = "relevance.question_list_page.tag_explicit_recommendation")
+    Integer tagExplicitRecommendationRelevanceQuestionListPage;
+
     public SettingsDto getSettings() {
         return SettingsDto.builder()
                 .defaultLengthQuestionListPage(defaultLengthQuestionListPage)
                 .numberOfDaysQuestionIsRelevant(numberOfDaysQuestionIsRelevant)
                 .publicationDateRelevanceQuestionListPage(publicationDateRelevanceQuestionListPage)
+                .categoryExplicitRecommendationRelevanceQuestionListPage(categoryExplicitRecommendationRelevanceQuestionListPage)
+                .tagExplicitRecommendationRelevanceQuestionListPage(tagExplicitRecommendationRelevanceQuestionListPage)
                 .build();
     }
 }

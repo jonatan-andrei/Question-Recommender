@@ -42,6 +42,7 @@ public class QuestionTestUtils {
                 .title("Question title")
                 .description("Question description")
                 .followers(0)
+                .answers(0)
                 .build());
     }
 }

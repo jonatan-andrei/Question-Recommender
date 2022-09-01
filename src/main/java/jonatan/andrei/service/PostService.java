@@ -65,12 +65,18 @@ public class PostService {
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);
             case ANSWER ->
-                    answerService.save(createPostRequestDto, user, (Question) parentPost, questionCategories, questionTags);
+                    saveAnswer(createPostRequestDto, user, (Question) parentPost, questionCategories, questionTags);
             case QUESTION_COMMENT ->
                     questionCommentService.save(createPostRequestDto, user, (Question) parentPost, questionCategories, questionTags);
             case ANSWER_COMMENT ->
                     answerCommentService.save(createPostRequestDto, user, (Answer) parentPost, questionCategories, questionTags);
         };
+    }
+
+    private Post saveAnswer(CreatePostRequestDto createPostRequestDto, User user, Question question, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
+        Answer answer = answerService.save(createPostRequestDto, user, question, questionCategories, questionTags);
+        questionService.updateNumberOfAnswers(question.getPostId());
+        return answer;
     }
 
     @Transactional
@@ -127,6 +133,7 @@ public class PostService {
         Question question = (Question) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
         Answer answer = (Answer) findByIntegrationPostIdAndPostType(bestAnswerRequestDto.getIntegrationAnswerId(), PostType.ANSWER);
         answerService.registerBestAnswer(question, answer, bestAnswerRequestDto.isSelected());
+        questionService.registerBestAnswer(question.getPostId(), bestAnswerRequestDto.isSelected() ? answer.getPostId() : null);
     }
 
     @Transactional

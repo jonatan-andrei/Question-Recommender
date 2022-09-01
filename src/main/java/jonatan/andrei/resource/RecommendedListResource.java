@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
+import java.time.LocalDateTime;
 
 @Path("/recommended-list")
 @ApplicationScoped
@@ -22,8 +23,9 @@ public class RecommendedListResource {
     public ResponseEntity<RecommendedListResponseDto> findRecommendedList(@QueryParam("lengthQuestionListPage") Integer lengthQuestionListPage,
                                                                           @NotNull @QueryParam("integrationUserId") String integrationUserId,
                                                                           @QueryParam("recommendedListId") Long recommendedListId,
-                                                                          @QueryParam("pageNumber") Integer pageNumber) {
-        return ResponseEntity.ok(recommendedListService.findRecommendedList(lengthQuestionListPage, integrationUserId, recommendedListId, pageNumber));
+                                                                          @QueryParam("pageNumber") Integer pageNumber,
+                                                                          @QueryParam("dateOfRecommendations") LocalDateTime dateOfRecommendations) {
+        return ResponseEntity.ok(recommendedListService.findRecommendedList(lengthQuestionListPage, integrationUserId, recommendedListId, pageNumber, dateOfRecommendations));
     }
 
 }

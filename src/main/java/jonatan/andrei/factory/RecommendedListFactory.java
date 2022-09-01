@@ -9,12 +9,13 @@ public class RecommendedListFactory {
     public static RecommendedList newRecommendedList(Integer lengthQuestionListPage,
                                                      Long userId,
                                                      Integer totalPages,
-                                                     Integer totalQuestions) {
+                                                     Integer totalQuestions,
+                                                     LocalDateTime dateOfRecommendations) {
         return RecommendedList.builder()
                 .userId(userId)
                 .totalNumberOfPages(totalPages)
                 .totalNumberOfQuestions(totalQuestions)
-                .listDate(LocalDateTime.now())
+                .listDate(dateOfRecommendations)
                 .lengthQuestionListPage(lengthQuestionListPage)
                 .build();
     }

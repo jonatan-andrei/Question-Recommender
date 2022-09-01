@@ -36,12 +36,13 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         Integer lengthQuestionListPage = 20;
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
         for (Integer i = 1; i <= 30; i++) {
             questionTestUtils.saveWithIntegrationPostIdAndPublicationDate(i.toString(), LocalDateTime.now().minusDays(i));
         }
 
         // Act
-        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber);
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
 
         // Assert
         assertEquals(2, result.getTotalNumberOfPages());
@@ -65,13 +66,14 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         Integer lengthQuestionListPage = 20;
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = 2;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
         for (Integer i = 1; i <= 30; i++) {
             questionTestUtils.saveWithIntegrationPostIdAndPublicationDate(i.toString(), LocalDateTime.now().minusDays(i));
         }
-        RecommendedListResponseDto firstPage = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, 1);
+        RecommendedListResponseDto firstPage = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, 1, dateOfRecommendations);
 
         // Act
-        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), firstPage.getRecommendedListId(), pageNumber);
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), firstPage.getRecommendedListId(), pageNumber, dateOfRecommendations);
 
         // Assert
         assertEquals(firstPage.getRecommendedListId(), result.getRecommendedListId());
@@ -96,13 +98,14 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         Integer lengthQuestionListPage = 20;
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
         for (Integer i = 1; i <= 30; i++) {
             questionTestUtils.saveWithIntegrationPostIdAndPublicationDate(i.toString(), LocalDateTime.now().minusDays(i));
         }
-        RecommendedListResponseDto page = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber);
+        RecommendedListResponseDto page = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
 
         // Act
-        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), page.getRecommendedListId(), pageNumber);
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), page.getRecommendedListId(), pageNumber, dateOfRecommendations);
 
         // Assert
         assertEquals(page.getRecommendedListId(), result.getRecommendedListId());
@@ -127,9 +130,10 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         Integer lengthQuestionListPage = 20;
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
 
         // Act
-        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber);
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
 
         // Assert
         assertEquals(1, result.getTotalNumberOfPages());
@@ -151,12 +155,13 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         Integer lengthQuestionListPage = 20;
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Long recommendedListId = 1L;
 
         // Assert
         Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
             // Act
-            recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), recommendedListId, pageNumber);
+            recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), recommendedListId, pageNumber, dateOfRecommendations);
         });
 
         Assertions.assertEquals("Not found recommended list with id 1", exception.getMessage());
@@ -168,11 +173,12 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         Integer lengthQuestionListPage = 20;
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = null;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
 
         // Assert
         Exception exception = assertThrows(RequiredDataException.class, () -> {
             // Act
-            recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber);
+            recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
         });
 
         Assertions.assertEquals("Attribute 'pageNumber' is required and must be greater than zero", exception.getMessage());

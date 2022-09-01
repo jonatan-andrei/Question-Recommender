@@ -15,6 +15,7 @@ import jonatan.andrei.repository.custom.QuestionCustomRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApplicationScoped
@@ -61,6 +62,14 @@ public class QuestionService {
         questionRepository.registerDuplicateQuestion(postId, duplicateQuestionId);
     }
 
+    public void registerBestAnswer(Long postId, Long bestAnswerId) {
+        questionRepository.registerBestAnswer(postId, bestAnswerId);
+    }
+
+    public void updateNumberOfAnswers(Long postId) {
+        questionRepository.updateNumberOfAnswers(postId);
+    }
+
     public List<QuestionCategory> findQuestionCategories(Long postId) {
         return questionCategoryService.findByQuestionId(postId);
     }
@@ -69,8 +78,8 @@ public class QuestionService {
         return questionTagService.findByQuestionId(postId);
     }
 
-    public List<RecommendedQuestionOfPageDto> findRecommendedList(Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, SettingsDto settings) {
-        return questionCustomRepository.findRecommendedList(pageNumber, lengthQuestionListPage, recommendedListId, settings);
+    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, SettingsDto settings, LocalDateTime dateOfRecommendations) {
+        return questionCustomRepository.findRecommendedList(userId, pageNumber, lengthQuestionListPage, recommendedListId, settings, dateOfRecommendations);
     }
 
     public Integer count() {

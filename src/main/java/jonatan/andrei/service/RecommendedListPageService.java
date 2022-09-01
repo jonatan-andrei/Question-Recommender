@@ -10,6 +10,7 @@ import jonatan.andrei.repository.RecommendedListPageRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +26,7 @@ public class RecommendedListPageService {
     @Inject
     RecommendedListPageQuestionService recommendedListPageQuestionService;
 
-    public RecommendedListResponseDto findOrCreatePage(RecommendedList recommendedList, Integer pageNumber, Integer lengthQuestionListPage, SettingsDto settings) {
+    public RecommendedListResponseDto findOrCreatePage(Long userId, RecommendedList recommendedList, Integer pageNumber, Integer lengthQuestionListPage, SettingsDto settings, LocalDateTime dateOfRecommendations) {
         if (isNull(pageNumber) || pageNumber < 1) {
             throw new RequiredDataException("Attribute 'pageNumber' is required and must be greater than zero");
         }
@@ -45,7 +46,7 @@ public class RecommendedListPageService {
 
         Integer realPageNumber = defineRealPageNumberIgnoringExistingPages(existingPages, pageNumber);
 
-        var questions = recommendedListPageQuestionService.newPage(recommendedListPage, lengthQuestionListPage, realPageNumber, settings);
+        var questions = recommendedListPageQuestionService.newPage(userId, recommendedListPage, lengthQuestionListPage, realPageNumber, settings, dateOfRecommendations);
         return RecommendedListResponseFactory.newRecommendedListResponseDto(recommendedList, questions);
     }
 

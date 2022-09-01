@@ -179,6 +179,7 @@ lengthQuestionListPage (Integer): Tamanho da lista. Se não informado será util
 integrationUserId (String): Id do usuário no sistema principal.
 recommendedListId (Long): Id da lista de recomendações. É utilizado na busca de uma nova página de uma lista já existente (opcional).
 pageNumber (Integer): Número da página desejada (caso recommendedListId seja nulo informar 1 - primeira página).
+dateOfRecommendations (LocalDateTime): Data para considerar na busca de perguntas (opcional).
 ```
 #### Saída:
 ```

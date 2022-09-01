@@ -38,10 +38,17 @@ public class Question extends Post {
     @Column(name = "duplicate_question_id")
     private Long duplicateQuestionId;
 
+    @Column(name = "best_answer_id")
+    private Long bestAnswerId;
+
     @Column(name = "url", length = 500)
     private String url;
 
     @NotNull
     @Column(name = "views")
     private Integer views;
+
+    @NotNull
+    @Column(name = "answers")
+    private Integer answers;
 }

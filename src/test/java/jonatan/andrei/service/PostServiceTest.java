@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.isNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 @QuarkusTest
@@ -68,6 +69,8 @@ public class PostServiceTest extends AbstractServiceTest {
 
         // Act
         Answer answer = (Answer) postService.save(createPostRequestDto);
+        entityManager.flush();
+        entityManager.clear();
 
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), answer.getIntegrationPostId());
@@ -75,6 +78,8 @@ public class PostServiceTest extends AbstractServiceTest {
         assertEquals(createPostRequestDto.getPublicationDate(), answer.getPublicationDate());
         assertEquals(createPostRequestDto.getContentOrDescription(), answer.getContent());
         assertEquals(question.getPostId(), answer.getQuestionId());
+        question = questionRepository.findByIntegrationPostId("1");
+        assertEquals(1, question.getAnswers());
     }
 
     @Test
@@ -836,6 +841,8 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         Answer result = answerRepository.findById(answer.getPostId()).get();
         assertTrue(result.isBestAnswer());
+        question = questionRepository.findByIntegrationPostId("1");
+        assertEquals(result.getPostId(), question.getBestAnswerId());
     }
 
     @Test
@@ -861,6 +868,8 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         Answer result = answerRepository.findById(answer.getPostId()).get();
         assertFalse(result.isBestAnswer());
+        question = questionRepository.findByIntegrationPostId("1");
+        assertTrue(isNull(question.getBestAnswerId()));
     }
 
     @Test

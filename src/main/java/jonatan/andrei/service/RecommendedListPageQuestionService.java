@@ -9,6 +9,7 @@ import jonatan.andrei.repository.RecommendedListPageQuestionRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,9 +29,9 @@ public class RecommendedListPageQuestionService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, SettingsDto settings) {
-        List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList(realPageNumber,
-                        lengthQuestionListPage, recommendedListPage.getRecommendedListId(), settings)
+    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(Long userId, RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, SettingsDto settings, LocalDateTime dateOfRecommendations) {
+        List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList(userId, realPageNumber,
+                        lengthQuestionListPage, recommendedListPage.getRecommendedListId(), settings, dateOfRecommendations)
                 .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPage.getRecommendedListPageId()))
                 .collect(Collectors.toList());
         recommendedListPageQuestionRepository.saveAll(recommendedQuestions);

@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 import static java.util.Objects.isNull;
 
@@ -38,15 +39,17 @@ public class RecommendedListService {
     public RecommendedListResponseDto findRecommendedList(Integer lengthQuestionListPage,
                                                           String integrationUserId,
                                                           Long recommendedListId,
-                                                          Integer pageNumber) {
+                                                          Integer pageNumber,
+                                                          LocalDateTime dateOfRecommendations) {
         SettingsDto settings = settingsService.getSettings();
         User user = userService.findByIntegrationUserId(integrationUserId);
         lengthQuestionListPage = isNull(lengthQuestionListPage) ? settings.getDefaultLengthQuestionListPage() : lengthQuestionListPage;
+        dateOfRecommendations = isNull(dateOfRecommendations) ? LocalDateTime.now() : dateOfRecommendations;
         RecommendedList recommendedList = isNull(recommendedListId)
-                ? createRecommendedList(lengthQuestionListPage, user.getUserId())
+                ? createRecommendedList(lengthQuestionListPage, user.getUserId(), dateOfRecommendations)
                 : findByRecommendedListId(recommendedListId);
 
-        return recommendedListPageService.findOrCreatePage(recommendedList, pageNumber, lengthQuestionListPage, settings);
+        return recommendedListPageService.findOrCreatePage(user.getUserId(), recommendedList, pageNumber, lengthQuestionListPage, settings, dateOfRecommendations);
     }
 
     private RecommendedList findByRecommendedListId(Long recommendedListId) {
@@ -54,11 +57,11 @@ public class RecommendedListService {
                 .orElseThrow(() -> new InconsistentIntegratedDataException("Not found recommended list with id " + recommendedListId));
     }
 
-    private RecommendedList createRecommendedList(Integer lengthQuestionListPage, Long userId) {
+    private RecommendedList createRecommendedList(Integer lengthQuestionListPage, Long userId, LocalDateTime dateOfRecommendations) {
         Integer totalQuestions = questionService.count();
         Integer totalPages = calculateTotalNumberOfPages(totalQuestions, lengthQuestionListPage);
         return recommendedListRepository.save(RecommendedListFactory.newRecommendedList(
-                lengthQuestionListPage, userId, totalPages, totalQuestions));
+                lengthQuestionListPage, userId, totalPages, totalQuestions, dateOfRecommendations));
     }
 
     private Integer calculateTotalNumberOfPages(Integer totalQuestions, Integer lengthQuestionListPage) {
