@@ -46,6 +46,9 @@ public abstract class AbstractServiceTest {
     QuestionTagTestUtils questionTagTestUtils;
 
     @Inject
+    PostRepository postRepository;
+
+    @Inject
     QuestionRepository questionRepository;
 
     @Inject

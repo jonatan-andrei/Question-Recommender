@@ -153,4 +153,8 @@ public class UserService {
         List<Tag> ignoredTags = tagService.findOrCreateTags(userPreferences.getIgnoredTags());
         userTagService.saveUserPreferences(user, ignoredTags, UserPreference.IGNORED);
     }
+
+    public void clear() {
+        userRepository.deleteAll();
+    }
 }

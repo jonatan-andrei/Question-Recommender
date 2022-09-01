@@ -108,4 +108,8 @@ public class UserCategoryService {
                 .filter(uc -> !categoriesIds.contains(uc.getCategoryId()))
                 .collect(Collectors.toList());
     }
+
+    public void clear() {
+        userCategoryRepository.deleteAll();
+    }
 }

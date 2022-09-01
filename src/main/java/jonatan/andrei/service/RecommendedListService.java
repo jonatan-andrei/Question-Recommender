@@ -58,7 +58,7 @@ public class RecommendedListService {
     }
 
     private RecommendedList createRecommendedList(Integer lengthQuestionListPage, Long userId, LocalDateTime dateOfRecommendations) {
-        Integer totalQuestions = questionService.count();
+        Integer totalQuestions = questionService.countForRecommendedList(userId, dateOfRecommendations);
         Integer totalPages = calculateTotalNumberOfPages(totalQuestions, lengthQuestionListPage);
         return recommendedListRepository.save(RecommendedListFactory.newRecommendedList(
                 lengthQuestionListPage, userId, totalPages, totalQuestions, dateOfRecommendations));
@@ -69,5 +69,9 @@ public class RecommendedListService {
             return 1;
         }
         return new BigDecimal(totalQuestions).divide(new BigDecimal(lengthQuestionListPage)).setScale(0, RoundingMode.CEILING).intValue();
+    }
+
+    public void clear() {
+        recommendedListRepository.deleteAll();
     }
 }

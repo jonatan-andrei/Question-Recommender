@@ -5,10 +5,7 @@ import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.dto.RecommendedListResponseDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
-import jonatan.andrei.model.RecommendedList;
-import jonatan.andrei.model.RecommendedListPage;
-import jonatan.andrei.model.RecommendedListPageQuestion;
-import jonatan.andrei.model.User;
+import jonatan.andrei.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,6 +38,8 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         for (Integer i = 1; i <= 30; i++) {
             questionTestUtils.saveWithIntegrationPostIdAndPublicationDate(i.toString(), LocalDateTime.now().minusDays(i));
         }
+        entityManager.flush();
+        entityManager.clear();
 
         // Act
         RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
@@ -71,6 +71,8 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
             questionTestUtils.saveWithIntegrationPostIdAndPublicationDate(i.toString(), LocalDateTime.now().minusDays(i));
         }
         RecommendedListResponseDto firstPage = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, 1, dateOfRecommendations);
+        entityManager.flush();
+        entityManager.clear();
 
         // Act
         RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), firstPage.getRecommendedListId(), pageNumber, dateOfRecommendations);
@@ -102,7 +104,11 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         for (Integer i = 1; i <= 30; i++) {
             questionTestUtils.saveWithIntegrationPostIdAndPublicationDate(i.toString(), LocalDateTime.now().minusDays(i));
         }
+        entityManager.flush();
+        entityManager.clear();
         RecommendedListResponseDto page = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
+        entityManager.flush();
+        entityManager.clear();
 
         // Act
         RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), page.getRecommendedListId(), pageNumber, dateOfRecommendations);
@@ -131,6 +137,138 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = 1;
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
+
+        // Assert
+        assertEquals(1, result.getTotalNumberOfPages());
+        assertEquals(0, result.getQuestions().size());
+        RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
+        assertEquals(user.getUserId(), recommendedList.getUserId());
+        assertEquals(1, recommendedList.getTotalNumberOfPages());
+        assertEquals(0, recommendedList.getTotalNumberOfQuestions());
+        assertEquals(lengthQuestionListPage, recommendedList.getLengthQuestionListPage());
+        RecommendedListPage recommendedListPage = recommendedListPageRepository.findByRecommendedListIdAndPageNumber(recommendedList.getRecommendedListId(), pageNumber);
+        assertEquals(pageNumber, recommendedListPage.getPageNumber());
+        List<RecommendedListPageQuestion> recommendedQuestions = recommendedListPageQuestionRepository.findByRecommendedListPageId(recommendedListPage.getRecommendedListPageId());
+        assertEquals(0, recommendedQuestions.size());
+    }
+
+    @Test
+    public void findRecommendedList_noResultsWithQuestionHidden() {
+        // Arrange
+        Integer lengthQuestionListPage = 20;
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        question.setHidden(true);
+        questionRepository.save(question);
+        Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
+
+        // Assert
+        assertEquals(1, result.getTotalNumberOfPages());
+        assertEquals(0, result.getQuestions().size());
+        RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
+        assertEquals(user.getUserId(), recommendedList.getUserId());
+        assertEquals(1, recommendedList.getTotalNumberOfPages());
+        assertEquals(0, recommendedList.getTotalNumberOfQuestions());
+        assertEquals(lengthQuestionListPage, recommendedList.getLengthQuestionListPage());
+        RecommendedListPage recommendedListPage = recommendedListPageRepository.findByRecommendedListIdAndPageNumber(recommendedList.getRecommendedListId(), pageNumber);
+        assertEquals(pageNumber, recommendedListPage.getPageNumber());
+        List<RecommendedListPageQuestion> recommendedQuestions = recommendedListPageQuestionRepository.findByRecommendedListPageId(recommendedListPage.getRecommendedListPageId());
+        assertEquals(0, recommendedQuestions.size());
+    }
+
+    @Test
+    public void findRecommendedList_questionWithCategoryAndTag() {
+        // Arrange
+        Integer lengthQuestionListPage = 20;
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("1");
+        Tag tag = tagTestUtils.saveWithName("B");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        questionCategoryTestUtils.saveQuestionCategories(question, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        UserTag userTag = userTagTestUtils.save(user, tag);
+        Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
+
+        // Assert
+        assertEquals(1, result.getTotalNumberOfPages());
+        assertEquals(1, result.getQuestions().size());
+        RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
+        assertEquals(user.getUserId(), recommendedList.getUserId());
+        assertEquals(1, recommendedList.getTotalNumberOfPages());
+        assertEquals(1, recommendedList.getTotalNumberOfQuestions());
+        assertEquals(lengthQuestionListPage, recommendedList.getLengthQuestionListPage());
+        RecommendedListPage recommendedListPage = recommendedListPageRepository.findByRecommendedListIdAndPageNumber(recommendedList.getRecommendedListId(), pageNumber);
+        assertEquals(pageNumber, recommendedListPage.getPageNumber());
+        List<RecommendedListPageQuestion> recommendedQuestions = recommendedListPageQuestionRepository.findByRecommendedListPageId(recommendedListPage.getRecommendedListPageId());
+        assertEquals(1, recommendedQuestions.size());
+    }
+
+    @Test
+    public void findRecommendedList_noResultsWithUserIgnoringCategory() {
+        // Arrange
+        Integer lengthQuestionListPage = 20;
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("1");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        questionCategoryTestUtils.saveQuestionCategories(question, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setIgnored(true);
+        userCategoryRepository.save(userCategory);
+        Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
+
+        // Assert
+        assertEquals(1, result.getTotalNumberOfPages());
+        assertEquals(0, result.getQuestions().size());
+        RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
+        assertEquals(user.getUserId(), recommendedList.getUserId());
+        assertEquals(1, recommendedList.getTotalNumberOfPages());
+        assertEquals(0, recommendedList.getTotalNumberOfQuestions());
+        assertEquals(lengthQuestionListPage, recommendedList.getLengthQuestionListPage());
+        RecommendedListPage recommendedListPage = recommendedListPageRepository.findByRecommendedListIdAndPageNumber(recommendedList.getRecommendedListId(), pageNumber);
+        assertEquals(pageNumber, recommendedListPage.getPageNumber());
+        List<RecommendedListPageQuestion> recommendedQuestions = recommendedListPageQuestionRepository.findByRecommendedListPageId(recommendedListPage.getRecommendedListPageId());
+        assertEquals(0, recommendedQuestions.size());
+    }
+
+    @Test
+    public void findRecommendedList_noResultsWithUserIgnoringTag() {
+        // Arrange
+        Integer lengthQuestionListPage = 20;
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        Tag tag = tagTestUtils.saveWithName("B");
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        UserTag userTag = userTagTestUtils.save(user, tag);
+        userTag.setIgnored(true);
+        userTagRepository.save(userTag);
+        Integer pageNumber = 1;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        entityManager.flush();
+        entityManager.clear();
 
         // Act
         RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, pageNumber, dateOfRecommendations);
@@ -157,6 +295,8 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         Integer pageNumber = 1;
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Long recommendedListId = 1L;
+        entityManager.flush();
+        entityManager.clear();
 
         // Assert
         Exception exception = assertThrows(InconsistentIntegratedDataException.class, () -> {
@@ -174,6 +314,8 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         User user = userTestUtils.saveWithIntegrationUserId("A");
         Integer pageNumber = null;
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        entityManager.flush();
+        entityManager.clear();
 
         // Assert
         Exception exception = assertThrows(RequiredDataException.class, () -> {

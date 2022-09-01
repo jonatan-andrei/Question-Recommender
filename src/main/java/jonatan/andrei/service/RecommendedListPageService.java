@@ -64,4 +64,8 @@ public class RecommendedListPageService {
     private Optional<RecommendedListPage> filterRecommendedListPage(List<RecommendedListPage> pages, Integer pageNumber) {
         return pages.stream().filter(p -> p.getPageNumber().equals(pageNumber)).findFirst();
     }
+
+    public void clear() {
+        recommendedListPageRepository.deleteAll();
+    }
 }

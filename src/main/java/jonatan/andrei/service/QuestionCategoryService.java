@@ -70,4 +70,8 @@ public class QuestionCategoryService {
         }
     }
 
+    public void clear() {
+        questionCategoryRepository.deleteAll();
+    }
+
 }

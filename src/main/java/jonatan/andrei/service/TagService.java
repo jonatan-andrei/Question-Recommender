@@ -64,4 +64,8 @@ public class TagService {
         }
     }
 
+    public void clear() {
+        tagRepository.deleteAll();
+    }
+
 }

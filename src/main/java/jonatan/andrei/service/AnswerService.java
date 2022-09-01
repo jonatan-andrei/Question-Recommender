@@ -55,4 +55,8 @@ public class AnswerService {
 
         answerRepository.registerBestAnswer(answer.getPostId(), selected);
     }
+
+    public void clear() {
+        answerRepository.deleteAll();
+    }
 }

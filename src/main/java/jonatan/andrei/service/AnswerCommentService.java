@@ -36,4 +36,8 @@ public class AnswerCommentService {
         return answerCommentRepository.save(
                 AnswerCommentFactory.overwrite(existingAnswerComment, updatePostRequestDto));
     }
+
+    public void clear() {
+        answerCommentRepository.deleteAll();
+    }
 }

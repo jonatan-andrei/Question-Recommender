@@ -26,4 +26,8 @@ public class UserFollowerService {
             userFollowerRepository.save(UserFollowerFactory.newUserFollower(userFollowerRequestDto, user, userFollower));
         }
     }
+
+    public void clear() {
+        userFollowerRepository.deleteAll();
+    }
 }

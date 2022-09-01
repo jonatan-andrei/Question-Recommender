@@ -69,4 +69,8 @@ public class QuestionTagService {
             userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_ASKED, UserActionUpdateType.DECREASE);
         }
     }
+
+    public void clear() {
+        questionTagRepository.deleteAll();
+    }
 }

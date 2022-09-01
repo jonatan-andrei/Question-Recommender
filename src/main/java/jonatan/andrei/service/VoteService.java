@@ -73,4 +73,8 @@ public class VoteService {
             throw new RequiredDataException("Attribute 'integrationUserId' is required");
         }
     }
+
+    public void clear() {
+        voteRepository.deleteAll();
+    }
 }

@@ -82,8 +82,12 @@ public class QuestionService {
         return questionCustomRepository.findRecommendedList(userId, pageNumber, lengthQuestionListPage, recommendedListId, settings, dateOfRecommendations);
     }
 
-    public Integer count() {
-        return (int) questionRepository.count();
+    public Integer countForRecommendedList(Long userId, LocalDateTime dateOfRecommendations) {
+        return questionCustomRepository.countForRecommendedList(userId, dateOfRecommendations);
+    }
+
+    public void clear() {
+        questionRepository.deleteAll();
     }
 
 }

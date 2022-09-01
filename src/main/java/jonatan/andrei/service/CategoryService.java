@@ -85,4 +85,8 @@ public class CategoryService {
         return Optional.ofNullable(categoryRepository.findByIntegrationCategoryId(integrationParentCategoryId)).map(Category::getCategoryId)
                 .orElseThrow(() -> new InconsistentIntegratedDataException("Not found parent category with id " + integrationParentCategoryId));
     }
+
+    public void clear() {
+        categoryRepository.deleteAll();
+    }
 }

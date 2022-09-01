@@ -66,6 +66,22 @@ public class QuestionCustomRepository {
                     
                  AND 
                     p.publication_date <= :dateOfRecommendations
+                    
+                 AND   
+                    p.hidden IS NOT TRUE
+                    
+                 AND
+                    NOT EXISTS (SELECT 1 FROM question_category qc
+                                INNER JOIN user_category uc
+                                ON qc.category_id = uc.category_id
+                                AND uc.user_id = :userId
+                                WHERE qc.question_id = q.post_id AND uc.ignored IS TRUE)
+                  AND
+                    NOT EXISTS (SELECT 1 FROM question_tag qt
+                                INNER JOIN user_tag ut
+                                ON qt.tag_id = ut.tag_id
+                                AND ut.user_id = :userId
+                                WHERE qt.question_id = q.post_id AND ut.ignored IS TRUE)
                  
                  ORDER BY score DESC, p.publication_date DESC
                  LIMIT :limit OFFSET :offset
@@ -92,4 +108,33 @@ public class QuestionCustomRepository {
                 .collect(Collectors.toList());
     }
 
+
+    public Integer countForRecommendedList(Long userId, LocalDateTime dateOfRecommendations) {
+        Query nativeQuery = entityManager.createNativeQuery("""
+                 SELECT COUNT(*)
+                 FROM question q
+                 INNER JOIN post p on p.post_id = q.post_id
+                 
+                 WHERE
+                    p.hidden IS NOT TRUE
+                 AND
+                    p.publication_date <= :dateOfRecommendations
+                 AND
+                    NOT EXISTS (SELECT 1 FROM question_category qc
+                                INNER JOIN user_category uc
+                                ON qc.category_id = uc.category_id
+                                AND uc.user_id = :userId
+                                WHERE qc.question_id = q.post_id AND uc.ignored IS TRUE)
+                  AND
+                    NOT EXISTS (SELECT 1 FROM question_tag qt
+                                INNER JOIN user_tag ut
+                                ON qt.tag_id = ut.tag_id
+                                AND ut.user_id = :userId
+                                WHERE qt.question_id = q.post_id AND ut.ignored IS TRUE)
+                                
+                """);
+        nativeQuery.setParameter("userId", userId);
+        nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
+        return ((BigInteger)nativeQuery.getSingleResult()).intValue();
+    }
 }

@@ -37,4 +37,8 @@ public class QuestionCommentService {
                 QuestionCommentFactory.overwrite(existingQuestionComment, updatePostRequestDto));
     }
 
+    public void clear() {
+        questionCommentRepository.deleteAll();
+    }
+
 }

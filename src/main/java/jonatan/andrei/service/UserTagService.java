@@ -109,4 +109,8 @@ public class UserTagService {
                 .filter(ut -> !tagsIds.contains(ut.getTagId()))
                 .collect(Collectors.toList());
     }
+
+    public void clear() {
+        userTagRepository.deleteAll();
+    }
 }

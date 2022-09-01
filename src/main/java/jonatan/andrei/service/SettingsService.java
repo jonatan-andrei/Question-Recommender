@@ -32,4 +32,5 @@ public class SettingsService {
                 .tagExplicitRecommendationRelevanceQuestionListPage(tagExplicitRecommendationRelevanceQuestionListPage)
                 .build();
     }
+
 }

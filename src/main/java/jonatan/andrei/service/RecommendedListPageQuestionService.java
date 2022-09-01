@@ -43,4 +43,8 @@ public class RecommendedListPageQuestionService {
                 .collect(Collectors.toList());
     }
 
+    public void clear() {
+        recommendedListPageQuestionRepository.deleteAll();
+    }
+
 }
