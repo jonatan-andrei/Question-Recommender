@@ -38,10 +38,6 @@ public class UserTag {
     private Integer numberQuestionsViewed;
 
     @NotNull
-    @Column(name = "number_questions_voted")
-    private Integer numberQuestionsVoted;
-
-    @NotNull
     @Column(name = "number_questions_answered")
     private Integer numberQuestionsAnswered;
 
@@ -54,12 +50,28 @@ public class UserTag {
     private Integer numberQuestionsFollowed;
 
     @NotNull
-    @Column(name = "number_answers_voted")
-    private Integer numberAnswersVoted;
+    @Column(name = "number_questions_upvoted")
+    private Integer numberQuestionsUpvoted;
 
     @NotNull
-    @Column(name = "number_comments_voted")
-    private Integer numberCommentsVoted;
+    @Column(name = "number_questions_downvoted")
+    private Integer numberQuestionsDownvoted;
+
+    @NotNull
+    @Column(name = "number_answers_upvoted")
+    private Integer numberAnswersUpvoted;
+
+    @NotNull
+    @Column(name = "number_answers_downvoted")
+    private Integer numberAnswersDownvoted;
+
+    @NotNull
+    @Column(name = "number_comments_upvoted")
+    private Integer numberCommentsUpvoted;
+
+    @NotNull
+    @Column(name = "number_comments_downvoted")
+    private Integer numberCommentsDownvoted;
 
     @NotNull
     @Column(name = "explicit_recommendation")

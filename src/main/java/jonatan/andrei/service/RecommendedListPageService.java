@@ -1,7 +1,7 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedListResponseDto;
-import jonatan.andrei.dto.SettingsDto;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.RecommendedListResponseFactory;
 import jonatan.andrei.model.RecommendedList;
@@ -12,6 +12,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
@@ -26,7 +27,7 @@ public class RecommendedListPageService {
     @Inject
     RecommendedListPageQuestionService recommendedListPageQuestionService;
 
-    public RecommendedListResponseDto findOrCreatePage(Long userId, RecommendedList recommendedList, Integer pageNumber, Integer lengthQuestionListPage, SettingsDto settings, LocalDateTime dateOfRecommendations) {
+    public RecommendedListResponseDto findOrCreatePage(Long userId, RecommendedList recommendedList, Integer pageNumber, Integer lengthQuestionListPage, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
         if (isNull(pageNumber) || pageNumber < 1) {
             throw new RequiredDataException("Attribute 'pageNumber' is required and must be greater than zero");
         }
@@ -46,7 +47,7 @@ public class RecommendedListPageService {
 
         Integer realPageNumber = defineRealPageNumberIgnoringExistingPages(existingPages, pageNumber);
 
-        var questions = recommendedListPageQuestionService.newPage(userId, recommendedListPage, lengthQuestionListPage, realPageNumber, settings, dateOfRecommendations);
+        var questions = recommendedListPageQuestionService.newPage(userId, recommendedListPage, lengthQuestionListPage, realPageNumber, recommendationSettings, dateOfRecommendations);
         return RecommendedListResponseFactory.newRecommendedListResponseDto(recommendedList, questions);
     }
 

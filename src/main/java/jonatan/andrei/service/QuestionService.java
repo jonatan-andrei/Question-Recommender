@@ -1,8 +1,8 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
-import jonatan.andrei.dto.SettingsDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
 import jonatan.andrei.factory.QuestionFactory;
 import jonatan.andrei.model.Question;
@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @ApplicationScoped
 public class QuestionService {
@@ -78,8 +79,8 @@ public class QuestionService {
         return questionTagService.findByQuestionId(postId);
     }
 
-    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, SettingsDto settings, LocalDateTime dateOfRecommendations) {
-        return questionCustomRepository.findRecommendedList(userId, pageNumber, lengthQuestionListPage, recommendedListId, settings, dateOfRecommendations);
+    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
+        return questionCustomRepository.findRecommendedList(userId, pageNumber, lengthQuestionListPage, recommendedListId, recommendationSettings, dateOfRecommendations);
     }
 
     public Integer countForRecommendedList(Long userId, LocalDateTime dateOfRecommendations) {

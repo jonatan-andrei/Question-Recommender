@@ -1,7 +1,7 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedListResponseDto;
-import jonatan.andrei.dto.SettingsDto;
 import jonatan.andrei.factory.RecommendedListPageFactory;
 import jonatan.andrei.model.RecommendedListPage;
 import jonatan.andrei.model.RecommendedListPageQuestion;
@@ -11,7 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -29,9 +29,9 @@ public class RecommendedListPageQuestionService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(Long userId, RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, SettingsDto settings, LocalDateTime dateOfRecommendations) {
+    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(Long userId, RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
         List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList(userId, realPageNumber,
-                        lengthQuestionListPage, recommendedListPage.getRecommendedListId(), settings, dateOfRecommendations)
+                        lengthQuestionListPage, recommendedListPage.getRecommendedListId(), recommendationSettings, dateOfRecommendations)
                 .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPage.getRecommendedListPageId()))
                 .collect(Collectors.toList());
         recommendedListPageQuestionRepository.saveAll(recommendedQuestions);

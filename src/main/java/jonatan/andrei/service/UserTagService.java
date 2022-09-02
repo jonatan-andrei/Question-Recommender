@@ -26,11 +26,12 @@ public class UserTagService {
         }
     }
 
-    public void updateNumberQuestionsVoted(User user, Post post, List<QuestionTag> tags, UserActionUpdateType userActionUpdateType) {
+    public void updateNumberQuestionsVoted(User user, Post post, List<QuestionTag> tags, UserActionUpdateType userActionUpdateType, boolean upvoted) {
         UserActionType userActionType = switch (post.getPostType()) {
-            case QUESTION -> UserActionType.QUESTION_VOTED;
-            case ANSWER -> UserActionType.ANSWER_VOTED;
-            case QUESTION_COMMENT, ANSWER_COMMENT -> UserActionType.COMMENT_VOTED;
+            case QUESTION -> upvoted ? UserActionType.QUESTION_UPVOTED : UserActionType.QUESTION_DOWNVOTED;
+            case ANSWER -> upvoted ? UserActionType.ANSWER_UPVOTED : UserActionType.ANSWER_DOWNVOTED;
+            case QUESTION_COMMENT, ANSWER_COMMENT ->
+                    upvoted ? UserActionType.COMMENT_UPVOTED : UserActionType.COMMENT_DOWNVOTED;
         };
 
         updateNumberQuestionsByAction(user, tags, userActionType, userActionUpdateType);
@@ -46,18 +47,24 @@ public class UserTagService {
                         userTag.setNumberQuestionsAsked(userTag.getNumberQuestionsAsked() + userActionUpdateType.getValue());
                 case QUESTION_VIEWED ->
                         userTag.setNumberQuestionsViewed(userTag.getNumberQuestionsViewed() + userActionUpdateType.getValue());
-                case QUESTION_VOTED ->
-                        userTag.setNumberQuestionsVoted(userTag.getNumberQuestionsVoted() + userActionUpdateType.getValue());
                 case QUESTION_ANSWERED ->
                         userTag.setNumberQuestionsAnswered(userTag.getNumberQuestionsAnswered() + userActionUpdateType.getValue());
                 case QUESTION_COMMENTED ->
                         userTag.setNumberQuestionsCommented(userTag.getNumberQuestionsCommented() + userActionUpdateType.getValue());
                 case QUESTION_FOLLOWED ->
                         userTag.setNumberQuestionsFollowed(userTag.getNumberQuestionsFollowed() + userActionUpdateType.getValue());
-                case ANSWER_VOTED ->
-                        userTag.setNumberAnswersVoted(userTag.getNumberAnswersVoted() + userActionUpdateType.getValue());
-                case COMMENT_VOTED ->
-                        userTag.setNumberCommentsVoted(userTag.getNumberCommentsVoted() + userActionUpdateType.getValue());
+                case QUESTION_UPVOTED ->
+                        userTag.setNumberQuestionsUpvoted(userTag.getNumberQuestionsUpvoted() + userActionUpdateType.getValue());
+                case QUESTION_DOWNVOTED ->
+                        userTag.setNumberQuestionsDownvoted(userTag.getNumberQuestionsDownvoted() + userActionUpdateType.getValue());
+                case ANSWER_UPVOTED ->
+                        userTag.setNumberAnswersUpvoted(userTag.getNumberAnswersUpvoted() + userActionUpdateType.getValue());
+                case ANSWER_DOWNVOTED ->
+                        userTag.setNumberAnswersDownvoted(userTag.getNumberAnswersDownvoted() + userActionUpdateType.getValue());
+                case COMMENT_UPVOTED ->
+                        userTag.setNumberCommentsUpvoted(userTag.getNumberCommentsUpvoted() + userActionUpdateType.getValue());
+                case COMMENT_DOWNVOTED ->
+                        userTag.setNumberCommentsDownvoted(userTag.getNumberCommentsDownvoted() + userActionUpdateType.getValue());
             }
         }
         userTagRepository.saveAll(userTags);

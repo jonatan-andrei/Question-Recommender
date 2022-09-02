@@ -1,12 +1,13 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedListResponseDto;
-import jonatan.andrei.dto.SettingsDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.factory.RecommendedListFactory;
 import jonatan.andrei.model.RecommendedList;
 import jonatan.andrei.model.User;
 import jonatan.andrei.repository.RecommendedListRepository;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 
@@ -30,10 +32,13 @@ public class RecommendedListService {
     QuestionService questionService;
 
     @Inject
-    SettingsService settingsService;
+    RecommendationSettingsService recommendationSettingsService;
 
     @Inject
     RecommendedListPageService recommendedListPageService;
+
+    @ConfigProperty(name = "integration.settings.default_length_questions_list_page")
+    Integer defaultLengthQuestionListPage;
 
     @Transactional
     public RecommendedListResponseDto findRecommendedList(Integer lengthQuestionListPage,
@@ -41,15 +46,15 @@ public class RecommendedListService {
                                                           Long recommendedListId,
                                                           Integer pageNumber,
                                                           LocalDateTime dateOfRecommendations) {
-        SettingsDto settings = settingsService.getSettings();
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
         User user = userService.findByIntegrationUserId(integrationUserId);
-        lengthQuestionListPage = isNull(lengthQuestionListPage) ? settings.getDefaultLengthQuestionListPage() : lengthQuestionListPage;
+        lengthQuestionListPage = isNull(lengthQuestionListPage) ? defaultLengthQuestionListPage : lengthQuestionListPage;
         dateOfRecommendations = isNull(dateOfRecommendations) ? LocalDateTime.now() : dateOfRecommendations;
         RecommendedList recommendedList = isNull(recommendedListId)
                 ? createRecommendedList(lengthQuestionListPage, user.getUserId(), dateOfRecommendations)
                 : findByRecommendedListId(recommendedListId);
 
-        return recommendedListPageService.findOrCreatePage(user.getUserId(), recommendedList, pageNumber, lengthQuestionListPage, settings, dateOfRecommendations);
+        return recommendedListPageService.findOrCreatePage(user.getUserId(), recommendedList, pageNumber, lengthQuestionListPage, recommendationSettings, dateOfRecommendations);
     }
 
     private RecommendedList findByRecommendedListId(Long recommendedListId) {

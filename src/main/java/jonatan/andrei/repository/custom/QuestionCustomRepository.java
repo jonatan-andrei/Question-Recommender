@@ -1,7 +1,7 @@
 package jonatan.andrei.repository.custom;
 
+import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
-import jonatan.andrei.dto.SettingsDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -13,7 +13,10 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static jonatan.andrei.domain.RecommendationSettingsType.*;
 
 @ApplicationScoped
 public class QuestionCustomRepository {
@@ -21,7 +24,7 @@ public class QuestionCustomRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, SettingsDto settings, LocalDateTime dateOfRecommendations) {
+    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
         Query nativeQuery = entityManager.createNativeQuery("""
                  SELECT q.post_id, p.integration_post_id,
                  
@@ -88,13 +91,13 @@ public class QuestionCustomRepository {
                                 
                 """, Tuple.class);
         nativeQuery.setParameter("userId", userId);
-        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", settings.getNumberOfDaysQuestionIsRelevant());
+        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RELEVANT));
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
         nativeQuery.setParameter("numberOfSecondsInDay", 86400);
         nativeQuery.setParameter("minimalRelevance", 1);
-        nativeQuery.setParameter("publicationDateRelevance", settings.getPublicationDateRelevanceQuestionListPage());
-        nativeQuery.setParameter("categoryExplicitRecommendationRelevanceQuestionListPage", settings.getCategoryExplicitRecommendationRelevanceQuestionListPage());
-        nativeQuery.setParameter("tagExplicitRecommendationRelevanceQuestionListPage", settings.getTagExplicitRecommendationRelevanceQuestionListPage());
+        nativeQuery.setParameter("publicationDateRelevance", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PUBLICATION_DATE));
+        nativeQuery.setParameter("categoryExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_CATEGORY));
+        nativeQuery.setParameter("tagExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
         nativeQuery.setParameter("recommendedListId", recommendedListId);
         nativeQuery.setParameter("limit", lengthQuestionListPage);
         nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionListPage);
@@ -135,6 +138,6 @@ public class QuestionCustomRepository {
                 """);
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
-        return ((BigInteger)nativeQuery.getSingleResult()).intValue();
+        return ((BigInteger) nativeQuery.getSingleResult()).intValue();
     }
 }

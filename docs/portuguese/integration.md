@@ -171,7 +171,7 @@ Endpoint para integração de uma lista de tags com Question Recommender. Os dad
 
 ## Recomendações
 
-### GET recommended-list
+### GET /recommended-list
 Endpoint para buscar lista de perguntas recomendadas para usuário.
 #### Entrada (queryParams):
 ```
@@ -188,6 +188,14 @@ totalNumberOfPages (Integer): Número total de páginas da lista.
 questions (List): Lista de perguntas recomendadas:
     integrationQuestionId (String): Id da publicação no sistema principal.
     score (BigDecimal): Relevância da recomendação.
+```
+
+## Configurações
+
+### POST /recommendation-settings
+Endpoint para alterar configurações de recomendação.
+```
+recommendationSettings (Map<String, Integer>): Configurações de recomendações. Os valores possíveis são os do enum RecommendationSettingsType.
 ```
 
 ## Notificações

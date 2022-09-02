@@ -42,8 +42,8 @@ public class VoteService {
         } else {
             post.setDownvotes(post.getDownvotes() + 1);
         }
-        userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.INCREASE);
-        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.INCREASE);
+        userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.INCREASE, vote.getVoteType().equals(VoteType.UPVOTE));
+        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.INCREASE, vote.getVoteType().equals(VoteType.UPVOTE));
         return post;
     }
 
@@ -58,8 +58,8 @@ public class VoteService {
             post.setDownvotes(post.getDownvotes() - 1);
         }
         voteRepository.delete(existingVote);
-        userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.DECREASE);
-        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.DECREASE);
+        userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.DECREASE, existingVote.getVoteType().equals(VoteType.UPVOTE));
+        userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.DECREASE, existingVote.getVoteType().equals(VoteType.UPVOTE));
     }
 
     public void validateVoteRequest(VoteRequestDto voteRequestDto) {
