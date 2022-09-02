@@ -12,6 +12,7 @@ import jonatan.andrei.repository.AnswerRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @ApplicationScoped
@@ -53,7 +54,7 @@ public class AnswerService {
             throw new InconsistentIntegratedDataException("Question " + question.getIntegrationPostId() + " already has a best answer selected");
         }
 
-        answerRepository.registerBestAnswer(answer.getPostId(), selected);
+        answerRepository.registerBestAnswer(answer.getPostId(), selected, LocalDateTime.now());
     }
 
     public void clear() {
