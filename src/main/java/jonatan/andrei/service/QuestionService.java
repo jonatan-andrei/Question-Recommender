@@ -60,11 +60,11 @@ public class QuestionService {
 
     @Transactional
     public void registerDuplicateQuestion(Long postId, Long duplicateQuestionId) {
-        questionRepository.registerDuplicateQuestion(postId, duplicateQuestionId);
+        questionRepository.registerDuplicateQuestion(postId, duplicateQuestionId, LocalDateTime.now());
     }
 
     public void registerBestAnswer(Long postId, Long bestAnswerId) {
-        questionRepository.registerBestAnswer(postId, bestAnswerId);
+        questionRepository.registerBestAnswer(postId, bestAnswerId, LocalDateTime.now());
     }
 
     public void updateNumberOfAnswers(Long postId) {

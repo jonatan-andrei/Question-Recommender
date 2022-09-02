@@ -11,6 +11,7 @@ import org.springframework.util.CollectionUtils;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -59,6 +60,7 @@ public class PostService {
 
         User user = userService.findUserByIntegrationUserIdOrCreateByAnonymousId(createPostRequestDto.getIntegrationUserId(), createPostRequestDto.getIntegrationAnonymousUserId());
         Long originQuestionId = nonNull(parentPost) ? findOriginQuestionByPost(parentPost) : null;
+        postRepository.updateDateByPostId(originQuestionId, LocalDateTime.now());
         List<QuestionCategory> questionCategories = PostType.QUESTION.equals(postType) ? null : questionService.findCategoriesByQuestionId(originQuestionId);
         List<QuestionTag> questionTags = PostType.QUESTION.equals(postType) ? null : questionService.findTagsByQuestionId(originQuestionId);
 
@@ -162,13 +164,14 @@ public class PostService {
         }
 
         Post post = findByIntegrationPostId(hidePostRequestDto.getIntegrationPostId());
-        postRepository.hideOrExposePost(post.getPostId(), hidePostRequestDto.isHidden());
+        postRepository.hideOrExposePost(post.getPostId(), hidePostRequestDto.isHidden(), LocalDateTime.now());
     }
 
     @Transactional
     public void registerVote(VoteRequestDto voteRequestDto) {
         voteService.validateVoteRequest(voteRequestDto);
         Post post = findByIntegrationPostId(voteRequestDto.getIntegrationPostId());
+        post.setUpdateDate(LocalDateTime.now());
         User user = userService.findByIntegrationUserId(voteRequestDto.getIntegrationUserId());
         Long originQuestionId = findOriginQuestionByPost(post);
         List<QuestionCategory> questionCategories = questionService.findQuestionCategories(originQuestionId);
@@ -203,6 +206,7 @@ public class PostService {
     public void registerQuestionFollower(QuestionFollowerRequestDto questionFollowerRequestDto) {
         questionFollowerService.validateQuestionFollowerRequest(questionFollowerRequestDto);
         Question question = (Question) findByIntegrationPostIdAndPostType(questionFollowerRequestDto.getIntegrationQuestionId(), PostType.QUESTION);
+        question.setUpdateDate(LocalDateTime.now());
         List<QuestionCategory> questionCategories = questionService.findQuestionCategories(question.getPostId());
         List<QuestionTag> questionTags = questionService.findTagsByQuestionId(question.getPostId());
         User user = userService.findByIntegrationUserId(questionFollowerRequestDto.getIntegrationUserId());
