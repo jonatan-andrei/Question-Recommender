@@ -28,6 +28,9 @@ public class VoteService {
     @Inject
     UserTagService userTagService;
 
+    @Inject
+    UserService userService;
+
     public Post registerVote(VoteRequestDto voteRequestDto, User user, Post post, List<QuestionCategory> questionCategories, List<QuestionTag> questionTags) {
         Optional<Vote> existingVote = findByUserIdAndPostId(user, post);
         if (existingVote.isPresent()) {
@@ -44,6 +47,7 @@ public class VoteService {
         }
         userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.INCREASE, vote.getVoteType().equals(VoteType.UPVOTE));
         userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.INCREASE, vote.getVoteType().equals(VoteType.UPVOTE));
+        userService.updateVotesByActionAndPostType(user, UserActionUpdateType.INCREASE, post.getPostType(), vote.getVoteType().equals(VoteType.UPVOTE));
         return post;
     }
 
@@ -60,6 +64,7 @@ public class VoteService {
         voteRepository.delete(existingVote);
         userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.DECREASE, existingVote.getVoteType().equals(VoteType.UPVOTE));
         userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.DECREASE, existingVote.getVoteType().equals(VoteType.UPVOTE));
+        userService.updateVotesByActionAndPostType(user, UserActionUpdateType.DECREASE, post.getPostType(), existingVote.getVoteType().equals(VoteType.UPVOTE));
     }
 
     public void validateVoteRequest(VoteRequestDto voteRequestDto) {

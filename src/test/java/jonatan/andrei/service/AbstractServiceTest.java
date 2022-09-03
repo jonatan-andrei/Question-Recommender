@@ -46,6 +46,9 @@ public abstract class AbstractServiceTest {
     QuestionTagTestUtils questionTagTestUtils;
 
     @Inject
+    UserRepository userRepository;
+
+    @Inject
     PostRepository postRepository;
 
     @Inject
@@ -89,6 +92,9 @@ public abstract class AbstractServiceTest {
 
     @Inject
     RecommendedListPageQuestionRepository recommendedListPageQuestionRepository;
+
+    @Inject
+    QuestionViewRepository questionViewRepository;
 
     @Inject
     EntityManager entityManager;

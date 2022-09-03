@@ -1,5 +1,8 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.PostType;
+import jonatan.andrei.domain.UserActionType;
+import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.domain.UserPreference;
 import jonatan.andrei.dto.CreateUserRequestDto;
 import jonatan.andrei.dto.UpdateUserRequestDto;
@@ -152,6 +155,59 @@ public class UserService {
         userTagService.saveUserPreferences(user, explicitTags, UserPreference.EXPLICIT);
         List<Tag> ignoredTags = tagService.findOrCreateTags(userPreferences.getIgnoredTags());
         userTagService.saveUserPreferences(user, ignoredTags, UserPreference.IGNORED);
+    }
+
+    public void updateQuestionViewed(List<User> users) {
+        users.forEach(u -> updateByAction(u, UserActionType.QUESTION_VIEWED, UserActionUpdateType.INCREASE));
+    }
+
+    public void updateByActionAndPostType(User user, UserActionUpdateType userActionUpdateType, PostType postType) {
+        UserActionType userActionType = switch (postType) {
+            case QUESTION -> UserActionType.QUESTION_ASKED;
+            case ANSWER -> UserActionType.QUESTION_ANSWERED;
+            case QUESTION_COMMENT, ANSWER_COMMENT -> UserActionType.QUESTION_COMMENTED;
+        };
+
+        updateByAction(user, userActionType, userActionUpdateType);
+    }
+
+    public void updateVotesByActionAndPostType(User user, UserActionUpdateType userActionUpdateType, PostType postType, boolean upvoted) {
+        UserActionType userActionType = switch (postType) {
+            case QUESTION -> upvoted ? UserActionType.QUESTION_UPVOTED : UserActionType.QUESTION_DOWNVOTED;
+            case ANSWER -> upvoted ? UserActionType.ANSWER_UPVOTED : UserActionType.ANSWER_DOWNVOTED;
+            case QUESTION_COMMENT, ANSWER_COMMENT ->
+                    upvoted ? UserActionType.COMMENT_UPVOTED : UserActionType.COMMENT_DOWNVOTED;
+        };
+
+        updateByAction(user, userActionType, userActionUpdateType);
+    }
+
+    public void updateByAction(User user, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
+        switch (userActionType) {
+            case QUESTION_ASKED ->
+                    user.setNumberQuestionsAsked(user.getNumberQuestionsAsked() + userActionUpdateType.getValue());
+            case QUESTION_VIEWED ->
+                    user.setNumberQuestionsViewed(user.getNumberQuestionsViewed() + userActionUpdateType.getValue());
+            case QUESTION_ANSWERED ->
+                    user.setNumberQuestionsAnswered(user.getNumberQuestionsAnswered() + userActionUpdateType.getValue());
+            case QUESTION_COMMENTED ->
+                    user.setNumberQuestionsCommented(user.getNumberQuestionsCommented() + userActionUpdateType.getValue());
+            case QUESTION_FOLLOWED ->
+                    user.setNumberQuestionsFollowed(user.getNumberQuestionsFollowed() + userActionUpdateType.getValue());
+            case QUESTION_UPVOTED ->
+                    user.setNumberQuestionsUpvoted(user.getNumberQuestionsUpvoted() + userActionUpdateType.getValue());
+            case QUESTION_DOWNVOTED ->
+                    user.setNumberQuestionsDownvoted(user.getNumberQuestionsDownvoted() + userActionUpdateType.getValue());
+            case ANSWER_UPVOTED ->
+                    user.setNumberAnswersUpvoted(user.getNumberAnswersUpvoted() + userActionUpdateType.getValue());
+            case ANSWER_DOWNVOTED ->
+                    user.setNumberAnswersDownvoted(user.getNumberAnswersDownvoted() + userActionUpdateType.getValue());
+            case COMMENT_UPVOTED ->
+                    user.setNumberCommentsUpvoted(user.getNumberCommentsUpvoted() + userActionUpdateType.getValue());
+            case COMMENT_DOWNVOTED ->
+                    user.setNumberCommentsDownvoted(user.getNumberCommentsDownvoted() + userActionUpdateType.getValue());
+        }
+        userRepository.save(user);
     }
 
     public void clear() {

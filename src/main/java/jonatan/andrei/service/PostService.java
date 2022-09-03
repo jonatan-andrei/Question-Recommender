@@ -1,6 +1,9 @@
 package jonatan.andrei.service;
 
 import jonatan.andrei.domain.PostType;
+import jonatan.andrei.domain.QuestionViewType;
+import jonatan.andrei.domain.UserActionType;
+import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.*;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
@@ -46,6 +49,9 @@ public class PostService {
     @Inject
     QuestionFollowerService questionFollowerService;
 
+    @Inject
+    QuestionViewService questionViewService;
+
     @Transactional
     public Post save(CreatePostRequestDto createPostRequestDto) {
         validateRequiredDataToSave(createPostRequestDto);
@@ -63,6 +69,7 @@ public class PostService {
         postRepository.updateDateByPostId(originQuestionId, LocalDateTime.now());
         List<QuestionCategory> questionCategories = PostType.QUESTION.equals(postType) ? null : questionService.findCategoriesByQuestionId(originQuestionId);
         List<QuestionTag> questionTags = PostType.QUESTION.equals(postType) ? null : questionService.findTagsByQuestionId(originQuestionId);
+        userService.updateByActionAndPostType(user, UserActionUpdateType.INCREASE, postType);
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);
@@ -128,6 +135,8 @@ public class PostService {
         List<User> users = userService.findByIntegrationUserIdIn(viewsRequestDto.getIntegrationUsersId());
         userService.updateQuestionCategoriesViewed(users, categories);
         userService.updateQuestionTagsViewed(users, tags);
+        userService.updateQuestionViewed(users);
+        questionViewService.registerQuestionViews(question, users, QuestionViewType.VIEW);
     }
 
     @Transactional
@@ -212,6 +221,7 @@ public class PostService {
         User user = userService.findByIntegrationUserId(questionFollowerRequestDto.getIntegrationUserId());
         question = questionFollowerService.registerQuestionFollower(questionFollowerRequestDto, user, question, questionCategories, questionTags);
         postRepository.save(question);
+        userService.updateByAction(user, UserActionType.QUESTION_FOLLOWED, questionFollowerRequestDto.isFollowed() ? UserActionUpdateType.INCREASE : UserActionUpdateType.DECREASE);
     }
 
     @Transactional

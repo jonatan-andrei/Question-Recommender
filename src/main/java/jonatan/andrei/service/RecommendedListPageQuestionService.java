@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.QuestionViewType;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedListResponseDto;
 import jonatan.andrei.factory.RecommendedListPageFactory;
@@ -23,6 +24,9 @@ public class RecommendedListPageQuestionService {
     @Inject
     QuestionService questionService;
 
+    @Inject
+    QuestionViewService questionViewService;
+
     public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> findByRecommendedListPageId(Long recommendedListPageId) {
         return recommendedListPageQuestionRepository.findByRecommendedListPageId(recommendedListPageId)
                 .stream().map(RecommendedListPageFactory::newDto)
@@ -34,6 +38,7 @@ public class RecommendedListPageQuestionService {
                         lengthQuestionListPage, recommendedListPage.getRecommendedListId(), recommendationSettings, dateOfRecommendations)
                 .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPage.getRecommendedListPageId()))
                 .collect(Collectors.toList());
+        questionViewService.registerQuestionsViewInList(recommendedQuestions.stream().map(RecommendedListPageQuestion::getQuestionId).collect(Collectors.toList()), userId, QuestionViewType.VIEW_IN_LIST);
         recommendedListPageQuestionRepository.saveAll(recommendedQuestions);
         return recommendedQuestions.stream()
                 .map(rq -> RecommendedListResponseDto.RecommendedQuestionResponseDto.builder()

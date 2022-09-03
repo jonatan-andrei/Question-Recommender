@@ -34,6 +34,17 @@ public class UserTestUtils {
                 .notificationEnable(true)
                 .recommendationEnable(true)
                 .lastActivityDate(LocalDateTime.now())
+                .numberQuestionsAsked(0)
+                .numberQuestionsViewed(0)
+                .numberQuestionsAnswered(0)
+                .numberQuestionsCommented(0)
+                .numberQuestionsFollowed(0)
+                .numberQuestionsUpvoted(0)
+                .numberAnswersUpvoted(0)
+                .numberCommentsUpvoted(0)
+                .numberQuestionsDownvoted(0)
+                .numberAnswersDownvoted(0)
+                .numberCommentsDownvoted(0)
                 .build());
     }
 
@@ -48,6 +59,17 @@ public class UserTestUtils {
                 .notificationEnable(false)
                 .recommendationEnable(false)
                 .lastActivityDate(LocalDateTime.now())
+                .numberQuestionsAsked(0)
+                .numberQuestionsViewed(0)
+                .numberQuestionsAnswered(0)
+                .numberQuestionsCommented(0)
+                .numberQuestionsFollowed(0)
+                .numberQuestionsUpvoted(0)
+                .numberAnswersUpvoted(0)
+                .numberCommentsUpvoted(0)
+                .numberQuestionsDownvoted(0)
+                .numberAnswersDownvoted(0)
+                .numberCommentsDownvoted(0)
                 .build());
     }
 }

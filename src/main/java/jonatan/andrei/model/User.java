@@ -68,5 +68,50 @@ public class User {
     @Column(name = "last_activity_date")
     private LocalDateTime lastActivityDate;
 
+    @NotNull
+    @Column(name = "number_questions_asked")
+    private Integer numberQuestionsAsked;
+
+    @NotNull
+    @Column(name = "number_questions_viewed")
+    private Integer numberQuestionsViewed;
+
+    @NotNull
+    @Column(name = "number_questions_answered")
+    private Integer numberQuestionsAnswered;
+
+    @NotNull
+    @Column(name = "number_questions_commented")
+    private Integer numberQuestionsCommented;
+
+    @NotNull
+    @Column(name = "number_questions_followed")
+    private Integer numberQuestionsFollowed;
+
+    @NotNull
+    @Column(name = "number_questions_upvoted")
+    private Integer numberQuestionsUpvoted;
+
+    @NotNull
+    @Column(name = "number_questions_downvoted")
+    private Integer numberQuestionsDownvoted;
+
+    @NotNull
+    @Column(name = "number_answers_upvoted")
+    private Integer numberAnswersUpvoted;
+
+    @NotNull
+    @Column(name = "number_answers_downvoted")
+    private Integer numberAnswersDownvoted;
+
+    @NotNull
+    @Column(name = "number_comments_upvoted")
+    private Integer numberCommentsUpvoted;
+
+    @NotNull
+    @Column(name = "number_comments_downvoted")
+    private Integer numberCommentsDownvoted;
+
+
 }
 

@@ -1127,6 +1127,8 @@ public class PostServiceTest extends AbstractServiceTest {
         assertEquals(0, post.getDownvotes());
         Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
         assertEquals(VoteType.UPVOTE, vote.getVoteType());
+        user = userRepository.findByIntegrationUserId("11").get();
+        assertEquals(1, user.getNumberQuestionsUpvoted());
     }
 
     @Test
@@ -1152,6 +1154,8 @@ public class PostServiceTest extends AbstractServiceTest {
         assertEquals(1, post.getDownvotes());
         Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
         assertEquals(VoteType.DOWNVOTE, vote.getVoteType());
+        user = userRepository.findByIntegrationUserId("11").get();
+        assertEquals(1, user.getNumberQuestionsDownvoted());
     }
 
     @Test
