@@ -28,7 +28,7 @@ public class Question extends Post {
     private String title;
 
     @NotNull
-    @Column(name = "description", length = 4000)
+    @Column(name = "description", length = 24000)
     private String description;
 
     @NotNull

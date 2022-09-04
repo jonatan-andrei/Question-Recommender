@@ -1,6 +1,5 @@
 package jonatan.andrei.model;
 
-import jonatan.andrei.domain.RecommendationType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="notification")
+@Table(name = "notification")
 public class Notification {
 
     @Id
@@ -35,9 +34,5 @@ public class Notification {
     @Column(name = "question_id")
     private Long questionId;
 
-    @NotNull
-    @Column(name = "recommendation_type")
-    @Enumerated(EnumType.STRING)
-    private RecommendationType recommendationType;
 }
 

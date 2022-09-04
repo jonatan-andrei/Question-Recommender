@@ -1,6 +1,5 @@
 package jonatan.andrei.model;
 
-import jonatan.andrei.domain.RecommendationType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -12,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="email_notification_question")
+@Table(name = "email_notification_question")
 public class EmailNotificationQuestion {
 
     @Id
@@ -30,9 +29,5 @@ public class EmailNotificationQuestion {
     @Column(name = "question_id")
     private Long questionId;
 
-    @NotNull
-    @Column(name = "recommendation_type")
-    @Enumerated(EnumType.STRING)
-    private RecommendationType recommendationType;
 }
 

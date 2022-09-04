@@ -1,6 +1,6 @@
 package jonatan.andrei.domain;
 
-public enum UserPreference {
+public enum UserPreferenceType {
 
     EXPLICIT,
     IGNORED

@@ -2,7 +2,7 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jonatan.andrei.domain.UserPreference;
+import jonatan.andrei.domain.UserPreferenceType;
 import jonatan.andrei.model.Tag;
 import jonatan.andrei.model.User;
 import jonatan.andrei.model.UserTag;
@@ -30,7 +30,7 @@ public class UserTagServiceTest extends AbstractServiceTest {
         userTagTestUtils.save(user, tag2);
 
         // Act
-        userTagService.saveUserPreferences(user, asList(tag1, tag2), UserPreference.EXPLICIT);
+        userTagService.saveUserPreferences(user, asList(tag1, tag2), UserPreferenceType.EXPLICIT);
         entityManager.flush();
         entityManager.clear();
 
@@ -57,7 +57,7 @@ public class UserTagServiceTest extends AbstractServiceTest {
         Tag tag6 = tagTestUtils.saveWithName("f");
 
         // Act
-        userTagService.saveUserPreferences(user, asList(tag1, tag2, tag5, tag6), UserPreference.EXPLICIT);
+        userTagService.saveUserPreferences(user, asList(tag1, tag2, tag5, tag6), UserPreferenceType.EXPLICIT);
         entityManager.flush();
         entityManager.clear();
 
@@ -85,7 +85,7 @@ public class UserTagServiceTest extends AbstractServiceTest {
         userTagTestUtils.save(user, tag2);
 
         // Act
-        userTagService.saveUserPreferences(user, asList(tag1, tag2), UserPreference.IGNORED);
+        userTagService.saveUserPreferences(user, asList(tag1, tag2), UserPreferenceType.IGNORED);
         entityManager.flush();
         entityManager.clear();
 
@@ -112,7 +112,7 @@ public class UserTagServiceTest extends AbstractServiceTest {
         Tag tag6 = tagTestUtils.saveWithName("f");
 
         // Act
-        userTagService.saveUserPreferences(user, asList(tag1, tag2, tag5, tag6), UserPreference.IGNORED);
+        userTagService.saveUserPreferences(user, asList(tag1, tag2, tag5, tag6), UserPreferenceType.IGNORED);
         entityManager.flush();
         entityManager.clear();
 

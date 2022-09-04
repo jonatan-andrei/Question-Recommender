@@ -2,7 +2,7 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jonatan.andrei.domain.UserPreference;
+import jonatan.andrei.domain.UserPreferenceType;
 import jonatan.andrei.model.Category;
 import jonatan.andrei.model.User;
 import jonatan.andrei.model.UserCategory;
@@ -30,7 +30,7 @@ public class UserCategoryServiceTest extends AbstractServiceTest {
         userCategoryTestUtils.save(user, category2);
 
         // Act
-        userCategoryService.saveUserPreferences(user, asList(category1, category2), UserPreference.EXPLICIT);
+        userCategoryService.saveUserPreferences(user, asList(category1, category2), UserPreferenceType.EXPLICIT);
         entityManager.flush();
         entityManager.clear();
 
@@ -57,7 +57,7 @@ public class UserCategoryServiceTest extends AbstractServiceTest {
         Category category6 = categoryTestUtils.saveWithIntegrationCategoryId("f");
 
         // Act
-        userCategoryService.saveUserPreferences(user, asList(category1, category2, category5, category6), UserPreference.EXPLICIT);
+        userCategoryService.saveUserPreferences(user, asList(category1, category2, category5, category6), UserPreferenceType.EXPLICIT);
         entityManager.flush();
         entityManager.clear();
 
@@ -85,7 +85,7 @@ public class UserCategoryServiceTest extends AbstractServiceTest {
         userCategoryTestUtils.save(user, category2);
 
         // Act
-        userCategoryService.saveUserPreferences(user, asList(category1, category2), UserPreference.IGNORED);
+        userCategoryService.saveUserPreferences(user, asList(category1, category2), UserPreferenceType.IGNORED);
         entityManager.flush();
         entityManager.clear();
 
@@ -112,7 +112,7 @@ public class UserCategoryServiceTest extends AbstractServiceTest {
         Category category6 = categoryTestUtils.saveWithIntegrationCategoryId("f");
 
         // Act
-        userCategoryService.saveUserPreferences(user, asList(category1, category2, category5, category6), UserPreference.IGNORED);
+        userCategoryService.saveUserPreferences(user, asList(category1, category2, category5, category6), UserPreferenceType.IGNORED);
         entityManager.flush();
         entityManager.clear();
 

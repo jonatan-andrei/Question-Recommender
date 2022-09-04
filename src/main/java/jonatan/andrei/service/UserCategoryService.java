@@ -2,7 +2,7 @@ package jonatan.andrei.service;
 
 import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
-import jonatan.andrei.domain.UserPreference;
+import jonatan.andrei.domain.UserPreferenceType;
 import jonatan.andrei.factory.UserCategoryFactory;
 import jonatan.andrei.model.*;
 import jonatan.andrei.repository.UserCategoryRepository;
@@ -70,7 +70,7 @@ public class UserCategoryService {
         userCategoryRepository.saveAll(userCategories);
     }
 
-    public void saveUserPreferences(User user, List<Category> categories, UserPreference userPreference) {
+    public void saveUserPreferences(User user, List<Category> categories, UserPreferenceType userPreference) {
         List<UserCategory> userCategories = findOrCreateUserCategories(categories, user.getUserId());
         userCategories.forEach(uc -> updateUserPreference(uc, userPreference, true));
 
@@ -81,8 +81,8 @@ public class UserCategoryService {
         userCategoryRepository.saveAll(userCategories);
     }
 
-    private void updateUserPreference(UserCategory userCategory, UserPreference userPreference, boolean active) {
-        if (userPreference.equals(UserPreference.EXPLICIT)) {
+    private void updateUserPreference(UserCategory userCategory, UserPreferenceType userPreference, boolean active) {
+        if (userPreference.equals(UserPreferenceType.EXPLICIT)) {
             userCategory.setExplicitRecommendation(active);
         } else {
             userCategory.setIgnored(active);
@@ -106,8 +106,8 @@ public class UserCategoryService {
                 .collect(Collectors.toList());
     }
 
-    private List<UserCategory> findUserCategoriesToUpdateToFalse(User user, UserPreference userPreference, List<Category> categories) {
-        List<UserCategory> existingUserCategoriesByType = UserPreference.EXPLICIT.equals(userPreference)
+    private List<UserCategory> findUserCategoriesToUpdateToFalse(User user, UserPreferenceType userPreference, List<Category> categories) {
+        List<UserCategory> existingUserCategoriesByType = UserPreferenceType.EXPLICIT.equals(userPreference)
                 ? userCategoryRepository.findByUserIdAndExplicitRecommendation(user.getUserId(), true)
                 : userCategoryRepository.findByUserIdAndIgnored(user.getUserId(), true);
         List<Long> categoriesIds = categories.stream().map(Category::getCategoryId).collect(Collectors.toList());

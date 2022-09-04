@@ -1,9 +1,10 @@
 package jonatan.andrei.service;
 
+import io.netty.util.internal.StringUtil;
 import jonatan.andrei.domain.PostType;
 import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
-import jonatan.andrei.domain.UserPreference;
+import jonatan.andrei.domain.UserPreferenceType;
 import jonatan.andrei.dto.CreateUserRequestDto;
 import jonatan.andrei.dto.UpdateUserRequestDto;
 import jonatan.andrei.dto.UserFollowerRequestDto;
@@ -112,9 +113,9 @@ public class UserService {
     }
 
     public User findUserByIntegrationUserIdOrCreateByAnonymousId(String integrationUserId, String integrationAnonymousUserId) {
-        if (nonNull(integrationUserId)) {
+        if (!StringUtil.isNullOrEmpty(integrationUserId)) {
             return findByIntegrationUserId(integrationUserId);
-        } else if (nonNull(integrationAnonymousUserId)) {
+        } else if (!StringUtil.isNullOrEmpty(integrationAnonymousUserId)) {
             Optional<User> anonymousUser = userRepository.findByIntegrationUserIdAndIntegrationAnonymousUserId(null, integrationAnonymousUserId);
             return anonymousUser.orElse(userRepository.save(UserFactory.newUserWithIntegrationAnonymousUserId(integrationAnonymousUserId)));
         } else {
@@ -148,13 +149,13 @@ public class UserService {
 
     private void saveUserPreferences(User user, UserPreferencesRequestDto userPreferences) {
         List<Category> explicitCategories = categoryService.findByIntegrationCategoriesIds(userPreferences.getExplicitIntegrationCategoriesIds());
-        userCategoryService.saveUserPreferences(user, explicitCategories, UserPreference.EXPLICIT);
+        userCategoryService.saveUserPreferences(user, explicitCategories, UserPreferenceType.EXPLICIT);
         List<Category> ignoredCategories = categoryService.findByIntegrationCategoriesIds(userPreferences.getIgnoredIntegrationCategoriesIds());
-        userCategoryService.saveUserPreferences(user, ignoredCategories, UserPreference.IGNORED);
+        userCategoryService.saveUserPreferences(user, ignoredCategories, UserPreferenceType.IGNORED);
         List<Tag> explicitTags = tagService.findOrCreateTags(userPreferences.getExplicitTags());
-        userTagService.saveUserPreferences(user, explicitTags, UserPreference.EXPLICIT);
+        userTagService.saveUserPreferences(user, explicitTags, UserPreferenceType.EXPLICIT);
         List<Tag> ignoredTags = tagService.findOrCreateTags(userPreferences.getIgnoredTags());
-        userTagService.saveUserPreferences(user, ignoredTags, UserPreference.IGNORED);
+        userTagService.saveUserPreferences(user, ignoredTags, UserPreferenceType.IGNORED);
     }
 
     public void updateQuestionViewed(List<User> users) {

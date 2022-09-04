@@ -23,7 +23,7 @@ import javax.validation.constraints.NotNull;
 public class QuestionComment extends Post {
 
     @NotNull
-    @Column(name = "content", length = 4000)
+    @Column(name = "content", length = 24000)
     private String content;
 
     @NotNull

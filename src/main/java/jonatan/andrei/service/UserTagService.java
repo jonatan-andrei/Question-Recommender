@@ -2,7 +2,7 @@ package jonatan.andrei.service;
 
 import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
-import jonatan.andrei.domain.UserPreference;
+import jonatan.andrei.domain.UserPreferenceType;
 import jonatan.andrei.factory.UserTagFactory;
 import jonatan.andrei.model.*;
 import jonatan.andrei.repository.UserTagRepository;
@@ -70,7 +70,7 @@ public class UserTagService {
         userTagRepository.saveAll(userTags);
     }
 
-    public void saveUserPreferences(User user, List<Tag> tags, UserPreference userPreference) {
+    public void saveUserPreferences(User user, List<Tag> tags, UserPreferenceType userPreference) {
         List<UserTag> userTags = findOrCreateUserTags(tags, user.getUserId());
         userTags.forEach(ut -> updateUserPreference(ut, userPreference, true));
 
@@ -81,8 +81,8 @@ public class UserTagService {
         userTagRepository.saveAll(userTags);
     }
 
-    private void updateUserPreference(UserTag userTag, UserPreference userPreference, boolean active) {
-        if (userPreference.equals(UserPreference.EXPLICIT)) {
+    private void updateUserPreference(UserTag userTag, UserPreferenceType userPreference, boolean active) {
+        if (userPreference.equals(UserPreferenceType.EXPLICIT)) {
             userTag.setExplicitRecommendation(active);
         } else {
             userTag.setIgnored(active);
@@ -107,8 +107,8 @@ public class UserTagService {
                 .collect(Collectors.toList());
     }
 
-    private List<UserTag> findUserTagsToUpdateToFalse(User user, UserPreference userPreference, List<Tag> tags) {
-        List<UserTag> existingUserTagsByType = UserPreference.EXPLICIT.equals(userPreference)
+    private List<UserTag> findUserTagsToUpdateToFalse(User user, UserPreferenceType userPreference, List<Tag> tags) {
+        List<UserTag> existingUserTagsByType = UserPreferenceType.EXPLICIT.equals(userPreference)
                 ? userTagRepository.findByUserIdAndExplicitRecommendation(user.getUserId(), true)
                 : userTagRepository.findByUserIdAndIgnored(user.getUserId(), true);
         List<Long> tagsIds = tags.stream().map(Tag::getTagId).collect(Collectors.toList());
