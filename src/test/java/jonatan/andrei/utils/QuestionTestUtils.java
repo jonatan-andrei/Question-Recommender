@@ -26,14 +26,14 @@ public class QuestionTestUtils {
         return saveWithIntegrationPostIdAndPublicationDate(integrationPostId, LocalDateTime.now());
     }
 
-    public Question saveWithIntegrationPostIdAndPublicationDate(String integrationPostId, LocalDateTime publicationDate) {
+    public Question saveWithIntegrationPostIdAndPublicationDateAndUpdateDate(String integrationPostId, LocalDateTime publicationDate, LocalDateTime updateDate) {
         User user = userTestUtils.saveWithIntegrationUserId(integrationPostId);
         return questionRepository.save(Question.builder()
                 .integrationPostId(integrationPostId)
                 .postType(PostType.QUESTION)
                 .userId(user.getUserId())
                 .publicationDate(publicationDate)
-                .updateDate(LocalDateTime.now())
+                .updateDate(updateDate)
                 .integrationDate(LocalDateTime.now())
                 .hidden(false)
                 .upvotes(0)
@@ -44,5 +44,9 @@ public class QuestionTestUtils {
                 .followers(0)
                 .answers(0)
                 .build());
+    }
+
+    public Question saveWithIntegrationPostIdAndPublicationDate(String integrationPostId, LocalDateTime publicationDate) {
+        return saveWithIntegrationPostIdAndPublicationDateAndUpdateDate(integrationPostId, publicationDate, publicationDate);
     }
 }

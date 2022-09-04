@@ -97,5 +97,8 @@ public abstract class AbstractServiceTest {
     QuestionViewRepository questionViewRepository;
 
     @Inject
+    RecommendationSettingsService recommendationSettingsService;
+
+    @Inject
     EntityManager entityManager;
 }

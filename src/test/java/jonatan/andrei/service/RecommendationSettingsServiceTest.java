@@ -23,7 +23,7 @@ public class RecommendationSettingsServiceTest extends AbstractServiceTest {
         // Arrange
         Map<RecommendationSettingsType, Integer> recommendationSettingsMap = new HashMap<>();
         recommendationSettingsMap.put(RecommendationSettingsType.QUESTION_LIST_RELEVANCE_EXPLICIT_TAG, 50);
-        recommendationSettingsMap.put(RecommendationSettingsType.QUESTION_LIST_RELEVANCE_PUBLICATION_DATE, 25);
+        recommendationSettingsMap.put(RecommendationSettingsType.QUESTION_LIST_RELEVANCE_PUBLICATION_DATE_RELEVANT, 25);
 
         // Act
         recommendationSettingsService.save(recommendationSettingsMap);
@@ -33,7 +33,7 @@ public class RecommendationSettingsServiceTest extends AbstractServiceTest {
         // Assert
         Map<RecommendationSettingsType, Integer> result = recommendationSettingsService.findRecommendationSettings();
         assertEquals(50, result.get(RecommendationSettingsType.QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
-        assertEquals(25, result.get(RecommendationSettingsType.QUESTION_LIST_RELEVANCE_PUBLICATION_DATE));
+        assertEquals(25, result.get(RecommendationSettingsType.QUESTION_LIST_RELEVANCE_PUBLICATION_DATE_RELEVANT));
         assertEquals(-20, result.get(RecommendationSettingsType.QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED));
     }
 }

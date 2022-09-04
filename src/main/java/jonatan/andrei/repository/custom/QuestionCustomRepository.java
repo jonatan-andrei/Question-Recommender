@@ -28,12 +28,30 @@ public class QuestionCustomRepository {
         Query nativeQuery = entityManager.createNativeQuery("""
                  SELECT q.post_id, p.integration_post_id,
                  
-                 -- PUBLICATION DATE SCORE
-                 (GREATEST(:numberOfDaysQuestionIsRelevant - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, :minimalRelevance) * :publicationDateRelevance / :numberOfDaysQuestionIsRelevant)
-                 -- eg: (GREATEST(365 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 1) * 100 / 365)
+                 -- PUBLICATION DATE RECENT SCORE
+                 (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRecent / :numberOfDaysQuestionIsRecent)
+                 -- eg: (GREATEST(7 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 7)
+                 -- Extract the seconds between the publish date and the current date
+                 -- Considers that the date is not recent if the number of days is greater than the parameter
+                 -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is recent (eg: 7)
+                 
+                 +
+                 
+                 -- PUBLICATION DATE RELEVANT SCORE
+                 (GREATEST(:numberOfDaysQuestionIsRelevant - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRelevant / :numberOfDaysQuestionIsRelevant)
+                 -- eg: (GREATEST(365 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 365)
                  -- Extract the seconds between the publish date and the current date
                  -- Considers that the date is irrelevant if the number of days is greater than the parameter
                  -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is relevant (eg: 365)
+                 
+                 +
+                 
+                 -- UPDATE DATE RECENT SCORE
+                 (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.update_date)/:numberOfSecondsInDay, 0) * :relevanceUpdateDateRecent / :numberOfDaysQuestionIsRecent)
+                 -- eg: (GREATEST(7 - EXTRACT(EPOCH FROM now() - p.update_date)/86400, 0) * 50 / 7)
+                 -- Extract the seconds between the update date and the current date
+                 -- Considers that the date is not recent if the number of days is greater than the parameter
+                 -- Multiply the value obtained by the desired importance (eg: 50) and divide by the number of days the question is recent (eg: 7)
                  
                  +
                  
@@ -91,16 +109,21 @@ public class QuestionCustomRepository {
                                 
                 """, Tuple.class);
         nativeQuery.setParameter("userId", userId);
-        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RELEVANT));
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
-        nativeQuery.setParameter("numberOfSecondsInDay", 86400);
-        nativeQuery.setParameter("minimalRelevance", 1);
-        nativeQuery.setParameter("publicationDateRelevance", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PUBLICATION_DATE));
-        nativeQuery.setParameter("categoryExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_CATEGORY));
-        nativeQuery.setParameter("tagExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
         nativeQuery.setParameter("recommendedListId", recommendedListId);
         nativeQuery.setParameter("limit", lengthQuestionListPage);
         nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionListPage);
+
+        nativeQuery.setParameter("numberOfDaysQuestionIsRecent", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RECENT));
+        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RELEVANT));
+        nativeQuery.setParameter("numberOfSecondsInDay", 86400);
+        nativeQuery.setParameter("relevancePublicationDateRecent", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PUBLICATION_DATE_RECENT));
+        nativeQuery.setParameter("relevancePublicationDateRelevant", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PUBLICATION_DATE_RELEVANT));
+        nativeQuery.setParameter("relevanceUpdateDateRecent", recommendationSettings.get(QUESTION_LIST_RELEVANCE_UPDATE_DATE_RECENT));
+
+
+        nativeQuery.setParameter("categoryExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_CATEGORY));
+        nativeQuery.setParameter("tagExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()
                 .map(t -> new RecommendedQuestionOfPageDto(

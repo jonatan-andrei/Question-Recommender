@@ -4,6 +4,8 @@ import jonatan.andrei.dto.RecommendedListResponseDto;
 import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
 import jonatan.andrei.model.RecommendedListPageQuestion;
 
+import java.math.RoundingMode;
+
 public class RecommendedListPageFactory {
 
     public static RecommendedListResponseDto.RecommendedQuestionResponseDto newDto(RecommendedListPageQuestion recommendedListPageQuestion) {
@@ -18,7 +20,7 @@ public class RecommendedListPageFactory {
                 .recommendedListPageId(recommendedListPageId)
                 .questionId(recommendedQuestionOfPageDto.getPostId())
                 .integrationQuestionId(recommendedQuestionOfPageDto.getIntegrationPostId())
-                .score(recommendedQuestionOfPageDto.getScore())
+                .score(recommendedQuestionOfPageDto.getScore().setScale(2, RoundingMode.HALF_UP))
                 .build();
     }
 }
