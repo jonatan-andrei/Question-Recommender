@@ -54,28 +54,39 @@ public class QuestionCustomRepository {
                  -- Multiply the value obtained by the desired importance (eg: 50) and divide by the number of days the question is recent (eg: 7)
                  
                  +
-                 
-                 -- CATEGORY EXPLICIT RECOMMENDATION SCORE
-                 (CASE
-                    WHEN uc.explicit_recommendation THEN :categoryExplicitRecommendationRelevanceQuestionListPage
-                    ELSE 0
-                  END)
+                                   
+                 -- USER TAG SCORE
+                 (SELECT
+                    COALESCE(SUM(
+                    
+                    -- TAG - EXPLICIT RECOMMENDATION
+                    CASE
+                        WHEN ut.explicit_recommendation THEN :relevanceExplicitRecommendationTag
+                        ELSE 0
+                    END
+                    
+                    +
+                    
+                    -- TAG - NUMBER QUESTIONS ASKED
+                    COALESCE(ut.number_questions_asked * (
+                    NULLIF(CASE
+                        WHEN ufr.number_questions_asked >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsAskedInTag
+                        ELSE :relevanceQuestionsAskedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_asked
+                      END, 0)) / NULLIF(ufr.number_questions_asked,0),0)
+                    
+                    ),0)
                   
-                 +
-                 
-                 -- TAG EXPLICIT RECOMMENDATION SCORE
-                 (CASE
-                    WHEN ut.explicit_recommendation THEN :tagExplicitRecommendationRelevanceQuestionListPage
-                    ELSE 0
-                  END)
+                  AS user_tag_score
+                  
+                  FROM question_tag qt
+                  INNER JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
+                  WHERE qt.question_id = q.post_id
+                  )
                  
                  AS score
                  FROM question q
-                 INNER JOIN post p on p.post_id = q.post_id
-                 LEFT JOIN question_category qc ON q.post_id = qc.question_id
-                 LEFT JOIN user_category uc ON qc.category_id = uc.category_id AND uc.user_id = :userId
-                 LEFT JOIN question_tag qt ON q.post_id = qt.question_id
-                 LEFT JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
+                 INNER JOIN post p ON p.post_id = q.post_id
+                 INNER JOIN users ufr ON ufr.user_id = :userId
                  
                  WHERE
                     
@@ -96,13 +107,13 @@ public class QuestionCustomRepository {
                                 INNER JOIN user_category uc
                                 ON qc.category_id = uc.category_id
                                 AND uc.user_id = :userId
-                                WHERE qc.question_id = q.post_id AND uc.ignored IS TRUE)
+                                WHERE qc.question_id = q.post_id AND uc.ignored)
                   AND
                     NOT EXISTS (SELECT 1 FROM question_tag qt
                                 INNER JOIN user_tag ut
                                 ON qt.tag_id = ut.tag_id
                                 AND ut.user_id = :userId
-                                WHERE qt.question_id = q.post_id AND ut.ignored IS TRUE)
+                                WHERE qt.question_id = q.post_id AND ut.ignored)
                  
                  ORDER BY score DESC, p.publication_date DESC
                  LIMIT :limit OFFSET :offset
@@ -113,6 +124,7 @@ public class QuestionCustomRepository {
         nativeQuery.setParameter("recommendedListId", recommendedListId);
         nativeQuery.setParameter("limit", lengthQuestionListPage);
         nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionListPage);
+        nativeQuery.setParameter("minimumOfActivitiesToConsiderMaximumScore", recommendationSettings.get(QUESTION_LIST_MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE));
 
         nativeQuery.setParameter("numberOfDaysQuestionIsRecent", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RECENT));
         nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RELEVANT));
@@ -121,9 +133,9 @@ public class QuestionCustomRepository {
         nativeQuery.setParameter("relevancePublicationDateRelevant", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PUBLICATION_DATE_RELEVANT));
         nativeQuery.setParameter("relevanceUpdateDateRecent", recommendationSettings.get(QUESTION_LIST_RELEVANCE_UPDATE_DATE_RECENT));
 
+        nativeQuery.setParameter("relevanceExplicitRecommendationTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
+        nativeQuery.setParameter("relevanceQuestionsAskedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ASKED_IN_TAG));
 
-        nativeQuery.setParameter("categoryExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_CATEGORY));
-        nativeQuery.setParameter("tagExplicitRecommendationRelevanceQuestionListPage", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()
                 .map(t -> new RecommendedQuestionOfPageDto(
