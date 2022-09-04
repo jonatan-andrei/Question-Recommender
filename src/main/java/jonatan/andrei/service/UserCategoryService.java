@@ -44,27 +44,27 @@ public class UserCategoryService {
             UserCategory userCategory = findOrCreateUserCategory(userCategories, user.getUserId(), category);
             switch (userActionType) {
                 case QUESTION_ASKED ->
-                        userCategory.setNumberQuestionsAsked(userCategory.getNumberQuestionsAsked() + userActionUpdateType.getValue());
+                        userCategory.setNumberQuestionsAsked(userCategory.getNumberQuestionsAsked().add(userActionUpdateType.getValue()));
                 case QUESTION_VIEWED ->
-                        userCategory.setNumberQuestionsViewed(userCategory.getNumberQuestionsViewed() + userActionUpdateType.getValue());
+                        userCategory.setNumberQuestionsViewed(userCategory.getNumberQuestionsViewed().add(userActionUpdateType.getValue()));
                 case QUESTION_ANSWERED ->
-                        userCategory.setNumberQuestionsAnswered(userCategory.getNumberQuestionsAnswered() + userActionUpdateType.getValue());
+                        userCategory.setNumberQuestionsAnswered(userCategory.getNumberQuestionsAnswered().add(userActionUpdateType.getValue()));
                 case QUESTION_COMMENTED ->
-                        userCategory.setNumberQuestionsCommented(userCategory.getNumberQuestionsCommented() + userActionUpdateType.getValue());
+                        userCategory.setNumberQuestionsCommented(userCategory.getNumberQuestionsCommented().add(userActionUpdateType.getValue()));
                 case QUESTION_FOLLOWED ->
-                        userCategory.setNumberQuestionsFollowed(userCategory.getNumberQuestionsFollowed() + userActionUpdateType.getValue());
+                        userCategory.setNumberQuestionsFollowed(userCategory.getNumberQuestionsFollowed().add(userActionUpdateType.getValue()));
                 case QUESTION_UPVOTED ->
-                        userCategory.setNumberQuestionsUpvoted(userCategory.getNumberQuestionsUpvoted() + userActionUpdateType.getValue());
+                        userCategory.setNumberQuestionsUpvoted(userCategory.getNumberQuestionsUpvoted().add(userActionUpdateType.getValue()));
                 case QUESTION_DOWNVOTED ->
-                        userCategory.setNumberQuestionsDownvoted(userCategory.getNumberQuestionsDownvoted() + userActionUpdateType.getValue());
+                        userCategory.setNumberQuestionsDownvoted(userCategory.getNumberQuestionsDownvoted().add(userActionUpdateType.getValue()));
                 case ANSWER_UPVOTED ->
-                        userCategory.setNumberAnswersUpvoted(userCategory.getNumberAnswersUpvoted() + userActionUpdateType.getValue());
+                        userCategory.setNumberAnswersUpvoted(userCategory.getNumberAnswersUpvoted().add(userActionUpdateType.getValue()));
                 case ANSWER_DOWNVOTED ->
-                        userCategory.setNumberAnswersDownvoted(userCategory.getNumberAnswersDownvoted() + userActionUpdateType.getValue());
+                        userCategory.setNumberAnswersDownvoted(userCategory.getNumberAnswersDownvoted().add(userActionUpdateType.getValue()));
                 case COMMENT_UPVOTED ->
-                        userCategory.setNumberCommentsUpvoted(userCategory.getNumberCommentsUpvoted() + userActionUpdateType.getValue());
+                        userCategory.setNumberCommentsUpvoted(userCategory.getNumberCommentsUpvoted().add(userActionUpdateType.getValue()));
                 case COMMENT_DOWNVOTED ->
-                        userCategory.setNumberCommentsDownvoted(userCategory.getNumberCommentsDownvoted() + userActionUpdateType.getValue());
+                        userCategory.setNumberCommentsDownvoted(userCategory.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
             }
         }
         userCategoryRepository.saveAll(userCategories);

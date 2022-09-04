@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -70,47 +71,47 @@ public class User {
 
     @NotNull
     @Column(name = "number_questions_asked")
-    private Integer numberQuestionsAsked;
+    private BigDecimal numberQuestionsAsked;
 
     @NotNull
     @Column(name = "number_questions_viewed")
-    private Integer numberQuestionsViewed;
+    private BigDecimal numberQuestionsViewed;
 
     @NotNull
     @Column(name = "number_questions_answered")
-    private Integer numberQuestionsAnswered;
+    private BigDecimal numberQuestionsAnswered;
 
     @NotNull
     @Column(name = "number_questions_commented")
-    private Integer numberQuestionsCommented;
+    private BigDecimal numberQuestionsCommented;
 
     @NotNull
     @Column(name = "number_questions_followed")
-    private Integer numberQuestionsFollowed;
+    private BigDecimal numberQuestionsFollowed;
 
     @NotNull
     @Column(name = "number_questions_upvoted")
-    private Integer numberQuestionsUpvoted;
+    private BigDecimal numberQuestionsUpvoted;
 
     @NotNull
     @Column(name = "number_questions_downvoted")
-    private Integer numberQuestionsDownvoted;
+    private BigDecimal numberQuestionsDownvoted;
 
     @NotNull
     @Column(name = "number_answers_upvoted")
-    private Integer numberAnswersUpvoted;
+    private BigDecimal numberAnswersUpvoted;
 
     @NotNull
     @Column(name = "number_answers_downvoted")
-    private Integer numberAnswersDownvoted;
+    private BigDecimal numberAnswersDownvoted;
 
     @NotNull
     @Column(name = "number_comments_upvoted")
-    private Integer numberCommentsUpvoted;
+    private BigDecimal numberCommentsUpvoted;
 
     @NotNull
     @Column(name = "number_comments_downvoted")
-    private Integer numberCommentsDownvoted;
+    private BigDecimal numberCommentsDownvoted;
 
 
 }

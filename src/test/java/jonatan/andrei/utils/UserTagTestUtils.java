@@ -8,6 +8,7 @@ import jonatan.andrei.repository.UserTagRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 
 @ApplicationScoped
 public class UserTagTestUtils {
@@ -27,7 +28,7 @@ public class UserTagTestUtils {
         return userTagRepository.save(build(user, tag));
     }
 
-    public UserTag saveWithQuestionViews(User user, Tag tag, Integer questionViews) {
+    public UserTag saveWithQuestionViews(User user, Tag tag, BigDecimal questionViews) {
         UserTag userTag = build(user, tag);
         userTag.setNumberQuestionsViewed(questionViews);
         return save(userTag);

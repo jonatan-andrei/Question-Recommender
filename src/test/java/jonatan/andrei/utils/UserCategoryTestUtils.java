@@ -8,6 +8,7 @@ import jonatan.andrei.repository.UserCategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 
 @ApplicationScoped
 public class UserCategoryTestUtils {
@@ -27,7 +28,7 @@ public class UserCategoryTestUtils {
         return userCategoryRepository.save(build(user, category));
     }
 
-    public UserCategory saveWithQuestionViews(User user, Category category, Integer questionViews) {
+    public UserCategory saveWithQuestionViews(User user, Category category, BigDecimal questionViews) {
         UserCategory userCategory = build(user, category);
         userCategory.setNumberQuestionsViewed(questionViews);
         return save(userCategory);

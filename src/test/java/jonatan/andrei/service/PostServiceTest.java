@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -326,7 +327,7 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), question.getIntegrationPostId());
         UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
-        assertEquals(1, userCategory.getNumberQuestionsAsked());
+        assertEquals(BigDecimal.valueOf(1), userCategory.getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -353,9 +354,9 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), question.getIntegrationPostId());
         UserTag userTagA = userTagRepository.findByUserIdAndTagId(user.getUserId(), tagA.getTagId());
-        assertEquals(1, userTagA.getNumberQuestionsAsked());
+        assertEquals(BigDecimal.valueOf(1), userTagA.getNumberQuestionsAsked().stripTrailingZeros());
         UserTag userTagB = userTagRepository.findByUserIdAndTagId(user.getUserId(), tagB.getTagId());
-        assertEquals(1, userTagB.getNumberQuestionsAsked());
+        assertEquals(BigDecimal.valueOf(1), userTagB.getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -380,7 +381,7 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), answer.getIntegrationPostId());
         UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
-        assertEquals(1, userCategory.getNumberQuestionsAnswered());
+        assertEquals(BigDecimal.valueOf(1), userCategory.getNumberQuestionsAnswered());
     }
 
     @Test
@@ -405,7 +406,7 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), answer.getIntegrationPostId());
         UserTag userTag = userTagRepository.findByUserIdAndTagId(user.getUserId(), tag.getTagId());
-        assertEquals(1, userTag.getNumberQuestionsAnswered());
+        assertEquals(BigDecimal.valueOf(1), userTag.getNumberQuestionsAnswered());
     }
 
     @Test
@@ -430,7 +431,7 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), questionComment.getIntegrationPostId());
         UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
-        assertEquals(1, userCategory.getNumberQuestionsCommented());
+        assertEquals(BigDecimal.valueOf(1), userCategory.getNumberQuestionsCommented());
     }
 
     @Test
@@ -455,7 +456,7 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), questionComment.getIntegrationPostId());
         UserTag userTag = userTagRepository.findByUserIdAndTagId(user.getUserId(), tag.getTagId());
-        assertEquals(1, userTag.getNumberQuestionsCommented());
+        assertEquals(BigDecimal.valueOf(1), userTag.getNumberQuestionsCommented());
     }
 
     @Test
@@ -483,7 +484,7 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), answerComment.getIntegrationPostId());
         UserCategory userCategory = userCategoryRepository.findByUserIdAndCategoryId(user.getUserId(), category.getCategoryId());
-        assertEquals(1, userCategory.getNumberQuestionsCommented());
+        assertEquals(BigDecimal.valueOf(1), userCategory.getNumberQuestionsCommented().stripTrailingZeros());
     }
 
     @Test
@@ -511,7 +512,7 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), answerComment.getIntegrationPostId());
         UserTag userTag = userTagRepository.findByUserIdAndTagId(user.getUserId(), tag.getTagId());
-        assertEquals(1, userTag.getNumberQuestionsCommented());
+        assertEquals(BigDecimal.valueOf(1), userTag.getNumberQuestionsCommented().stripTrailingZeros());
     }
 
     @Test
@@ -737,10 +738,10 @@ public class PostServiceTest extends AbstractServiceTest {
         questionCategoryRepository.save(QuestionCategoryFactory.newQuestionCategory(question, category2));
 
         User user1 = userTestUtils.saveWithIntegrationUserId("1");
-        userCategoryTestUtils.saveWithQuestionViews(user1, category1, 15);
-        userCategoryTestUtils.saveWithQuestionViews(user1, category2, 10);
+        userCategoryTestUtils.saveWithQuestionViews(user1, category1, BigDecimal.valueOf(15));
+        userCategoryTestUtils.saveWithQuestionViews(user1, category2, BigDecimal.valueOf(10));
         User user2 = userTestUtils.saveWithIntegrationUserId("2");
-        userCategoryTestUtils.saveWithQuestionViews(user2, category1, 20);
+        userCategoryTestUtils.saveWithQuestionViews(user2, category1, BigDecimal.valueOf(20));
         User user3 = userTestUtils.saveWithIntegrationUserId("3");
 
         ViewsRequestDto viewsRequestDto = ViewsRequestDto.builder()
@@ -756,22 +757,22 @@ public class PostServiceTest extends AbstractServiceTest {
 
         // Assert
         UserCategory user1Category1 = userCategoryRepository.findByUserIdAndCategoryId(user1.getUserId(), category1.getCategoryId());
-        assertEquals(16, user1Category1.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(16), user1Category1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user1Category2 = userCategoryRepository.findByUserIdAndCategoryId(user1.getUserId(), category2.getCategoryId());
-        assertEquals(11, user1Category2.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(11), user1Category2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user2Category1 = userCategoryRepository.findByUserIdAndCategoryId(user2.getUserId(), category1.getCategoryId());
-        assertEquals(21, user2Category1.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(21), user2Category1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user2Category2 = userCategoryRepository.findByUserIdAndCategoryId(user2.getUserId(), category2.getCategoryId());
-        assertEquals(1, user2Category2.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(1), user2Category2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user3Category1 = userCategoryRepository.findByUserIdAndCategoryId(user3.getUserId(), category1.getCategoryId());
-        assertEquals(1, user3Category1.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(1), user3Category1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user3Category2 = userCategoryRepository.findByUserIdAndCategoryId(user3.getUserId(), category2.getCategoryId());
-        assertEquals(1, user3Category2.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(1), user3Category2.getNumberQuestionsViewed().stripTrailingZeros());
     }
 
     @Test
@@ -785,10 +786,10 @@ public class PostServiceTest extends AbstractServiceTest {
         questionTagRepository.save(QuestionTagFactory.newQuestionTag(question, tag2));
 
         User user1 = userTestUtils.saveWithIntegrationUserId("1");
-        userTagTestUtils.saveWithQuestionViews(user1, tag1, 15);
-        userTagTestUtils.saveWithQuestionViews(user1, tag2, 10);
+        userTagTestUtils.saveWithQuestionViews(user1, tag1, BigDecimal.valueOf(15));
+        userTagTestUtils.saveWithQuestionViews(user1, tag2, BigDecimal.valueOf(10));
         User user2 = userTestUtils.saveWithIntegrationUserId("2");
-        userTagTestUtils.saveWithQuestionViews(user2, tag1, 20);
+        userTagTestUtils.saveWithQuestionViews(user2, tag1, BigDecimal.valueOf(20));
         User user3 = userTestUtils.saveWithIntegrationUserId("3");
 
         ViewsRequestDto viewsRequestDto = ViewsRequestDto.builder()
@@ -804,22 +805,22 @@ public class PostServiceTest extends AbstractServiceTest {
 
         // Assert
         UserTag user1Tag1 = userTagRepository.findByUserIdAndTagId(user1.getUserId(), tag1.getTagId());
-        assertEquals(16, user1Tag1.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(16), user1Tag1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user1Tag2 = userTagRepository.findByUserIdAndTagId(user1.getUserId(), tag2.getTagId());
-        assertEquals(11, user1Tag2.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(11), user1Tag2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user2Tag1 = userTagRepository.findByUserIdAndTagId(user2.getUserId(), tag1.getTagId());
-        assertEquals(21, user2Tag1.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(21), user2Tag1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user2Tag2 = userTagRepository.findByUserIdAndTagId(user2.getUserId(), tag2.getTagId());
-        assertEquals(1, user2Tag2.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(1), user2Tag2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user3Tag1 = userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag1.getTagId());
-        assertEquals(1, user3Tag1.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(1), user3Tag1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user3Tag2 = userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag2.getTagId());
-        assertEquals(1, user3Tag2.getNumberQuestionsViewed());
+        assertEquals(BigDecimal.valueOf(1), user3Tag2.getNumberQuestionsViewed().stripTrailingZeros());
     }
 
     @Test
@@ -1128,7 +1129,7 @@ public class PostServiceTest extends AbstractServiceTest {
         Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
         assertEquals(VoteType.UPVOTE, vote.getVoteType());
         user = userRepository.findByIntegrationUserId("11").get();
-        assertEquals(1, user.getNumberQuestionsUpvoted());
+        assertEquals(BigDecimal.valueOf(1), user.getNumberQuestionsUpvoted().stripTrailingZeros());
     }
 
     @Test
@@ -1155,7 +1156,7 @@ public class PostServiceTest extends AbstractServiceTest {
         Vote vote = voteRepository.findByUserIdAndPostId(user.getUserId(), post.getPostId()).get();
         assertEquals(VoteType.DOWNVOTE, vote.getVoteType());
         user = userRepository.findByIntegrationUserId("11").get();
-        assertEquals(1, user.getNumberQuestionsDownvoted());
+        assertEquals(BigDecimal.valueOf(1), user.getNumberQuestionsDownvoted().stripTrailingZeros());
     }
 
     @Test

@@ -73,6 +73,96 @@ public class QuestionCustomRepository {
                         WHEN ufr.number_questions_asked >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsAskedInTag
                         ELSE :relevanceQuestionsAskedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_asked
                       END, 0)) / NULLIF(ufr.number_questions_asked,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER QUESTIONS ANSWERED
+                    COALESCE(ut.number_questions_answered * (
+                    NULLIF(CASE
+                        WHEN ufr.number_questions_answered >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsAnsweredInTag
+                        ELSE :relevanceQuestionsAnsweredInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_answered
+                      END, 0)) / NULLIF(ufr.number_questions_answered,0),0)
+                      
+                    +
+                      
+                    -- TAG - NUMBER QUESTIONS COMMENTED
+                    COALESCE(ut.number_questions_commented * (
+                    NULLIF(CASE
+                        WHEN ufr.number_questions_commented >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsCommentedInTag
+                        ELSE :relevanceQuestionsCommentedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_commented
+                      END, 0)) / NULLIF(ufr.number_questions_commented,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER QUESTIONS VIEWED
+                    COALESCE(ut.number_questions_viewed * (
+                    NULLIF(CASE
+                        WHEN ufr.number_questions_viewed >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsViewedInTag
+                        ELSE :relevanceQuestionsViewedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_viewed
+                      END, 0)) / NULLIF(ufr.number_questions_viewed,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER QUESTIONS FOLLOWED
+                    COALESCE(ut.number_questions_followed * (
+                    NULLIF(CASE
+                        WHEN ufr.number_questions_followed >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsFollowedInTag
+                        ELSE :relevanceQuestionsFollowedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_followed
+                      END, 0)) / NULLIF(ufr.number_questions_followed,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER QUESTIONS UPVOTED
+                    COALESCE(ut.number_questions_upvoted * (
+                    NULLIF(CASE
+                        WHEN ufr.number_questions_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsUpvotedInTag
+                        ELSE :relevanceQuestionsUpvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_upvoted
+                      END, 0)) / NULLIF(ufr.number_questions_upvoted,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER QUESTIONS DOWNVOTED
+                    COALESCE(ut.number_questions_downvoted * (
+                    NULLIF(CASE
+                        WHEN ufr.number_questions_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsDownvotedInTag
+                        ELSE :relevanceQuestionsDownvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_downvoted
+                      END, 0)) / NULLIF(ufr.number_questions_downvoted,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER ANSWERS UPVOTED
+                    COALESCE(ut.number_answers_upvoted * (
+                    NULLIF(CASE
+                        WHEN ufr.number_answers_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceAnswersUpvotedInTag
+                        ELSE :relevanceAnswersUpvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_answers_upvoted
+                      END, 0)) / NULLIF(ufr.number_answers_upvoted,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER ANSWERS DOWNVOTED
+                    COALESCE(ut.number_answers_downvoted * (
+                    NULLIF(CASE
+                        WHEN ufr.number_answers_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceAnswersDownvotedInTag
+                        ELSE :relevanceAnswersDownvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_answers_downvoted
+                      END, 0)) / NULLIF(ufr.number_answers_downvoted,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER COMMENTS UPVOTED
+                    COALESCE(ut.number_comments_upvoted * (
+                    NULLIF(CASE
+                        WHEN ufr.number_comments_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceCommentsUpvotedInTag
+                        ELSE :relevanceCommentsUpvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_comments_upvoted
+                      END, 0)) / NULLIF(ufr.number_comments_upvoted,0),0)
+                      
+                    +
+                    
+                    -- TAG - NUMBER COMMENTS DOWNVOTED
+                    COALESCE(ut.number_comments_downvoted * (
+                    NULLIF(CASE
+                        WHEN ufr.number_comments_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceCommentsDownvotedInTag
+                        ELSE :relevanceCommentsDownvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_comments_downvoted
+                      END, 0)) / NULLIF(ufr.number_comments_downvoted,0),0)                  
                     
                     ),0)
                   
@@ -135,6 +225,16 @@ public class QuestionCustomRepository {
 
         nativeQuery.setParameter("relevanceExplicitRecommendationTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
         nativeQuery.setParameter("relevanceQuestionsAskedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ASKED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsAnsweredInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ANSWERED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsCommentedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_COMMENTED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsViewedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_VIEWED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsFollowedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsUpvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsDownvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_DOWNVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceAnswersUpvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_ANSWERS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceAnswersDownvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_ANSWERS_DOWNVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceCommentsUpvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_COMMENTS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceCommentsDownvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG));
 
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()

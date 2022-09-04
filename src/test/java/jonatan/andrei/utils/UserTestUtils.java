@@ -5,6 +5,7 @@ import jonatan.andrei.repository.UserRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @ApplicationScoped
@@ -34,17 +35,17 @@ public class UserTestUtils {
                 .notificationEnable(true)
                 .recommendationEnable(true)
                 .lastActivityDate(LocalDateTime.now())
-                .numberQuestionsAsked(0)
-                .numberQuestionsViewed(0)
-                .numberQuestionsAnswered(0)
-                .numberQuestionsCommented(0)
-                .numberQuestionsFollowed(0)
-                .numberQuestionsUpvoted(0)
-                .numberAnswersUpvoted(0)
-                .numberCommentsUpvoted(0)
-                .numberQuestionsDownvoted(0)
-                .numberAnswersDownvoted(0)
-                .numberCommentsDownvoted(0)
+                .numberQuestionsAsked(BigDecimal.ZERO)
+                .numberQuestionsViewed(BigDecimal.ZERO)
+                .numberQuestionsAnswered(BigDecimal.ZERO)
+                .numberQuestionsCommented(BigDecimal.ZERO)
+                .numberQuestionsFollowed(BigDecimal.ZERO)
+                .numberQuestionsUpvoted(BigDecimal.ZERO)
+                .numberAnswersUpvoted(BigDecimal.ZERO)
+                .numberCommentsUpvoted(BigDecimal.ZERO)
+                .numberQuestionsDownvoted(BigDecimal.ZERO)
+                .numberAnswersDownvoted(BigDecimal.ZERO)
+                .numberCommentsDownvoted(BigDecimal.ZERO)
                 .build());
     }
 
@@ -59,17 +60,17 @@ public class UserTestUtils {
                 .notificationEnable(false)
                 .recommendationEnable(false)
                 .lastActivityDate(LocalDateTime.now())
-                .numberQuestionsAsked(0)
-                .numberQuestionsViewed(0)
-                .numberQuestionsAnswered(0)
-                .numberQuestionsCommented(0)
-                .numberQuestionsFollowed(0)
-                .numberQuestionsUpvoted(0)
-                .numberAnswersUpvoted(0)
-                .numberCommentsUpvoted(0)
-                .numberQuestionsDownvoted(0)
-                .numberAnswersDownvoted(0)
-                .numberCommentsDownvoted(0)
+                .numberQuestionsAsked(BigDecimal.ZERO)
+                .numberQuestionsViewed(BigDecimal.ZERO)
+                .numberQuestionsAnswered(BigDecimal.ZERO)
+                .numberQuestionsCommented(BigDecimal.ZERO)
+                .numberQuestionsFollowed(BigDecimal.ZERO)
+                .numberQuestionsUpvoted(BigDecimal.ZERO)
+                .numberAnswersUpvoted(BigDecimal.ZERO)
+                .numberCommentsUpvoted(BigDecimal.ZERO)
+                .numberQuestionsDownvoted(BigDecimal.ZERO)
+                .numberAnswersDownvoted(BigDecimal.ZERO)
+                .numberCommentsDownvoted(BigDecimal.ZERO)
                 .build());
     }
 }
