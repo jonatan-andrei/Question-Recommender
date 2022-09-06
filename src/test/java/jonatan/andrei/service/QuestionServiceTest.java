@@ -4,6 +4,7 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
+import jonatan.andrei.factory.QuestionViewFactory;
 import jonatan.andrei.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -101,6 +102,82 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
         // Assert
         assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-50));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceUserAlreadyViewed(){
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        questionRepository.save(question);
+        QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
+        questionView.setNumberOfViews(10);
+        questionViewRepository.save(questionView);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-200));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceUserAlreadyViewedInList(){
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        questionRepository.save(question);
+        QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
+        questionView.setNumberOfRecommendationsInList(10);
+        questionViewRepository.save(questionView);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-150));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceUserAlreadyViewedInEmail(){
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        questionRepository.save(question);
+        QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
+        questionView.setNumberOfRecommendationsInEmail(1);
+        questionViewRepository.save(questionView);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-15));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceUserAlreadyViewedInNotification(){
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        questionRepository.save(question);
+        QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
+        questionView.setNotifiedQuestion(true);
+        questionViewRepository.save(questionView);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-30));
     }
 
     @Test

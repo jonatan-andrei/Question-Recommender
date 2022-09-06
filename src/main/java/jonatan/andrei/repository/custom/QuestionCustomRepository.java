@@ -75,6 +75,29 @@ public class QuestionCustomRepository {
                   END)
                  
                  +
+                 
+                 -- USER ALREADY VIEWED
+                 (COALESCE(qv.number_of_views,0) * :relevanceUserAlreadyViewed)
+                 
+                 +
+                 
+                 -- USER ALREADY VIEWED IN LIST
+                 (COALESCE(qv.number_of_recommendations_in_list,0) * :relevanceUserAlreadyViewedInList)
+                 
+                 +
+                 
+                 -- USER ALREADY VIEWED IN EMAIL
+                 (COALESCE(qv.number_of_recommendations_in_email,0) * :relevanceUserAlreadyViewedInEmail)
+                 
+                 +
+                 
+                 -- USER ALREADY VIEWED IN NOTIFICATION
+                 (CASE
+                        WHEN qv.notified_question IS TRUE THEN :relevanceUserAlreadyViewedInNotification
+                        ELSE 0
+                  END)
+                 
+                 +
                                    
                  -- USER TAG SCORE
                  (SELECT
@@ -318,6 +341,7 @@ public class QuestionCustomRepository {
                  FROM question q
                  INNER JOIN post p ON p.post_id = q.post_id
                  INNER JOIN users ufr ON ufr.user_id = :userId
+                 LEFT JOIN question_view qv ON p.post_id = qv.question_id and qv.user_id = :userId
                  
                  WHERE
                     
@@ -366,6 +390,11 @@ public class QuestionCustomRepository {
         nativeQuery.setParameter("relevanceHasAnswers", recommendationSettings.get(QUESTION_LIST_RELEVANCE_HAS_ANSWER));
         nativeQuery.setParameter("relevancePerAnswer", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PER_ANSWER));
         nativeQuery.setParameter("relevanceHasBestAnswer", recommendationSettings.get(QUESTION_LIST_RELEVANCE_HAS_BEST_ANSWER));
+
+        nativeQuery.setParameter("relevanceUserAlreadyViewed", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED));
+        nativeQuery.setParameter("relevanceUserAlreadyViewedInList", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED_IN_LIST));
+        nativeQuery.setParameter("relevanceUserAlreadyViewedInEmail", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED_IN_EMAIL));
+        nativeQuery.setParameter("relevanceUserAlreadyViewedInNotification", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED_IN_NOTIFICATION));
 
         nativeQuery.setParameter("relevanceExplicitRecommendationTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
         nativeQuery.setParameter("relevanceQuestionsAskedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ASKED_IN_TAG));
