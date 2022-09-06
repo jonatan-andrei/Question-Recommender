@@ -4,10 +4,7 @@ import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
-import jonatan.andrei.model.Question;
-import jonatan.andrei.model.Tag;
-import jonatan.andrei.model.User;
-import jonatan.andrei.model.UserTag;
+import jonatan.andrei.model.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -50,6 +47,60 @@ public class QuestionServiceTest extends AbstractServiceTest {
         assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(2), question4.getIntegrationPostId(), BigDecimal.valueOf(147.81));
         assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(3), question5.getIntegrationPostId(), BigDecimal.valueOf(104.95));
         assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(4), question3.getIntegrationPostId(), BigDecimal.valueOf(0.00));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceHasAnswer(){
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        question.setAnswers(1);
+        questionRepository.save(question);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-40));
+    }
+
+    @Test
+    public void findRecommendedList_relevancePerAnswer(){
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        question.setAnswers(8);
+        questionRepository.save(question);
+        entityManager.flush();
+        entityManager.clear();
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-110));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceHasBestAnswer(){
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        question.setBestAnswerId(answer.getPostId());
+        questionRepository.save(question);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-50));
     }
 
     @Test
@@ -401,6 +452,366 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAsked(BigDecimal.valueOf(2));
         userTagRepository.save(userTag);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_explicitRecommendation() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setExplicitRecommendation(true);
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(100));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_ignored() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setIgnored(true);
+        userCategoryTestUtils.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertTrue(recommendedQuestionList.isEmpty());
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsAsked() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(6));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(15));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsAnswered() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsAnswered(BigDecimal.valueOf(50));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(12));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsCommented() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsCommented(BigDecimal.valueOf(30));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsCommented(BigDecimal.valueOf(15));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(25));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsViewed() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsViewed(BigDecimal.valueOf(200));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsViewed(BigDecimal.valueOf(10));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsFollowed() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsFollowed(BigDecimal.valueOf(30));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsFollowed(BigDecimal.valueOf(3));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsUpvoted() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
+        userCategoryTestUtils.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(50));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsDownvoted() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsDownvoted(BigDecimal.valueOf(10));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsDownvoted(BigDecimal.valueOf(8));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-4));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberAnswersUpvoted() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberAnswersUpvoted(BigDecimal.valueOf(20));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberAnswersUpvoted(BigDecimal.valueOf(15));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(37.5));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberAnswersDownvoted() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberAnswersDownvoted(BigDecimal.valueOf(20));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberAnswersDownvoted(BigDecimal.valueOf(2));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberCommentsUpvoted() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberCommentsUpvoted(BigDecimal.valueOf(10));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberCommentsUpvoted(BigDecimal.valueOf(1));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(2));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberCommentsDownvoted() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberCommentsDownvoted(BigDecimal.valueOf(10));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberCommentsDownvoted(BigDecimal.valueOf(5));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-1));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_fourCategories() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category1 = categoryTestUtils.saveWithIntegrationCategoryId("1");
+        Category category2 = categoryTestUtils.saveWithIntegrationCategoryId("2");
+        Category category3 = categoryTestUtils.saveWithIntegrationCategoryId("3");
+        Category category4 = categoryTestUtils.saveWithIntegrationCategoryId("4");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category1, category2, category3, category4));
+        UserCategory userCategory1 = userCategoryTestUtils.save(user, category1);
+        userCategory1.setNumberQuestionsAsked(BigDecimal.valueOf(6));
+        userCategoryRepository.save(userCategory1);
+        UserCategory userCategory2 = userCategoryTestUtils.save(user, category2);
+        userCategory2.setExplicitRecommendation(true);
+        userCategoryRepository.save(userCategory2);
+        UserCategory userCategory3 = userCategoryTestUtils.save(user, category3);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertEquals(1, recommendedQuestionList.size());
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(115));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_minimumOfActivitiesToConsiderMaximumScore() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsAsked(BigDecimal.valueOf(5));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(2));
+        userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
         entityManager.flush();
         entityManager.clear();
