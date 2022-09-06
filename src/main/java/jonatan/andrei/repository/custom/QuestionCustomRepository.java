@@ -73,6 +73,67 @@ public class QuestionCustomRepository {
                         WHEN q.best_answer_id IS NOT NULL THEN :relevanceHasBestAnswer
                         ELSE 0
                   END)
+                  
+                  +
+                  
+                  -- DUPLICATE QUESTION
+                  (CASE
+                        WHEN q.duplicate_question_id IS NOT NULL THEN :relevanceDuplicateQuestion
+                        ELSE 0
+                  END)
+                 
+                 +
+                 
+                 -- QUESTION NUMBER VIEWS
+                 (q.views * :relevanceQuestionNumberViews)
+                 
+                 +
+                 
+                 -- QUESTION NUMBER FOLLOWERS
+                 (q.followers * :relevanceQuestionNumberFollowers)
+                 
+                 +
+                 
+                 -- QUESTION NUMBER UPVOTES
+                 (p.upvotes * :relevanceQuestionNumberUpvotes)
+                 
+                 +
+                 
+                 -- QUESTION NUMBER DOWNVOTES
+                 (p.downvotes * :relevanceQuestionNumberDownvotes)
+                 
+                 +
+                 
+                 -- USER ALREADY ANSWERED
+                 ((SELECT COUNT(*) FROM answer a
+                 INNER JOIN post pa ON pa.post_id = a.post_id
+                 WHERE pa.user_id = :userId AND a.question_id = q.post_id)
+                 * :relevanceUserAlreadyAnswered)
+                 
+                 +
+                 
+                 -- USER ALREADY COMMENTED IN QUESTION
+                 ((SELECT COUNT(*) FROM question_comment qc
+                 INNER JOIN post pc ON pc.post_id = qc.post_id
+                 WHERE pc.user_id = :userId AND qc.question_id = q.post_id)
+                 * :relevanceUserAlreadyCommented)
+                 
+                 +
+                 
+                 -- USER ALREADY COMMENTED IN ANSWERS TO THE QUESTION
+                 ((SELECT COUNT(*) FROM answer_comment ac
+                 INNER JOIN post pc ON pc.post_id = ac.post_id
+                 INNER JOIN answer a ON ac.answer_id = a.post_id
+                 WHERE pc.user_id = :userId AND a.question_id = q.post_id)
+                 * :relevanceUserAlreadyCommented)
+                 
+                 +
+                 
+                 -- USER FOLLOWER ASKER
+                  (CASE
+                        WHEN uf.follower_id IS NOT NULL THEN :relevanceUserFollowerAsker
+                        ELSE 0
+                  END)
                  
                  +
                  
@@ -342,6 +403,7 @@ public class QuestionCustomRepository {
                  INNER JOIN post p ON p.post_id = q.post_id
                  INNER JOIN users ufr ON ufr.user_id = :userId
                  LEFT JOIN question_view qv ON p.post_id = qv.question_id and qv.user_id = :userId
+                 LEFT JOIN user_follower uf ON follower_id = :userId AND p.user_id = uf.user_id
                  
                  WHERE
                     
@@ -390,6 +452,14 @@ public class QuestionCustomRepository {
         nativeQuery.setParameter("relevanceHasAnswers", recommendationSettings.get(QUESTION_LIST_RELEVANCE_HAS_ANSWER));
         nativeQuery.setParameter("relevancePerAnswer", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PER_ANSWER));
         nativeQuery.setParameter("relevanceHasBestAnswer", recommendationSettings.get(QUESTION_LIST_RELEVANCE_HAS_BEST_ANSWER));
+        nativeQuery.setParameter("relevanceDuplicateQuestion", recommendationSettings.get(QUESTION_LIST_RELEVANCE_DUPLICATE_QUESTION));
+        nativeQuery.setParameter("relevanceQuestionNumberViews", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_VIEWS));
+        nativeQuery.setParameter("relevanceQuestionNumberFollowers", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_FOLLOWERS));
+        nativeQuery.setParameter("relevanceQuestionNumberUpvotes", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_UPVOTES));
+        nativeQuery.setParameter("relevanceQuestionNumberDownvotes", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_DOWNVOTES));
+        nativeQuery.setParameter("relevanceUserAlreadyAnswered", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_ANSWERED));
+        nativeQuery.setParameter("relevanceUserAlreadyCommented", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_COMMENTED));
+        nativeQuery.setParameter("relevanceUserFollowerAsker", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_FOLLOWER_ASKER));
 
         nativeQuery.setParameter("relevanceUserAlreadyViewed", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED));
         nativeQuery.setParameter("relevanceUserAlreadyViewedInList", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED_IN_LIST));

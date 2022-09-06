@@ -20,6 +20,10 @@ public class AnswerCommentTestUtils {
 
     public AnswerComment saveWithIntegrationPostIdAndAnswerId(String integrationPostId, Long answerId) {
         User user = userTestUtils.saveWithIntegrationUserId(integrationPostId);
+        return saveWithIntegrationPostIdAndAnswerIdAndUserId(integrationPostId, answerId, user.getUserId());
+    }
+
+    public AnswerComment saveWithIntegrationPostIdAndAnswerIdAndUserId(String integrationPostId, Long answerId, Long userId) {
         return answerCommentRepository.save(AnswerComment.builder()
                 .answerId(answerId)
                 .content("Answer Comment content")
@@ -28,7 +32,7 @@ public class AnswerCommentTestUtils {
                 .integrationDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .postType(PostType.ANSWER_COMMENT)
-                .userId(user.getUserId())
+                .userId(userId)
                 .hidden(false)
                 .upvotes(0)
                 .downvotes(0)

@@ -51,7 +51,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_relevanceHasAnswer(){
+    public void findRecommendedList_relevanceHasAnswer() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
@@ -68,7 +68,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_relevancePerAnswer(){
+    public void findRecommendedList_relevancePerAnswer() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
@@ -87,7 +87,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_relevanceHasBestAnswer(){
+    public void findRecommendedList_relevanceHasBestAnswer() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
@@ -105,7 +105,157 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_relevanceUserAlreadyViewed(){
+    public void findRecommendedList_relevanceDuplicateQuestion() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Question originalQuestion = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("2", dateOfRecommendations.minusYears(3));
+        originalQuestion.setHidden(true);
+        questionRepository.save(originalQuestion);
+        question.setDuplicateQuestionId(originalQuestion.getPostId());
+        questionRepository.save(question);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-100));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceQuestionNumberViews() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        question.setViews(10);
+        questionRepository.save(question);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(30));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceQuestionNumberFollowers() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        question.setFollowers(5);
+        questionRepository.save(question);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceQuestionNumberUpvotes() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        question.setUpvotes(5);
+        questionRepository.save(question);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceQuestionNumberDownvotes() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        question.setDownvotes(2);
+        questionRepository.save(question);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-20));
+    }
+
+    @Test
+    public void findRecommendedList_userAlreadyAnswered() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
+        answer.setUserId(user.getUserId());
+        answerRepository.save(answer);
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-25));
+    }
+
+    @Test
+    public void findRecommendedList_userAlreadyCommented() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        QuestionComment questionComment1 = questionCommentTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserId("2", question.getPostId(), user.getUserId());
+        QuestionComment questionComment2 = questionCommentTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserId("3", question.getPostId(), user.getUserId());
+        Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("4", question.getPostId());
+        AnswerComment answerComment1 = answerCommentTestUtils.saveWithIntegrationPostIdAndAnswerIdAndUserId("5", answer.getPostId(), user.getUserId());
+        AnswerComment answerComment2 = answerCommentTestUtils.saveWithIntegrationPostIdAndAnswerIdAndUserId("6", answer.getPostId(), user.getUserId());
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertEquals(1, recommendedQuestionList.size());
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-80));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceUserFollowerAsker() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        User userFollowed = userTestUtils.saveWithIntegrationUserId("B");
+        question.setUserId(userFollowed.getUserId());
+        questionRepository.save(question);
+        userFollowerRepository.save(UserFollower.builder()
+                .userId(userFollowed.getUserId())
+                .followerId(user.getUserId())
+                .startDate(LocalDateTime.now())
+                .build());
+        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+
+        // Act
+        List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(100));
+    }
+
+    @Test
+    public void findRecommendedList_relevanceUserAlreadyViewed() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
@@ -124,7 +274,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_relevanceUserAlreadyViewedInList(){
+    public void findRecommendedList_relevanceUserAlreadyViewedInList() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
@@ -143,7 +293,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_relevanceUserAlreadyViewedInEmail(){
+    public void findRecommendedList_relevanceUserAlreadyViewedInEmail() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
@@ -162,7 +312,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_relevanceUserAlreadyViewedInNotification(){
+    public void findRecommendedList_relevanceUserAlreadyViewedInNotification() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();

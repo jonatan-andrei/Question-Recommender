@@ -21,6 +21,10 @@ public class QuestionCommentTestUtils {
 
     public QuestionComment saveWithIntegrationPostIdAndQuestionId(String integrationPostId, Long questionId) {
         User user = userTestUtils.saveWithIntegrationUserId(integrationPostId);
+        return saveWithIntegrationPostIdAndQuestionIdAndUserId(integrationPostId, questionId, user.getUserId());
+    }
+
+    public QuestionComment saveWithIntegrationPostIdAndQuestionIdAndUserId(String integrationPostId, Long questionId, Long userId) {
         return questionCommentRepository.save(QuestionComment.builder()
                 .questionId(questionId)
                 .content("Question Comment content")
@@ -29,7 +33,7 @@ public class QuestionCommentTestUtils {
                 .integrationDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .postType(PostType.QUESTION_COMMENT)
-                .userId(user.getUserId())
+                .userId(userId)
                 .hidden(false)
                 .upvotes(0)
                 .downvotes(0)
