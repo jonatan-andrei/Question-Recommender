@@ -26,416 +26,315 @@ public class QuestionCustomRepository {
 
     public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
         Query nativeQuery = entityManager.createNativeQuery("""
-                 SELECT q.post_id, p.integration_post_id,
-                 
-                 -- PUBLICATION DATE RECENT SCORE
-                 (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRecent / :numberOfDaysQuestionIsRecent)
-                 -- eg: (GREATEST(7 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 7)
-                 -- Extract the seconds between the publish date and the current date
-                 -- Considers that the date is not recent if the number of days is greater than the parameter
-                 -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is recent (eg: 7)
+                SELECT q.post_id, p.integration_post_id,
+                                 
+                -- PUBLICATION DATE RECENT SCORE
+                (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRecent / :numberOfDaysQuestionIsRecent)
+                -- eg: (GREATEST(7 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 7)
+                -- Extract the seconds between the publish date and the current date
+                -- Considers that the date is not recent if the number of days is greater than the parameter
+                -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is recent (eg: 7)
+                                 
+                +
+                                 
+                -- PUBLICATION DATE RELEVANT SCORE
+                (GREATEST(:numberOfDaysQuestionIsRelevant - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRelevant / :numberOfDaysQuestionIsRelevant)
+                -- eg: (GREATEST(365 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 365)
+                -- Extract the seconds between the publish date and the current date
+                -- Considers that the date is irrelevant if the number of days is greater than the parameter
+                -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is relevant (eg: 365)
+                                 
+                +
+                                 
+                -- UPDATE DATE RECENT SCORE
+                (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.update_date)/:numberOfSecondsInDay, 0) * :relevanceUpdateDateRecent / :numberOfDaysQuestionIsRecent)
+                -- eg: (GREATEST(7 - EXTRACT(EPOCH FROM now() - p.update_date)/86400, 0) * 50 / 7)
+                -- Extract the seconds between the update date and the current date
+                -- Considers that the date is not recent if the number of days is greater than the parameter
+                -- Multiply the value obtained by the desired importance (eg: 50) and divide by the number of days the question is recent (eg: 7)
+                                 
+                +
+                                 
+                -- HAS ANSWERS
+                (CASE
+                       WHEN q.answers > 0 THEN :relevanceHasAnswers
+                       ELSE 0
+                 END)
+                                 
+                +
+                                 
+                -- PER ANSWER
+                (:relevancePerAnswer * q.answers)
+                                 
+                +
+                                 
+                -- HAS BEST ANSWER
+                (CASE
+                       WHEN q.best_answer_id IS NOT NULL THEN :relevanceHasBestAnswer
+                       ELSE 0
+                 END)
                  
                  +
                  
-                 -- PUBLICATION DATE RELEVANT SCORE
-                 (GREATEST(:numberOfDaysQuestionIsRelevant - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRelevant / :numberOfDaysQuestionIsRelevant)
-                 -- eg: (GREATEST(365 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 365)
-                 -- Extract the seconds between the publish date and the current date
-                 -- Considers that the date is irrelevant if the number of days is greater than the parameter
-                 -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is relevant (eg: 365)
-                 
-                 +
-                 
-                 -- UPDATE DATE RECENT SCORE
-                 (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.update_date)/:numberOfSecondsInDay, 0) * :relevanceUpdateDateRecent / :numberOfDaysQuestionIsRecent)
-                 -- eg: (GREATEST(7 - EXTRACT(EPOCH FROM now() - p.update_date)/86400, 0) * 50 / 7)
-                 -- Extract the seconds between the update date and the current date
-                 -- Considers that the date is not recent if the number of days is greater than the parameter
-                 -- Multiply the value obtained by the desired importance (eg: 50) and divide by the number of days the question is recent (eg: 7)
-                 
-                 +
-                 
-                 -- HAS ANSWERS
+                 -- DUPLICATE QUESTION
                  (CASE
-                        WHEN q.answers > 0 THEN :relevanceHasAnswers
-                        ELSE 0
-                  END)
-                 
-                 +
-                 
-                 -- PER ANSWER
-                 (:relevancePerAnswer * q.answers)
-                 
-                 +
-                 
-                 -- HAS BEST ANSWER
+                       WHEN q.duplicate_question_id IS NOT NULL THEN :relevanceDuplicateQuestion
+                       ELSE 0
+                 END)
+                                 
+                +
+                                 
+                -- QUESTION NUMBER VIEWS
+                (q.views * :relevanceQuestionNumberViews)
+                                 
+                +
+                                 
+                -- QUESTION NUMBER FOLLOWERS
+                (q.followers * :relevanceQuestionNumberFollowers)
+                                 
+                +
+                                 
+                -- QUESTION NUMBER UPVOTES
+                (p.upvotes * :relevanceQuestionNumberUpvotes)
+                                 
+                +
+                                 
+                -- QUESTION NUMBER DOWNVOTES
+                (p.downvotes * :relevanceQuestionNumberDownvotes)
+                                 
+                +
+                                 
+                -- USER ALREADY ANSWERED
+                ((SELECT COUNT(*) FROM answer a
+                INNER JOIN post pa ON pa.post_id = a.post_id
+                WHERE pa.user_id = :userId AND a.question_id = q.post_id)
+                * :relevanceUserAlreadyAnswered)
+                                 
+                +
+                                 
+                -- USER ALREADY COMMENTED IN QUESTION
+                ((SELECT COUNT(*) FROM question_comment qc
+                INNER JOIN post pc ON pc.post_id = qc.post_id
+                WHERE pc.user_id = :userId AND qc.question_id = q.post_id)
+                * :relevanceUserAlreadyCommented)
+                                 
+                +
+                                 
+                -- USER ALREADY COMMENTED IN ANSWERS TO THE QUESTION
+                ((SELECT COUNT(*) FROM answer_comment ac
+                INNER JOIN post pc ON pc.post_id = ac.post_id
+                INNER JOIN answer a ON ac.answer_id = a.post_id
+                WHERE pc.user_id = :userId AND a.question_id = q.post_id)
+                * :relevanceUserAlreadyCommented)
+                                 
+                +
+                                 
+                -- USER FOLLOWER ASKER
                  (CASE
-                        WHEN q.best_answer_id IS NOT NULL THEN :relevanceHasBestAnswer
-                        ELSE 0
-                  END)
-                  
-                  +
-                  
-                  -- DUPLICATE QUESTION
-                  (CASE
-                        WHEN q.duplicate_question_id IS NOT NULL THEN :relevanceDuplicateQuestion
-                        ELSE 0
-                  END)
-                 
-                 +
-                 
-                 -- QUESTION NUMBER VIEWS
-                 (q.views * :relevanceQuestionNumberViews)
-                 
-                 +
-                 
-                 -- QUESTION NUMBER FOLLOWERS
-                 (q.followers * :relevanceQuestionNumberFollowers)
-                 
-                 +
-                 
-                 -- QUESTION NUMBER UPVOTES
-                 (p.upvotes * :relevanceQuestionNumberUpvotes)
-                 
-                 +
-                 
-                 -- QUESTION NUMBER DOWNVOTES
-                 (p.downvotes * :relevanceQuestionNumberDownvotes)
-                 
-                 +
-                 
-                 -- USER ALREADY ANSWERED
-                 ((SELECT COUNT(*) FROM answer a
-                 INNER JOIN post pa ON pa.post_id = a.post_id
-                 WHERE pa.user_id = :userId AND a.question_id = q.post_id)
-                 * :relevanceUserAlreadyAnswered)
-                 
-                 +
-                 
-                 -- USER ALREADY COMMENTED IN QUESTION
-                 ((SELECT COUNT(*) FROM question_comment qc
-                 INNER JOIN post pc ON pc.post_id = qc.post_id
-                 WHERE pc.user_id = :userId AND qc.question_id = q.post_id)
-                 * :relevanceUserAlreadyCommented)
-                 
-                 +
-                 
-                 -- USER ALREADY COMMENTED IN ANSWERS TO THE QUESTION
-                 ((SELECT COUNT(*) FROM answer_comment ac
-                 INNER JOIN post pc ON pc.post_id = ac.post_id
-                 INNER JOIN answer a ON ac.answer_id = a.post_id
-                 WHERE pc.user_id = :userId AND a.question_id = q.post_id)
-                 * :relevanceUserAlreadyCommented)
-                 
-                 +
-                 
-                 -- USER FOLLOWER ASKER
-                  (CASE
-                        WHEN uf.follower_id IS NOT NULL THEN :relevanceUserFollowerAsker
-                        ELSE 0
-                  END)
-                 
-                 +
-                 
-                 -- USER ALREADY VIEWED
-                 (COALESCE(qv.number_of_views,0) * :relevanceUserAlreadyViewed)
-                 
-                 +
-                 
-                 -- USER ALREADY VIEWED IN LIST
-                 (COALESCE(qv.number_of_recommendations_in_list,0) * :relevanceUserAlreadyViewedInList)
-                 
-                 +
-                 
-                 -- USER ALREADY VIEWED IN EMAIL
-                 (COALESCE(qv.number_of_recommendations_in_email,0) * :relevanceUserAlreadyViewedInEmail)
-                 
-                 +
-                 
-                 -- USER ALREADY VIEWED IN NOTIFICATION
-                 (CASE
-                        WHEN qv.notified_question IS TRUE THEN :relevanceUserAlreadyViewedInNotification
-                        ELSE 0
-                  END)
-                 
-                 +
-                                   
-                 -- USER TAG SCORE
-                 (SELECT
-                    COALESCE(SUM(
-                    
-                    -- TAG - EXPLICIT RECOMMENDATION
-                    (CASE
-                        WHEN ut.explicit_recommendation THEN :relevanceExplicitRecommendationTag
-                        ELSE 0
-                    END)
-                    
-                    +
-                    
-                    -- TAG - NUMBER QUESTIONS ASKED
-                    (COALESCE(ut.number_questions_asked * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_asked >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsAskedInTag
-                        ELSE :relevanceQuestionsAskedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_asked
-                      END, 0)) / NULLIF(ufr.number_questions_asked,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER QUESTIONS ANSWERED
-                    (COALESCE(ut.number_questions_answered * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_answered >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsAnsweredInTag
-                        ELSE :relevanceQuestionsAnsweredInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_answered
-                      END, 0)) / NULLIF(ufr.number_questions_answered,0),0))
-                      
-                    +
-                      
-                    -- TAG - NUMBER QUESTIONS COMMENTED
-                    (COALESCE(ut.number_questions_commented * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_commented >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsCommentedInTag
-                        ELSE :relevanceQuestionsCommentedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_commented
-                      END, 0)) / NULLIF(ufr.number_questions_commented,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER QUESTIONS VIEWED
-                    (COALESCE(ut.number_questions_viewed * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_viewed >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsViewedInTag
-                        ELSE :relevanceQuestionsViewedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_viewed
-                      END, 0)) / NULLIF(ufr.number_questions_viewed,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER QUESTIONS FOLLOWED
-                    (COALESCE(ut.number_questions_followed * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_followed >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsFollowedInTag
-                        ELSE :relevanceQuestionsFollowedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_followed
-                      END, 0)) / NULLIF(ufr.number_questions_followed,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER QUESTIONS UPVOTED
-                    (COALESCE(ut.number_questions_upvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsUpvotedInTag
-                        ELSE :relevanceQuestionsUpvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_upvoted
-                      END, 0)) / NULLIF(ufr.number_questions_upvoted,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER QUESTIONS DOWNVOTED
-                    (COALESCE(ut.number_questions_downvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsDownvotedInTag
-                        ELSE :relevanceQuestionsDownvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_downvoted
-                      END, 0)) / NULLIF(ufr.number_questions_downvoted,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER ANSWERS UPVOTED
-                    (COALESCE(ut.number_answers_upvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_answers_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceAnswersUpvotedInTag
-                        ELSE :relevanceAnswersUpvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_answers_upvoted
-                      END, 0)) / NULLIF(ufr.number_answers_upvoted,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER ANSWERS DOWNVOTED
-                    (COALESCE(ut.number_answers_downvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_answers_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceAnswersDownvotedInTag
-                        ELSE :relevanceAnswersDownvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_answers_downvoted
-                      END, 0)) / NULLIF(ufr.number_answers_downvoted,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER COMMENTS UPVOTED
-                    (COALESCE(ut.number_comments_upvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_comments_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceCommentsUpvotedInTag
-                        ELSE :relevanceCommentsUpvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_comments_upvoted
-                      END, 0)) / NULLIF(ufr.number_comments_upvoted,0),0))
-                      
-                    +
-                    
-                    -- TAG - NUMBER COMMENTS DOWNVOTED
-                    (COALESCE(ut.number_comments_downvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_comments_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceCommentsDownvotedInTag
-                        ELSE :relevanceCommentsDownvotedInTag / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_comments_downvoted
-                      END, 0)) / NULLIF(ufr.number_comments_downvoted,0),0))                 
-                    
-                    ),0)
-                  
-                  AS user_tag_score
-                  
-                  FROM question_tag qt
-                  INNER JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
-                  WHERE qt.question_id = q.post_id
-                  )
-                  
-                  +
-                  
-                 -- USER CATEGORY SCORE
-                 (SELECT
-                    COALESCE(SUM(
-                    
-                    -- CATEGORY - EXPLICIT RECOMMENDATION
-                    (CASE
-                        WHEN uc.explicit_recommendation THEN :relevanceExplicitRecommendationCategory
-                        ELSE 0
-                    END)
-                    
-                    +
-                    
-                    -- CATEGORY - NUMBER QUESTIONS ASKED
-                    (COALESCE(uc.number_questions_asked * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_asked >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsAskedInCategory
-                        ELSE :relevanceQuestionsAskedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_asked
-                      END, 0)) / NULLIF(ufr.number_questions_asked,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER QUESTIONS ANSWERED
-                    (COALESCE(uc.number_questions_answered * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_answered >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsAnsweredInCategory
-                        ELSE :relevanceQuestionsAnsweredInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_answered
-                      END, 0)) / NULLIF(ufr.number_questions_answered,0),0))
-                      
-                    +
-                      
-                    -- CATEGORY - NUMBER QUESTIONS COMMENTED
-                    (COALESCE(uc.number_questions_commented * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_commented >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsCommentedInCategory
-                        ELSE :relevanceQuestionsCommentedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_commented
-                      END, 0)) / NULLIF(ufr.number_questions_commented,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER QUESTIONS VIEWED
-                    (COALESCE(uc.number_questions_viewed * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_viewed >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsViewedInCategory
-                        ELSE :relevanceQuestionsViewedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_viewed
-                      END, 0)) / NULLIF(ufr.number_questions_viewed,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER QUESTIONS FOLLOWED
-                    (COALESCE(uc.number_questions_followed * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_followed >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsFollowedInCategory
-                        ELSE :relevanceQuestionsFollowedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_followed
-                      END, 0)) / NULLIF(ufr.number_questions_followed,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER QUESTIONS UPVOTED
-                    (COALESCE(uc.number_questions_upvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsUpvotedInCategory
-                        ELSE :relevanceQuestionsUpvotedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_upvoted
-                      END, 0)) / NULLIF(ufr.number_questions_upvoted,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER QUESTIONS DOWNVOTED
-                    (COALESCE(uc.number_questions_downvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_questions_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceQuestionsDownvotedInCategory
-                        ELSE :relevanceQuestionsDownvotedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_questions_downvoted
-                      END, 0)) / NULLIF(ufr.number_questions_downvoted,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER ANSWERS UPVOTED
-                    (COALESCE(uc.number_answers_upvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_answers_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceAnswersUpvotedInCategory
-                        ELSE :relevanceAnswersUpvotedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_answers_upvoted
-                      END, 0)) / NULLIF(ufr.number_answers_upvoted,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER ANSWERS DOWNVOTED
-                    (COALESCE(uc.number_answers_downvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_answers_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceAnswersDownvotedInCategory
-                        ELSE :relevanceAnswersDownvotedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_answers_downvoted
-                      END, 0)) / NULLIF(ufr.number_answers_downvoted,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER COMMENTS UPVOTED
-                    (COALESCE(uc.number_comments_upvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_comments_upvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceCommentsUpvotedInCategory
-                        ELSE :relevanceCommentsUpvotedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_comments_upvoted
-                      END, 0)) / NULLIF(ufr.number_comments_upvoted,0),0))
-                      
-                    +
-                    
-                    -- CATEGORY - NUMBER COMMENTS DOWNVOTED
-                    (COALESCE(uc.number_comments_downvoted * (
-                    NULLIF(CASE
-                        WHEN ufr.number_comments_downvoted >= :minimumOfActivitiesToConsiderMaximumScore THEN :relevanceCommentsDownvotedInCategory
-                        ELSE :relevanceCommentsDownvotedInCategory / :minimumOfActivitiesToConsiderMaximumScore * ufr.number_comments_downvoted
-                      END, 0)) / NULLIF(ufr.number_comments_downvoted,0),0))                 
-                    
-                    ),0)
-                  
-                  AS user_category_score
-                  
-                  FROM question_category qc
-                  INNER JOIN user_category uc ON qc.category_id = uc.category_id AND uc.user_id = :userId
-                  WHERE qc.question_id = q.post_id
-                  )
-                 
-                 AS score
-                 FROM question q
-                 INNER JOIN post p ON p.post_id = q.post_id
-                 INNER JOIN users ufr ON ufr.user_id = :userId
-                 LEFT JOIN question_view qv ON p.post_id = qv.question_id and qv.user_id = :userId
-                 LEFT JOIN user_follower uf ON follower_id = :userId AND p.user_id = uf.user_id
-                 
-                 WHERE
-                    
-                    -- Checks that the question has not already been displayed on a previous page in the list
-                    p.post_id NOT IN
-                    (SELECT rlpq.question_id FROM recommended_list_page_question rlpq INNER JOIN recommended_list_page rlp
-                    ON rlp.recommended_list_page_id = rlpq.recommended_list_page_id WHERE rlp.recommended_list_id = :recommendedListId
-                    )
-                    
-                 AND 
-                    p.publication_date <= :dateOfRecommendations
-                    
-                 AND   
-                    p.hidden IS NOT TRUE
-                    
-                 AND
-                    NOT EXISTS (SELECT 1 FROM question_category qc
-                                INNER JOIN user_category uc
-                                ON qc.category_id = uc.category_id
-                                AND uc.user_id = :userId
-                                WHERE qc.question_id = q.post_id AND uc.ignored)
-                  AND
-                    NOT EXISTS (SELECT 1 FROM question_tag qt
-                                INNER JOIN user_tag ut
-                                ON qt.tag_id = ut.tag_id
-                                AND ut.user_id = :userId
-                                WHERE qt.question_id = q.post_id AND ut.ignored)
-                 
-                 ORDER BY score DESC, p.publication_date DESC
-                 LIMIT :limit OFFSET :offset
-                                
-                """, Tuple.class);
+                       WHEN uf.follower_id IS NOT NULL THEN :relevanceUserFollowerAsker
+                       ELSE 0
+                 END)
+                                 
+                +
+                                 
+                -- USER ALREADY VIEWED
+                (COALESCE(qv.number_of_views,0) * :relevanceUserAlreadyViewed)
+                                 
+                +
+                                 
+                -- USER ALREADY VIEWED IN LIST
+                (COALESCE(qv.number_of_recommendations_in_list,0) * :relevanceUserAlreadyViewedInList)
+                                 
+                +
+                                 
+                -- USER ALREADY VIEWED IN EMAIL
+                (COALESCE(qv.number_of_recommendations_in_email,0) * :relevanceUserAlreadyViewedInEmail)
+                                 
+                +
+                                 
+                -- USER ALREADY VIEWED IN NOTIFICATION
+                (CASE
+                       WHEN qv.notified_question IS TRUE THEN :relevanceUserAlreadyViewedInNotification
+                       ELSE 0
+                 END)
+                                 
+                +
+                                  
+                -- USER TAG SCORE
+                (SELECT
+                   COALESCE(SUM(
+                   
+                   -- TAG - EXPLICIT RECOMMENDATION
+                   (CASE
+                       WHEN ut.explicit_recommendation THEN :relevanceExplicitRecommendationTag
+                       ELSE 0
+                   END)
+                   
+                   """
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_asked", "relevanceQuestionsAskedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+
+                +
+
+                """                                  
+                           ),0)
+                         
+                         AS user_tag_score
+                         
+                         FROM question_tag qt
+                         INNER JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
+                         WHERE qt.question_id = q.post_id
+                         )
+                         
+                         +
+                         
+                        -- USER CATEGORY SCORE
+                        (SELECT
+                           COALESCE(SUM(
+                           
+                           -- CATEGORY - EXPLICIT RECOMMENDATION
+                           (CASE
+                               WHEN uc.explicit_recommendation THEN :relevanceExplicitRecommendationCategory
+                               ELSE 0
+                           END)
+                           """
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
+
+                +
+
+                """
+                            ),0)
+                          
+                          AS user_category_score
+                          
+                          FROM question_category qc
+                          INNER JOIN user_category uc ON qc.category_id = uc.category_id AND uc.user_id = :userId
+                          WHERE qc.question_id = q.post_id
+                          )
+                         
+                         AS score
+                         FROM question q
+                         INNER JOIN post p ON p.post_id = q.post_id
+                         INNER JOIN users ufr ON ufr.user_id = :userId
+                         LEFT JOIN question_view qv ON p.post_id = qv.question_id and qv.user_id = :userId
+                         LEFT JOIN user_follower uf ON follower_id = :userId AND p.user_id = uf.user_id
+                         
+                         WHERE
+                            
+                            -- Checks that the question has not already been displayed on a previous page in the list
+                            p.post_id NOT IN
+                            (SELECT rlpq.question_id FROM recommended_list_page_question rlpq INNER JOIN recommended_list_page rlp
+                            ON rlp.recommended_list_page_id = rlpq.recommended_list_page_id WHERE rlp.recommended_list_id = :recommendedListId
+                            )
+                            
+                         AND 
+                            p.publication_date <= :dateOfRecommendations
+                            
+                         AND   
+                            p.hidden IS NOT TRUE
+                            
+                         AND
+                            NOT EXISTS (SELECT 1 FROM question_category qc
+                                        INNER JOIN user_category uc
+                                        ON qc.category_id = uc.category_id
+                                        AND uc.user_id = :userId
+                                        WHERE qc.question_id = q.post_id AND uc.ignored)
+                          AND
+                            NOT EXISTS (SELECT 1 FROM question_tag qt
+                                        INNER JOIN user_tag ut
+                                        ON qt.tag_id = ut.tag_id
+                                        AND ut.user_id = :userId
+                                        WHERE qt.question_id = q.post_id AND ut.ignored)
+                         
+                         ORDER BY score DESC, p.publication_date DESC
+                         LIMIT :limit OFFSET :offset
+                                        
+                        """, Tuple.class);
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
         nativeQuery.setParameter("recommendedListId", recommendedListId);
@@ -530,5 +429,16 @@ public class QuestionCustomRepository {
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
         return ((BigInteger) nativeQuery.getSingleResult()).intValue();
+    }
+
+    private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String columnName, String parameterName) {
+        StringBuilder str = new StringBuilder();
+        str.append(" + ");
+        str.append(" (COALESCE(" + aliasUserCategoryOrUserTag + "." + columnName + " * (");
+        str.append(" NULLIF(CASE ");
+        str.append(" WHEN ufr." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
+        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * ufr." + columnName);
+        str.append(" END, 0)) / NULLIF(ufr." + columnName + ",0),0))");
+        return str.toString();
     }
 }

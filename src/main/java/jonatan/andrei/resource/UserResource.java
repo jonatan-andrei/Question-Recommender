@@ -1,6 +1,7 @@
 package jonatan.andrei.resource;
 
 import jonatan.andrei.dto.CreateUserRequestDto;
+import jonatan.andrei.dto.QuestionsAnsweredByUserResponseDto;
 import jonatan.andrei.dto.UpdateUserRequestDto;
 import jonatan.andrei.dto.UserFollowerRequestDto;
 import jonatan.andrei.model.User;
@@ -9,9 +10,8 @@ import org.springframework.http.ResponseEntity;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Path("/user")
@@ -49,6 +49,16 @@ public class UserResource {
     public ResponseEntity registerFollower(List<UserFollowerRequestDto> followers) {
         userService.registerFollower(followers);
         return ResponseEntity.ok().build();
+    }
+
+    @GET
+    @Path("/find-questions-answered-in-period")
+    public ResponseEntity<List<QuestionsAnsweredByUserResponseDto>> findQuestionsAnsweredInPeriod(@QueryParam("startDate") LocalDateTime startDate,
+                                                                                                  @QueryParam("endDate") LocalDateTime endDate,
+                                                                                                  @QueryParam("minimumOfPreviousAnswers") Integer minimumOfPreviousAnswers) {
+
+        // TODO considerar na busca apenas perguntas feitas antes da data inicial da busca
+        return null;
     }
 
 }

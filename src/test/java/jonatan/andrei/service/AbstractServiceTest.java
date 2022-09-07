@@ -2,6 +2,7 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.junit.QuarkusMock;
 import jonatan.andrei.dto.VoteRequestDto;
+import jonatan.andrei.model.TestResult;
 import jonatan.andrei.repository.*;
 import jonatan.andrei.utils.*;
 import org.junit.jupiter.api.BeforeAll;
@@ -95,6 +96,12 @@ public abstract class AbstractServiceTest {
 
     @Inject
     QuestionViewRepository questionViewRepository;
+
+    @Inject
+    TestResultRepository testResultRepository;
+
+    @Inject
+    TestResultUserRepository testResultUserRepository;
 
     @Inject
     RecommendationSettingsService recommendationSettingsService;
