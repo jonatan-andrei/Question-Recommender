@@ -58,12 +58,19 @@ public class QuestionRecommenderService {
     @Inject
     VoteService voteService;
 
+    @Inject
+    QuestionViewService questionViewService;
+
+    @Inject
+    TotalActivitySystemService totalActivitySystemService;
+
     @Transactional
     public void clear() {
         recommendedListPageQuestionService.clear();
         recommendedListPageService.clear();
         recommendedListService.clear();
         voteService.clear();
+        questionViewService.clear();
         userCategoryService.clear();
         userTagService.clear();
         questionFollowerService.clear();
@@ -75,6 +82,8 @@ public class QuestionRecommenderService {
         questionService.clear();
         categoryService.clear();
         tagService.clear();
+        userFollowerService.clear();
         userService.clear();
+        totalActivitySystemService.clear();
     }
 }

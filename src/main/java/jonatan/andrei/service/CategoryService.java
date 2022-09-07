@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.PostClassificationType;
 import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.CategoryRequestDto;
@@ -8,12 +9,12 @@ import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.CategoryFactory;
 import jonatan.andrei.model.Category;
 import jonatan.andrei.model.QuestionCategory;
-import jonatan.andrei.model.User;
 import jonatan.andrei.repository.CategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +23,9 @@ import static java.util.Objects.isNull;
 
 @ApplicationScoped
 public class CategoryService {
+
+    @Inject
+    TotalActivitySystemService totalActivitySystemService;
 
     @Inject
     CategoryRepository categoryRepository;
@@ -80,6 +84,7 @@ public class CategoryService {
             }
         }
         categoryRepository.saveAll(categories);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, userActionType, userActionUpdateType.getValue().multiply(BigDecimal.valueOf(categories.size())));
     }
 
     private void validateIfAllCategoriesWereFound(List<String> integrationCategoriesIds, List<Category> categories) {

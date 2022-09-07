@@ -117,7 +117,7 @@ public class UserService {
             return findByIntegrationUserId(integrationUserId);
         } else if (!StringUtil.isNullOrEmpty(integrationAnonymousUserId)) {
             Optional<User> anonymousUser = userRepository.findByIntegrationUserIdAndIntegrationAnonymousUserId(null, integrationAnonymousUserId);
-            return anonymousUser.orElse(userRepository.save(UserFactory.newUserWithIntegrationAnonymousUserId(integrationAnonymousUserId)));
+            return anonymousUser.orElseGet(() -> userRepository.save(UserFactory.newUserWithIntegrationAnonymousUserId(integrationAnonymousUserId)));
         } else {
             throw new RequiredDataException("At least one of the fields must be informed: integrationUserId or integrationAnonymousUserId");
         }

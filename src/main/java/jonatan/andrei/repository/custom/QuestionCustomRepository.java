@@ -444,4 +444,26 @@ public class QuestionCustomRepository {
         str.append(" END, 0)) / NULLIF(ufr." + columnName + ",0),0))");
         return str.toString();
     }
+
+    private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName, Integer totalActivityInSystem) {
+        StringBuilder str = new StringBuilder();
+        str.append(" + ");
+        str.append("((" + aliasUserCategoryOrUserTag + "." + columnName + " / " + "ufr." + columnName + ")");
+        str.append(" - ");
+        str.append("(" + aliasCategoryOrTag + "." + columnName + " / " + totalActivityInSystem + "))");
+        str.append(" * :"  + parameterName);
+        // Tratar null
+        // Tratar divisão por zero
+        // Tratar minimumOfActivitiesToConsiderMaximumScore
+        // Tratar para não retornar nulo no final
+
+
+        str.append(" + ");
+        str.append(" (COALESCE(" + aliasUserCategoryOrUserTag + "." + columnName + " * (");
+        str.append(" NULLIF(CASE ");
+        str.append(" WHEN ufr." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
+        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * ufr." + columnName);
+        str.append(" END, 0)) / NULLIF(ufr." + columnName + ",0),0))");
+        return str.toString();
+    }
 }

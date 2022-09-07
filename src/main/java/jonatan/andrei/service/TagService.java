@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.PostClassificationType;
 import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.TagRequestDto;
@@ -12,6 +13,7 @@ import jonatan.andrei.repository.TagRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,6 +25,9 @@ public class TagService {
 
     @Inject
     TagRepository tagRepository;
+
+    @Inject
+    TotalActivitySystemService totalActivitySystemService;
 
     @Transactional
     public Tag saveOrUpdate(TagRequestDto tagRequestDto) {
@@ -83,6 +88,7 @@ public class TagService {
             }
         }
         tagRepository.saveAll(tags);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, userActionType, userActionUpdateType.getValue().multiply(BigDecimal.valueOf(tags.size())));
     }
 
     private void validateRequiredData(TagRequestDto tagRequestDto) {
