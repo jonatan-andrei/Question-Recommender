@@ -8,13 +8,16 @@ import jonatan.andrei.domain.UserPreferenceType;
 import jonatan.andrei.dto.*;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
+import jonatan.andrei.factory.QuestionsAnsweredByUserFactory;
 import jonatan.andrei.factory.UserFactory;
 import jonatan.andrei.model.*;
 import jonatan.andrei.repository.UserRepository;
+import jonatan.andrei.repository.custom.UserCustomRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +30,9 @@ public class UserService {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    UserCustomRepository userCustomRepository;
 
     @Inject
     UserFollowerService userFollowerService;
@@ -210,6 +216,14 @@ public class UserService {
 
     public List<UserTagDto> findTagsByUserId(String integrationUserId) {
         return userTagService.findByIntegrationUserId(integrationUserId);
+    }
+
+    @Transactional
+    public List<QuestionsAnsweredByUserResponseDto> findQuestionsAnsweredInPeriod(LocalDateTime startDate, LocalDateTime endDate, Integer minimumOfPreviousAnswers) {
+        return userCustomRepository.findQuestionsAnsweredInPeriod(startDate, endDate, minimumOfPreviousAnswers)
+                .stream().collect(Collectors.groupingBy(q -> q.getIntegrationUserId()))
+                .entrySet().stream().map(u -> QuestionsAnsweredByUserFactory.newQuestionsAnsweredByUser(u.getKey(), u.getValue()))
+                .collect(Collectors.toList());
     }
 
     public void clear() {

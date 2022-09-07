@@ -2,12 +2,11 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
-import jonatan.andrei.dto.CreateUserRequestDto;
-import jonatan.andrei.dto.UpdateUserRequestDto;
-import jonatan.andrei.dto.UserFollowerRequestDto;
-import jonatan.andrei.dto.UserPreferencesRequestDto;
+import jonatan.andrei.dto.*;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
+import jonatan.andrei.model.Answer;
+import jonatan.andrei.model.Question;
 import jonatan.andrei.model.User;
 import jonatan.andrei.model.UserFollower;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import javax.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -348,6 +348,57 @@ public class UserServiceTest extends AbstractServiceTest {
         // Assert
         Assertions.assertTrue(nonNull(result));
         Assertions.assertEquals(integrationAnonymousUserId, result.getIntegrationAnonymousUserId());
+    }
+
+    @Test
+    public void findQuestionsAnsweredInPeriod_findUsers() {
+        // Arrange
+        LocalDateTime now = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("A", now.minusDays(1));
+        Question question2 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("B", now.minusDays(2));
+        Question question3 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("C", now.minusDays(3));
+        LocalDateTime startDate = now;
+        LocalDateTime endDate = now.plusDays(7);
+        Integer minimumOfPreviousAnswers = 1;
+        User user1 = userTestUtils.saveWithIntegrationUserId("1");
+        Answer answer1User1 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("D", question1.getPostId(), user1.getUserId(), now.minusDays(1));
+        Answer answer2User1 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("E", question2.getPostId(), user1.getUserId(), now.plusDays(2));
+        Answer answer3User1 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("F", question3.getPostId(), user1.getUserId(), now.plusDays(10));
+        User user2 = userTestUtils.saveWithIntegrationUserId("2");
+        Answer answer1User2 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("G", question1.getPostId(), user2.getUserId(), now.minusDays(1));
+        Answer answer2User2 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("H", question2.getPostId(), user2.getUserId(), now.plusDays(3));
+        Answer answer3User2 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("I", question3.getPostId(), user2.getUserId(), now.plusDays(2));
+
+        // Act
+        List<QuestionsAnsweredByUserResponseDto> users = userService.findQuestionsAnsweredInPeriod(startDate, endDate, minimumOfPreviousAnswers);
+
+        // Assert
+        QuestionsAnsweredByUserResponseDto questionsAnsweredByUser1 = users.stream().filter(u -> u.getIntegrationUserId().equals(user1.getIntegrationUserId())).findFirst().get();
+        assertEquals(1, questionsAnsweredByUser1.getQuestions().size());
+        assertEquals(answer2User1.getPublicationDate().toLocalDate(), questionsAnsweredByUser1.getDateFirstAnswer().toLocalDate());
+        QuestionsAnsweredByUserResponseDto questionsAnsweredByUser2 = users.stream().filter(u -> u.getIntegrationUserId().equals(user2.getIntegrationUserId())).findFirst().get();
+        assertEquals(2, questionsAnsweredByUser2.getQuestions().size());
+        assertEquals(answer3User2.getPublicationDate().toLocalDate(), questionsAnsweredByUser2.getDateFirstAnswer().toLocalDate());
+    }
+
+    @Test
+    public void findQuestionsAnsweredInPeriod_userWithoutMinimumOfPreviousAnswers() {
+        // Arrange
+        LocalDateTime now = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("A", now.minusDays(1));
+        Question question2 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("B", now.minusDays(2));
+        User user1 = userTestUtils.saveWithIntegrationUserId("1");
+        Answer answer1User1 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("C", question1.getPostId(), user1.getUserId(), now.minusDays(1));
+        Answer answer2User1 = answerTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate("D", question2.getPostId(), user1.getUserId(), now.plusDays(2));
+        LocalDateTime startDate = now;
+        LocalDateTime endDate = now.plusDays(7);
+        Integer minimumOfPreviousAnswers = 2;
+
+        // Act
+        List<QuestionsAnsweredByUserResponseDto> users = userService.findQuestionsAnsweredInPeriod(startDate, endDate, minimumOfPreviousAnswers);
+
+        // Assert
+        assertTrue(users.isEmpty());
     }
 
 }

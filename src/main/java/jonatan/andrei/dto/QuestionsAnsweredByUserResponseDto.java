@@ -36,5 +36,7 @@ public class QuestionsAnsweredByUserResponseDto {
 
         private String tags;
 
+        private LocalDateTime answerDate;
+
     }
 }

@@ -1,0 +1,61 @@
+package jonatan.andrei.repository.custom;
+
+import jonatan.andrei.dto.QuestionsAnsweredByUserDto;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.Tuple;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@ApplicationScoped
+public class UserCustomRepository {
+
+    @PersistenceContext
+    EntityManager entityManager;
+
+    public List<QuestionsAnsweredByUserDto> findQuestionsAnsweredInPeriod(LocalDateTime startDate, LocalDateTime endDate, Integer minimumOfPreviousAnswers) {
+        Query nativeQuery = entityManager.createNativeQuery("""
+                 SELECT u.integration_user_id,
+                 pq.integration_post_id,
+                 q.followers,
+                 q.best_answer_id,
+                 q.answers,
+                 q.tags,
+                 pa.publication_date
+                 FROM answer a
+                 INNER JOIN post pa ON a.post_id = pa.post_id
+                 INNER JOIN question q ON q.post_id = a.question_id
+                 INNER JOIN post pq ON q.post_id = pq.post_id
+                 INNER JOIN users u ON pa.user_id = u.user_id
+                 WHERE pa.publication_date BETWEEN :startDate AND :endDate
+                 AND pq.publication_date < :startDate
+                 AND :minimumOfPreviousAnswers <= 
+                        (SELECT count(*) FROM post p2 
+                        WHERE p2.post_type = 'ANSWER'
+                        AND p2.user_id = u.user_id
+                        AND p2.publication_date < :startDate)                       
+                """, Tuple.class);
+
+        nativeQuery.setParameter("startDate", startDate);
+        nativeQuery.setParameter("endDate", endDate);
+        nativeQuery.setParameter("minimumOfPreviousAnswers", minimumOfPreviousAnswers);
+
+        List<Tuple> result = nativeQuery.getResultList();
+        return result.stream()
+                .map(t -> new QuestionsAnsweredByUserDto(
+                        t.get(0, String.class),
+                        t.get(1, String.class),
+                        t.get(2, Integer.class),
+                        t.get(3, Long.class),
+                        t.get(4, Integer.class),
+                        t.get(5, String.class),
+                        t.get(6, Timestamp.class).toLocalDateTime()
+                ))
+                .collect(Collectors.toList());
+    }
+}

@@ -20,16 +20,20 @@ public class AnswerTestUtils {
 
     public Answer saveWithIntegrationPostIdAndQuestionId(String integrationPostId, Long questionId) {
         User user = userTestUtils.saveWithIntegrationUserId(integrationPostId);
+        return saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate(integrationPostId, questionId, user.getUserId(), LocalDateTime.now());
+    }
+
+    public Answer saveWithIntegrationPostIdAndQuestionIdAndUserIdAndPublicationDate(String integrationPostId, Long questionId, Long userId, LocalDateTime publicationDate) {
         return answerRepository.save(Answer.builder()
                 .questionId(questionId)
                 .bestAnswer(false)
                 .content("Answer content")
                 .integrationPostId(integrationPostId)
-                .publicationDate(LocalDateTime.now())
+                .publicationDate(publicationDate)
                 .integrationDate(LocalDateTime.now())
                 .updateDate(LocalDateTime.now())
                 .postType(PostType.ANSWER)
-                .userId(user.getUserId())
+                .userId(userId)
                 .hidden(false)
                 .upvotes(0)
                 .downvotes(0)

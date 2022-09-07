@@ -59,9 +59,7 @@ public class UserResource {
     public ResponseEntity<List<QuestionsAnsweredByUserResponseDto>> findQuestionsAnsweredInPeriod(@QueryParam("startDate") LocalDateTime startDate,
                                                                                                   @QueryParam("endDate") LocalDateTime endDate,
                                                                                                   @QueryParam("minimumOfPreviousAnswers") Integer minimumOfPreviousAnswers) {
-
-        // TODO considerar na busca apenas perguntas feitas antes da data inicial da busca
-        return null;
+        return ResponseEntity.ok(userService.findQuestionsAnsweredInPeriod(startDate, endDate, minimumOfPreviousAnswers));
     }
 
 }
