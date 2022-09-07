@@ -51,4 +51,8 @@ public class Question extends Post {
     @NotNull
     @Column(name = "answers")
     private Integer answers;
+
+    @NotNull
+    @Column(name = "tags")
+    private String tags;
 }

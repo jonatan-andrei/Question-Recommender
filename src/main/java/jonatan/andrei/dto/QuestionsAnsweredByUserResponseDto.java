@@ -25,5 +25,13 @@ public class QuestionsAnsweredByUserResponseDto {
 
         private String integrationQuestionId;
 
+        private Integer followers;
+
+        private Long bestAnswerId;
+
+        private Integer answers;
+
+        private List<String> tags;
+
     }
 }

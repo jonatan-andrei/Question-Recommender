@@ -40,6 +40,10 @@ public class TestResult {
     private String settings;
 
     @NotNull
+    @Column(name = "total_activity_system")
+    private String totalActivitySystem;
+
+    @NotNull
     @Column(name = "number_of_users")
     private Integer numberOfUsers;
 

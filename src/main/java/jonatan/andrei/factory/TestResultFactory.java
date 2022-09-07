@@ -11,6 +11,7 @@ public class TestResultFactory {
                 .integratedDumpPercentage(testResultRequestDto.getIntegratedDumpPercentage())
                 .daysAfterDumpConsidered(testResultRequestDto.getDaysAfterDumpConsidered())
                 .settings(testResultRequestDto.getSettings())
+                .totalActivitySystem(testResultRequestDto.getTotalActivitySystem())
                 .numberOfUsers(testResultRequestDto.getNumberOfUsers())
                 .numberOfQuestions(testResultRequestDto.getNumberOfQuestions())
                 .numberOfRecommendedQuestions(testResultRequestDto.getNumberOfRecommendedQuestions())

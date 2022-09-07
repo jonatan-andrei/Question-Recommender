@@ -29,6 +29,9 @@ public class TestResultRequestDto {
     private String settings;
 
     @NotNull
+    private String totalActivitySystem;
+
+    @NotNull
     private Integer numberOfUsers;
 
     @NotNull
@@ -65,6 +68,12 @@ public class TestResultRequestDto {
 
         @NotNull
         private boolean error;
+
+        @NotNull
+        private String userTags;
+
+        @NotNull
+        private String questions;
     }
 
 }

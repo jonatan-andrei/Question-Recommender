@@ -26,6 +26,7 @@ public class QuestionFactory {
                 .url(createPostRequestDto.getUrl())
                 .views(0)
                 .answers(0)
+                .tags(String.join(";", createPostRequestDto.getTags()))
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class QuestionFactory {
         existingQuestion.setTitle(updatePostRequestDto.getTitle());
         existingQuestion.setDescription(updatePostRequestDto.getContentOrDescription());
         existingQuestion.setUrl(updatePostRequestDto.getUrl());
+        existingQuestion.setTags(String.join(";", updatePostRequestDto.getTags()));
         return existingQuestion;
     }
 }

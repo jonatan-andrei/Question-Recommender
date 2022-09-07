@@ -86,4 +86,11 @@ public class QuestionRecommenderService {
         userService.clear();
         totalActivitySystemService.clear();
     }
+
+    @Transactional
+    public void clearRecommendations() {
+        recommendedListPageQuestionService.clear();
+        recommendedListPageService.clear();
+        recommendedListService.clear();
+    }
 }

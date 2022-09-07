@@ -45,4 +45,12 @@ public class TestResultUser {
     @NotNull
     @Column(name = "error")
     private boolean error;
+
+    @NotNull
+    @Column(name = "user_tags")
+    private String userTags;
+
+    @NotNull
+    @Column(name = "questions")
+    private String questions;
 }

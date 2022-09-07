@@ -17,6 +17,8 @@ public class TestResultUserFactory {
                         .numberOfRecommendedQuestions(u.getNumberOfRecommendedQuestions())
                         .percentageOfCorrectRecommendations(u.getPercentageOfCorrectRecommendations())
                         .error(u.isError())
+                        .userTags(u.getUserTags())
+                        .questions(u.getQuestions())
                         .build())
                 .collect(Collectors.toList());
     }

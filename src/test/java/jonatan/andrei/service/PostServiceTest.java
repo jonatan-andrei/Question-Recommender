@@ -40,7 +40,7 @@ public class PostServiceTest extends AbstractServiceTest {
                 .title("Title")
                 .contentOrDescription("Description")
                 .integrationCategoriesIds(asList())
-                .tags(asList("a"))
+                .tags(asList("a", "b"))
                 .integrationAnonymousUserId("1")
                 .build();
 
@@ -53,6 +53,7 @@ public class PostServiceTest extends AbstractServiceTest {
         assertEquals(createPostRequestDto.getPublicationDate(), question.getPublicationDate());
         assertEquals(createPostRequestDto.getTitle(), question.getTitle());
         assertEquals(createPostRequestDto.getContentOrDescription(), question.getDescription());
+        assertEquals("a;b", question.getTags());
     }
 
     @Test
@@ -316,6 +317,7 @@ public class PostServiceTest extends AbstractServiceTest {
                 .title("Title")
                 .contentOrDescription("Description")
                 .integrationCategoriesIds(asList(category.getIntegrationCategoryId()))
+                .tags(asList())
                 .integrationUserId("11")
                 .build();
 

@@ -19,4 +19,10 @@ public class QuestionRecommenderResource {
     public void clear() {
         questionRecommenderService.clear();
     }
+
+    @DELETE
+    @Path("/clear-recommendations")
+    public void clearRecommendations() {
+        questionRecommenderService.clearRecommendations();
+    }
 }
