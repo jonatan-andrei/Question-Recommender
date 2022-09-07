@@ -5,10 +5,7 @@ import jonatan.andrei.domain.PostType;
 import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.domain.UserPreferenceType;
-import jonatan.andrei.dto.CreateUserRequestDto;
-import jonatan.andrei.dto.UpdateUserRequestDto;
-import jonatan.andrei.dto.UserFollowerRequestDto;
-import jonatan.andrei.dto.UserPreferencesRequestDto;
+import jonatan.andrei.dto.*;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.UserFactory;
@@ -209,6 +206,10 @@ public class UserService {
                     user.setNumberCommentsDownvoted(user.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
         }
         userRepository.save(user);
+    }
+
+    public List<UserTagDto> findTagsByUserId(Long userId) {
+        return userTagService.findByUserId(userId);
     }
 
     public void clear() {

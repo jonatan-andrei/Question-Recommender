@@ -3,9 +3,11 @@ package jonatan.andrei.service;
 import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.domain.UserPreferenceType;
+import jonatan.andrei.dto.UserTagDto;
 import jonatan.andrei.factory.UserTagFactory;
 import jonatan.andrei.model.*;
 import jonatan.andrei.repository.UserTagRepository;
+import jonatan.andrei.repository.custom.UserTagCustomRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -19,6 +21,9 @@ public class UserTagService {
 
     @Inject
     UserTagRepository userTagRepository;
+
+    @Inject
+    UserTagCustomRepository userTagCustomRepository;
 
     @Inject
     TagService tagService;
@@ -83,6 +88,10 @@ public class UserTagService {
         userTags.addAll(userTagsToUpdateToFalse);
 
         userTagRepository.saveAll(userTags);
+    }
+
+    public List<UserTagDto> findByUserId(Long userId) {
+        return userTagCustomRepository.findByUserId(userId);
     }
 
     private void updateUserPreference(UserTag userTag, UserPreferenceType userPreference, boolean active) {

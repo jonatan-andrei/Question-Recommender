@@ -1,9 +1,6 @@
 package jonatan.andrei.resource;
 
-import jonatan.andrei.dto.CreateUserRequestDto;
-import jonatan.andrei.dto.QuestionsAnsweredByUserResponseDto;
-import jonatan.andrei.dto.UpdateUserRequestDto;
-import jonatan.andrei.dto.UserFollowerRequestDto;
+import jonatan.andrei.dto.*;
 import jonatan.andrei.model.User;
 import jonatan.andrei.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +46,12 @@ public class UserResource {
     public ResponseEntity registerFollower(List<UserFollowerRequestDto> followers) {
         userService.registerFollower(followers);
         return ResponseEntity.ok().build();
+    }
+
+    @GET
+    @Path("/find-user-tags")
+    public ResponseEntity<List<UserTagDto>> findUserTags(@QueryParam("userId") Long userId) {
+        return ResponseEntity.ok(userService.findTagsByUserId(userId));
     }
 
     @GET

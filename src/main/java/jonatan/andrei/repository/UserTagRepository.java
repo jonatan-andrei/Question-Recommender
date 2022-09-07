@@ -11,6 +11,8 @@ public interface UserTagRepository extends CrudRepository<UserTag, Long> {
 
     UserTag findByUserIdAndTagId(Long userId, Long tagId);
 
+    List<UserTag> findByUserId(Long userId);
+
     List<UserTag> findByUserIdAndExplicitRecommendation(Long userId, boolean explicitRecommendation);
 
     List<UserTag> findByUserIdAndIgnored(Long userId, boolean ignored);
