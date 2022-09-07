@@ -18,7 +18,7 @@ public class UserTagCustomRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    public List<UserTagDto> findByUserId(Long userId) {
+    public List<UserTagDto> findByUserId(String integrationUserId) {
         Query nativeQuery = entityManager.createNativeQuery("""
                  SELECT 
                  t.tag_id,
@@ -37,11 +37,13 @@ public class UserTagCustomRepository {
                  FROM user_tag ut
                  INNER JOIN tag t
                  ON ut.tag_id = t.tag_id
-                 WHERE ut.user_id = :userId
+                 INNER JOIN users u
+                 ON ut.user_id = u.user_id
+                 WHERE u.integration_user_id = :integrationUserId
                                 
                 """);
 
-        nativeQuery.setParameter("userId", userId);
+        nativeQuery.setParameter("integrationUserId", integrationUserId);
 
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()

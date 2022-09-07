@@ -74,6 +74,9 @@ public class TestResultRequestDto {
 
         @NotNull
         private String questions;
+
+        @NotNull
+        private String recommendedQuestions;
     }
 
 }

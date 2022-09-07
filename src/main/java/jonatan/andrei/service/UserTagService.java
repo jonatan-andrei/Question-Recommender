@@ -90,8 +90,8 @@ public class UserTagService {
         userTagRepository.saveAll(userTags);
     }
 
-    public List<UserTagDto> findByUserId(Long userId) {
-        return userTagCustomRepository.findByUserId(userId);
+    public List<UserTagDto> findByIntegrationUserId(String integrationUserId) {
+        return userTagCustomRepository.findByUserId(integrationUserId);
     }
 
     private void updateUserPreference(UserTag userTag, UserPreferenceType userPreference, boolean active) {

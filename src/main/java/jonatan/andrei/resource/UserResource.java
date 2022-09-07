@@ -50,8 +50,8 @@ public class UserResource {
 
     @GET
     @Path("/find-user-tags")
-    public ResponseEntity<List<UserTagDto>> findUserTags(@QueryParam("userId") Long userId) {
-        return ResponseEntity.ok(userService.findTagsByUserId(userId));
+    public ResponseEntity<List<UserTagDto>> findUserTags(@QueryParam("integrationUserId") String integrationUserId) {
+        return ResponseEntity.ok(userService.findTagsByUserId(integrationUserId));
     }
 
     @GET

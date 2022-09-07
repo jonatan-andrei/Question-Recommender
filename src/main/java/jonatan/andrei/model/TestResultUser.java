@@ -53,4 +53,8 @@ public class TestResultUser {
     @NotNull
     @Column(name = "questions")
     private String questions;
+
+    @NotNull
+    @Column(name = "recommended_questions")
+    private String recommendedQuestions;
 }

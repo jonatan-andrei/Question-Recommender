@@ -19,6 +19,7 @@ public class TestResultUserFactory {
                         .error(u.isError())
                         .userTags(u.getUserTags())
                         .questions(u.getQuestions())
+                        .recommendedQuestions(u.getRecommendedQuestions())
                         .build())
                 .collect(Collectors.toList());
     }

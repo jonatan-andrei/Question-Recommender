@@ -208,8 +208,8 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<UserTagDto> findTagsByUserId(Long userId) {
-        return userTagService.findByUserId(userId);
+    public List<UserTagDto> findTagsByUserId(String integrationUserId) {
+        return userTagService.findByIntegrationUserId(integrationUserId);
     }
 
     public void clear() {

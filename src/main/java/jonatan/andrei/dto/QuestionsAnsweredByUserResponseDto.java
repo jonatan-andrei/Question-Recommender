@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -14,6 +15,8 @@ import java.util.List;
 public class QuestionsAnsweredByUserResponseDto {
 
     private String integrationUserId;
+
+    private LocalDateTime dateFirstAnswer;
 
     private List<QuestionAnsweredResponseDto> questions;
 
@@ -31,7 +34,7 @@ public class QuestionsAnsweredByUserResponseDto {
 
         private Integer answers;
 
-        private List<String> tags;
+        private String tags;
 
     }
 }
