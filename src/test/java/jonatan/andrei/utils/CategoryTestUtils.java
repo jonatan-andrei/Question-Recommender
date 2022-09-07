@@ -5,6 +5,7 @@ import jonatan.andrei.repository.CategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 
 @ApplicationScoped
 public class CategoryTestUtils {
@@ -17,7 +18,17 @@ public class CategoryTestUtils {
                 .integrationCategoryId(integrationCategoryId)
                 .name(integrationCategoryId)
                 .active(true)
-                .questionCount(0)
+                .numberQuestionsAsked(BigDecimal.ZERO)
+                .numberQuestionsViewed(BigDecimal.ZERO)
+                .numberQuestionsAnswered(BigDecimal.ZERO)
+                .numberQuestionsCommented(BigDecimal.ZERO)
+                .numberQuestionsFollowed(BigDecimal.ZERO)
+                .numberQuestionsUpvoted(BigDecimal.ZERO)
+                .numberQuestionsDownvoted(BigDecimal.ZERO)
+                .numberAnswersUpvoted(BigDecimal.ZERO)
+                .numberAnswersDownvoted(BigDecimal.ZERO)
+                .numberCommentsUpvoted(BigDecimal.ZERO)
+                .numberCommentsDownvoted(BigDecimal.ZERO)
                 .build());
     }
 }

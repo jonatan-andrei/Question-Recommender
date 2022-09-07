@@ -8,6 +8,7 @@ import jonatan.andrei.repository.TagRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,7 +22,7 @@ public class QuestionTagTestUtils {
 
     public void saveQuestionTags(Question question, List<Tag> tags) {
         for (Tag tag : tags) {
-            tag.setQuestionCount(tag.getQuestionCount() + 1);
+            tag.setNumberQuestionsAsked(tag.getNumberQuestionsAsked().add(BigDecimal.ONE));
             tagRepository.save(tag);
             questionTagRepository.save(QuestionTagFactory.newQuestionTag(question, tag));
         }

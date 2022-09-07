@@ -56,16 +56,12 @@ public class QuestionTagService {
 
     private void incrementQuestionCountByQuestionTags(List<QuestionTag> questionTags, User user) {
         if (!questionTags.isEmpty()) {
-            tagService.incrementQuestionCountByTagsIds(questionTags.stream()
-                    .map(QuestionTag::getTagId).collect(Collectors.toList()));
             userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_ASKED, UserActionUpdateType.INCREASE);
         }
     }
 
     private void decrementQuestionCountByQuestionTags(List<QuestionTag> questionTags, User user) {
         if (!questionTags.isEmpty()) {
-            tagService.decrementQuestionCountByTagsIds(questionTags.stream()
-                    .map(QuestionTag::getTagId).collect(Collectors.toList()));
             userTagService.updateNumberQuestionsByAction(user, questionTags, UserActionType.QUESTION_ASKED, UserActionUpdateType.DECREASE);
         }
     }

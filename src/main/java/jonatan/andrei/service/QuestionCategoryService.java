@@ -56,16 +56,12 @@ public class QuestionCategoryService {
 
     private void incrementQuestionCountByQuestionCategories(List<QuestionCategory> questionCategories, User user) {
         if (!questionCategories.isEmpty()) {
-            categoryService.incrementQuestionCountByCategoriesIds(questionCategories.stream()
-                    .map(QuestionCategory::getCategoryId).collect(Collectors.toList()));
             userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_ASKED, UserActionUpdateType.INCREASE);
         }
     }
 
     private void decrementQuestionCountByQuestionCategories(List<QuestionCategory> questionCategories, User user) {
         if (!questionCategories.isEmpty()) {
-            categoryService.decrementQuestionCountByCategoriesIds(questionCategories.stream()
-                    .map(QuestionCategory::getCategoryId).collect(Collectors.toList()));
             userCategoryService.updateNumberQuestionsByAction(user, questionCategories, UserActionType.QUESTION_ASKED, UserActionUpdateType.DECREASE);
         }
     }

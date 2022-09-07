@@ -225,6 +225,7 @@ public class QuestionCustomRepository {
                          
                          FROM question_tag qt
                          INNER JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
+                         INNER JOIN tag t ON qt.tag_id = t.tag_id
                          WHERE qt.question_id = q.post_id
                          )
                          
@@ -323,6 +324,8 @@ public class QuestionCustomRepository {
                                         INNER JOIN user_category uc
                                         ON qc.category_id = uc.category_id
                                         AND uc.user_id = :userId
+                                        INNER JOIN category c
+                                        ON qc.category_id = c.category_id
                                         WHERE qc.question_id = q.post_id AND uc.ignored)
                           AND
                             NOT EXISTS (SELECT 1 FROM question_tag qt

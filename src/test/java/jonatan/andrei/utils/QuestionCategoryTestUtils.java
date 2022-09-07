@@ -8,6 +8,7 @@ import jonatan.andrei.repository.QuestionCategoryRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,7 +22,7 @@ public class QuestionCategoryTestUtils {
 
     public void saveQuestionCategories(Question question, List<Category> categories) {
         for (Category category : categories) {
-            category.setQuestionCount(category.getQuestionCount() + 1);
+            category.setNumberQuestionsAsked(category.getNumberQuestionsAsked().add(BigDecimal.ONE));
             categoryRepository.save(category);
             questionCategoryRepository.save(QuestionCategoryFactory.newQuestionCategory(question, category));
         }

@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 
+import java.math.BigDecimal;
+
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -49,9 +51,9 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag1.getTagId())));
-        assertEquals(1, tagRepository.findByName("a").getQuestionCount());
+        assertEquals(BigDecimal.ONE, tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag2.getTagId())));
-        assertEquals(1, tagRepository.findByName("b").getQuestionCount());
+        assertEquals(BigDecimal.ONE, tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -72,13 +74,13 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag1.getTagId())));
-        assertEquals(1, tagRepository.findByName("a").getQuestionCount());
+        assertEquals(BigDecimal.ONE, tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag2.getTagId())));
-        assertEquals(0, tagRepository.findByName("b").getQuestionCount());
+        assertEquals(BigDecimal.ZERO, tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag3.getTagId())));
-        assertEquals(1, tagRepository.findByName("c").getQuestionCount());
+        assertEquals(BigDecimal.ONE, tagRepository.findByName("c").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag4.getTagId())));
-        assertEquals(0, tagRepository.findByName("d").getQuestionCount());
+        assertEquals(BigDecimal.ZERO, tagRepository.findByName("d").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -96,11 +98,11 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
         Tag tag1 = tagRepository.findByName("a");
         assertTrue(nonNull(tag1));
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag1.getTagId())));
-        assertEquals(1, tagRepository.findByName("a").getQuestionCount());
+        assertEquals(BigDecimal.ONE, tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
         Tag tag2 = tagRepository.findByName("b");
         assertTrue(nonNull(tag2));
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag2.getTagId())));
-        assertEquals(1, tagRepository.findByName("b").getQuestionCount());
+        assertEquals(BigDecimal.ONE, tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
 }

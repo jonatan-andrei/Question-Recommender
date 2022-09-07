@@ -20,6 +20,9 @@ public class UserTagService {
     @Inject
     UserTagRepository userTagRepository;
 
+    @Inject
+    TagService tagService;
+
     public void updateNumberQuestionsViewed(List<User> users, List<QuestionTag> tags) {
         for (User user : users) {
             updateNumberQuestionsByAction(user, tags, UserActionType.QUESTION_VIEWED, UserActionUpdateType.INCREASE);
@@ -68,6 +71,7 @@ public class UserTagService {
             }
         }
         userTagRepository.saveAll(userTags);
+        tagService.updateNumberQuestionsByAction(tags, userActionType, userActionUpdateType);
     }
 
     public void saveUserPreferences(User user, List<Tag> tags, UserPreferenceType userPreference) {

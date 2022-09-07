@@ -29,10 +29,10 @@ public class UserFactory {
                 .numberQuestionsCommented(BigDecimal.ZERO)
                 .numberQuestionsFollowed(BigDecimal.ZERO)
                 .numberQuestionsUpvoted(BigDecimal.ZERO)
-                .numberAnswersUpvoted(BigDecimal.ZERO)
-                .numberCommentsUpvoted(BigDecimal.ZERO)
                 .numberQuestionsDownvoted(BigDecimal.ZERO)
+                .numberAnswersUpvoted(BigDecimal.ZERO)
                 .numberAnswersDownvoted(BigDecimal.ZERO)
+                .numberCommentsUpvoted(BigDecimal.ZERO)
                 .numberCommentsDownvoted(BigDecimal.ZERO)
                 .build();
     }

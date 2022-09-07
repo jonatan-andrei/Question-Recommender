@@ -50,7 +50,6 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .name("Technology")
                 .description("Technology related questions")
                 .active(true)
-                .questionCount(0)
                 .build());
         CategoryRequestDto categoryRequestDto = CategoryRequestDto.builder()
                 .integrationCategoryId(existingCategory.getIntegrationCategoryId())
@@ -113,7 +112,6 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .name("Technology")
                 .description("Technology related questions")
                 .active(true)
-                .questionCount(0)
                 .build());
         CategoryRequestDto categoryRequestDto = CategoryRequestDto.builder()
                 .integrationCategoryId("2")
@@ -142,7 +140,6 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .name("Technology")
                 .description("Technology related questions")
                 .active(true)
-                .questionCount(0)
                 .build());
         Category existingCategory = categoryRepository.save(Category.builder()
                 .integrationCategoryId("2")
@@ -150,14 +147,12 @@ public class CategoryServiceTest extends AbstractServiceTest {
                 .name("Programming")
                 .description("Programming related questions")
                 .active(true)
-                .questionCount(0)
                 .build());
         Category newParentCategory = categoryRepository.save(Category.builder()
                 .integrationCategoryId("3")
                 .name("Computing")
                 .description("Computing related questions")
                 .active(true)
-                .questionCount(0)
                 .build());
         CategoryRequestDto categoryRequestDto = CategoryRequestDto.builder()
                 .integrationCategoryId(existingCategory.getIntegrationCategoryId())

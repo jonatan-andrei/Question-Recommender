@@ -20,6 +20,8 @@ public class UserCategoryService {
     @Inject
     UserCategoryRepository userCategoryRepository;
 
+    @Inject
+    CategoryService categoryService;
     public void updateNumberQuestionsViewed(List<User> users, List<QuestionCategory> categories) {
         for (User user : users) {
             updateNumberQuestionsByAction(user, categories, UserActionType.QUESTION_VIEWED, UserActionUpdateType.INCREASE);
@@ -68,6 +70,7 @@ public class UserCategoryService {
             }
         }
         userCategoryRepository.saveAll(userCategories);
+        categoryService.updateNumberQuestionsByAction(categories, userActionType, userActionUpdateType);
     }
 
     public void saveUserPreferences(User user, List<Category> categories, UserPreferenceType userPreference) {

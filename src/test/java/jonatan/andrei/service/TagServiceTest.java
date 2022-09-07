@@ -46,7 +46,6 @@ public class TagServiceTest extends AbstractServiceTest {
                 .name("Java")
                 .description("language")
                 .active(true)
-                .questionCount(0)
                 .build());
         TagRequestDto tagRequestDto = TagRequestDto.builder()
                 .name(existingTag.getName())

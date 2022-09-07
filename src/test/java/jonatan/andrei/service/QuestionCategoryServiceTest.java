@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 
+import java.math.BigDecimal;
+
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -50,9 +52,9 @@ public class QuestionCategoryServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category1.getCategoryId())));
-        assertEquals(1, categoryRepository.findByIntegrationCategoryId("1").getQuestionCount());
+        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("1").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category2.getCategoryId())));
-        assertEquals(1, categoryRepository.findByIntegrationCategoryId("2").getQuestionCount());
+        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("2").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -73,13 +75,13 @@ public class QuestionCategoryServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category1.getCategoryId())));
-        assertEquals(1, categoryRepository.findByIntegrationCategoryId("1").getQuestionCount());
+        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("1").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category2.getCategoryId())));
-        assertEquals(0, categoryRepository.findByIntegrationCategoryId("2").getQuestionCount());
+        assertEquals(BigDecimal.ZERO, categoryRepository.findByIntegrationCategoryId("2").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category3.getCategoryId())));
-        assertEquals(1, categoryRepository.findByIntegrationCategoryId("3").getQuestionCount());
+        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("3").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category4.getCategoryId())));
-        assertEquals(0, categoryRepository.findByIntegrationCategoryId("4").getQuestionCount());
+        assertEquals(BigDecimal.ZERO, categoryRepository.findByIntegrationCategoryId("4").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test

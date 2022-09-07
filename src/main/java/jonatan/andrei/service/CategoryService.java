@@ -1,10 +1,13 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.UserActionType;
+import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.CategoryRequestDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.CategoryFactory;
 import jonatan.andrei.model.Category;
+import jonatan.andrei.model.QuestionCategory;
 import jonatan.andrei.model.User;
 import jonatan.andrei.repository.CategoryRepository;
 
@@ -41,18 +44,42 @@ public class CategoryService {
         return categories.stream().map(category -> saveOrUpdate(category)).collect(Collectors.toList());
     }
 
-    public void incrementQuestionCountByCategoriesIds(List<Long> categoriesIds) {
-        categoryRepository.incrementQuestionCount(categoriesIds);
-    }
-
-    public void decrementQuestionCountByCategoriesIds(List<Long> categoriesIds) {
-        categoryRepository.decrementQuestionCount(categoriesIds);
-    }
-
     public List<Category> findByIntegrationCategoriesIds(List<String> integrationCategoriesIds) {
         List<Category> categories = categoryRepository.findByintegrationCategoryIdIn(integrationCategoriesIds);
         validateIfAllCategoriesWereFound(integrationCategoriesIds, categories);
         return categories;
+    }
+
+    public void updateNumberQuestionsByAction(List<QuestionCategory> questionCategories, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
+        List<Long> categoriesIds = questionCategories.stream().map(QuestionCategory::getCategoryId).collect(Collectors.toList());
+        List<Category> categories = categoryRepository.findByCategoryIdIn(categoriesIds);
+        for (Category category : categories) {
+            switch (userActionType) {
+                case QUESTION_ASKED ->
+                        category.setNumberQuestionsAsked(category.getNumberQuestionsAsked().add(userActionUpdateType.getValue()));
+                case QUESTION_VIEWED ->
+                        category.setNumberQuestionsViewed(category.getNumberQuestionsViewed().add(userActionUpdateType.getValue()));
+                case QUESTION_ANSWERED ->
+                        category.setNumberQuestionsAnswered(category.getNumberQuestionsAnswered().add(userActionUpdateType.getValue()));
+                case QUESTION_COMMENTED ->
+                        category.setNumberQuestionsCommented(category.getNumberQuestionsCommented().add(userActionUpdateType.getValue()));
+                case QUESTION_FOLLOWED ->
+                        category.setNumberQuestionsFollowed(category.getNumberQuestionsFollowed().add(userActionUpdateType.getValue()));
+                case QUESTION_UPVOTED ->
+                        category.setNumberQuestionsUpvoted(category.getNumberQuestionsUpvoted().add(userActionUpdateType.getValue()));
+                case QUESTION_DOWNVOTED ->
+                        category.setNumberQuestionsDownvoted(category.getNumberQuestionsDownvoted().add(userActionUpdateType.getValue()));
+                case ANSWER_UPVOTED ->
+                        category.setNumberAnswersUpvoted(category.getNumberAnswersUpvoted().add(userActionUpdateType.getValue()));
+                case ANSWER_DOWNVOTED ->
+                        category.setNumberAnswersDownvoted(category.getNumberAnswersDownvoted().add(userActionUpdateType.getValue()));
+                case COMMENT_UPVOTED ->
+                        category.setNumberCommentsUpvoted(category.getNumberCommentsUpvoted().add(userActionUpdateType.getValue()));
+                case COMMENT_DOWNVOTED ->
+                        category.setNumberCommentsDownvoted(category.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
+            }
+        }
+        categoryRepository.saveAll(categories);
     }
 
     private void validateIfAllCategoriesWereFound(List<String> integrationCategoriesIds, List<Category> categories) {

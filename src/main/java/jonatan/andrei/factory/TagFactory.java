@@ -3,6 +3,8 @@ package jonatan.andrei.factory;
 import jonatan.andrei.dto.TagRequestDto;
 import jonatan.andrei.model.Tag;
 
+import java.math.BigDecimal;
+
 public class TagFactory {
 
     public static Tag newTag(TagRequestDto tagRequestDto) {
@@ -10,7 +12,17 @@ public class TagFactory {
                 .name(tagRequestDto.getName())
                 .description(tagRequestDto.getDescription())
                 .active(tagRequestDto.isActive())
-                .questionCount(0)
+                .numberQuestionsAsked(BigDecimal.ZERO)
+                .numberQuestionsViewed(BigDecimal.ZERO)
+                .numberQuestionsAnswered(BigDecimal.ZERO)
+                .numberQuestionsCommented(BigDecimal.ZERO)
+                .numberQuestionsFollowed(BigDecimal.ZERO)
+                .numberQuestionsUpvoted(BigDecimal.ZERO)
+                .numberQuestionsDownvoted(BigDecimal.ZERO)
+                .numberAnswersUpvoted(BigDecimal.ZERO)
+                .numberAnswersDownvoted(BigDecimal.ZERO)
+                .numberCommentsUpvoted(BigDecimal.ZERO)
+                .numberCommentsDownvoted(BigDecimal.ZERO)
                 .build();
     }
 
@@ -18,7 +30,17 @@ public class TagFactory {
         return Tag.builder()
                 .name(tagName)
                 .active(true)
-                .questionCount(0)
+                .numberQuestionsAsked(BigDecimal.ZERO)
+                .numberQuestionsViewed(BigDecimal.ZERO)
+                .numberQuestionsAnswered(BigDecimal.ZERO)
+                .numberQuestionsCommented(BigDecimal.ZERO)
+                .numberQuestionsFollowed(BigDecimal.ZERO)
+                .numberQuestionsUpvoted(BigDecimal.ZERO)
+                .numberQuestionsDownvoted(BigDecimal.ZERO)
+                .numberAnswersUpvoted(BigDecimal.ZERO)
+                .numberAnswersDownvoted(BigDecimal.ZERO)
+                .numberCommentsUpvoted(BigDecimal.ZERO)
+                .numberCommentsDownvoted(BigDecimal.ZERO)
                 .build();
     }
 

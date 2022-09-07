@@ -1,8 +1,11 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.UserActionType;
+import jonatan.andrei.domain.UserActionUpdateType;
 import jonatan.andrei.dto.TagRequestDto;
 import jonatan.andrei.exception.RequiredDataException;
 import jonatan.andrei.factory.TagFactory;
+import jonatan.andrei.model.QuestionTag;
 import jonatan.andrei.model.Tag;
 import jonatan.andrei.repository.TagRepository;
 
@@ -33,14 +36,6 @@ public class TagService {
 
     }
 
-    public void incrementQuestionCountByTagsIds(List<Long> tagsIds) {
-        tagRepository.incrementQuestionCount(tagsIds);
-    }
-
-    public void decrementQuestionCountByTagsIds(List<Long> tagsIds) {
-        tagRepository.decrementQuestionCount(tagsIds);
-    }
-
     @Transactional
     public List<Tag> saveOrUpdate(List<TagRequestDto> tags) {
         return tags.stream().map(tag -> saveOrUpdate(tag)).collect(Collectors.toList());
@@ -56,6 +51,38 @@ public class TagService {
             }
         });
         return tags;
+    }
+
+    public void updateNumberQuestionsByAction(List<QuestionTag> questionTags, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
+        List<Long> tagsIds = questionTags.stream().map(QuestionTag::getTagId).collect(Collectors.toList());
+        List<Tag> tags = tagRepository.findByTagIdIn(tagsIds);
+        for (Tag tag : tags) {
+            switch (userActionType) {
+                case QUESTION_ASKED ->
+                        tag.setNumberQuestionsAsked(tag.getNumberQuestionsAsked().add(userActionUpdateType.getValue()));
+                case QUESTION_VIEWED ->
+                        tag.setNumberQuestionsViewed(tag.getNumberQuestionsViewed().add(userActionUpdateType.getValue()));
+                case QUESTION_ANSWERED ->
+                        tag.setNumberQuestionsAnswered(tag.getNumberQuestionsAnswered().add(userActionUpdateType.getValue()));
+                case QUESTION_COMMENTED ->
+                        tag.setNumberQuestionsCommented(tag.getNumberQuestionsCommented().add(userActionUpdateType.getValue()));
+                case QUESTION_FOLLOWED ->
+                        tag.setNumberQuestionsFollowed(tag.getNumberQuestionsFollowed().add(userActionUpdateType.getValue()));
+                case QUESTION_UPVOTED ->
+                        tag.setNumberQuestionsUpvoted(tag.getNumberQuestionsUpvoted().add(userActionUpdateType.getValue()));
+                case QUESTION_DOWNVOTED ->
+                        tag.setNumberQuestionsDownvoted(tag.getNumberQuestionsDownvoted().add(userActionUpdateType.getValue()));
+                case ANSWER_UPVOTED ->
+                        tag.setNumberAnswersUpvoted(tag.getNumberAnswersUpvoted().add(userActionUpdateType.getValue()));
+                case ANSWER_DOWNVOTED ->
+                        tag.setNumberAnswersDownvoted(tag.getNumberAnswersDownvoted().add(userActionUpdateType.getValue()));
+                case COMMENT_UPVOTED ->
+                        tag.setNumberCommentsUpvoted(tag.getNumberCommentsUpvoted().add(userActionUpdateType.getValue()));
+                case COMMENT_DOWNVOTED ->
+                        tag.setNumberCommentsDownvoted(tag.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
+            }
+        }
+        tagRepository.saveAll(tags);
     }
 
     private void validateRequiredData(TagRequestDto tagRequestDto) {

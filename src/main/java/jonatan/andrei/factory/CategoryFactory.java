@@ -3,6 +3,8 @@ package jonatan.andrei.factory;
 import jonatan.andrei.dto.CategoryRequestDto;
 import jonatan.andrei.model.Category;
 
+import java.math.BigDecimal;
+
 public class CategoryFactory {
 
     public static Category newCategory(CategoryRequestDto categoryRequestDto, Long parentCategoryId) {
@@ -12,7 +14,12 @@ public class CategoryFactory {
                 .description(categoryRequestDto.getDescription())
                 .parentCategoryId(parentCategoryId)
                 .active(categoryRequestDto.isActive())
-                .questionCount(0)
+                .numberQuestionsUpvoted(BigDecimal.ZERO)
+                .numberQuestionsDownvoted(BigDecimal.ZERO)
+                .numberAnswersUpvoted(BigDecimal.ZERO)
+                .numberAnswersDownvoted(BigDecimal.ZERO)
+                .numberCommentsUpvoted(BigDecimal.ZERO)
+                .numberCommentsDownvoted(BigDecimal.ZERO)
                 .build();
     }
 
