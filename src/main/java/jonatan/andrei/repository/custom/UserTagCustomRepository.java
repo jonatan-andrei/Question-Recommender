@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,14 +42,14 @@ public class UserTagCustomRepository {
                  ON ut.user_id = u.user_id
                  WHERE u.integration_user_id = :integrationUserId
                                 
-                """);
+                """, Tuple.class);
 
         nativeQuery.setParameter("integrationUserId", integrationUserId);
 
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()
                 .map(t -> new UserTagDto(
-                        t.get(0, Long.class),
+                        t.get(0, BigInteger.class).longValue(),
                         t.get(1, String.class),
                         t.get(2, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
                         t.get(3, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),

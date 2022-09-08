@@ -47,14 +47,14 @@ public class TestResultUser {
     private boolean error;
 
     @NotNull
-    @Column(name = "user_tags")
+    @Column(name = "user_tags", length = 80000)
     private String userTags;
 
     @NotNull
-    @Column(name = "questions")
+    @Column(name = "questions", length = 80000)
     private String questions;
 
     @NotNull
-    @Column(name = "recommended_questions")
+    @Column(name = "recommended_questions", length = 80000)
     private String recommendedQuestions;
 }

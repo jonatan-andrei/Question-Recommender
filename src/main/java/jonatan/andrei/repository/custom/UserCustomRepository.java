@@ -7,9 +7,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -51,7 +53,7 @@ public class UserCustomRepository {
                         t.get(0, String.class),
                         t.get(1, String.class),
                         t.get(2, Integer.class),
-                        t.get(3, Long.class),
+                        Optional.ofNullable(t.get(3, BigInteger.class)).map(BigInteger::longValue).orElse(null),
                         t.get(4, Integer.class),
                         t.get(5, String.class),
                         t.get(6, Timestamp.class).toLocalDateTime()

@@ -36,11 +36,11 @@ public class TestResult {
     private Integer daysAfterDumpConsidered;
 
     @NotNull
-    @Column(name = "settings")
+    @Column(name = "settings", length = 80000)
     private String settings;
 
     @NotNull
-    @Column(name = "total_activity_system")
+    @Column(name = "total_activity_system", length = 80000)
     private String totalActivitySystem;
 
     @NotNull
