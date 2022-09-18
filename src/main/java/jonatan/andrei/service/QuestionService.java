@@ -15,6 +15,7 @@ import jonatan.andrei.repository.custom.QuestionCustomRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +80,7 @@ public class QuestionService {
         return questionTagService.findByQuestionId(postId);
     }
 
-    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
+    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
         return questionCustomRepository.findRecommendedList(userId, pageNumber, lengthQuestionListPage, recommendedListId, recommendationSettings, dateOfRecommendations);
     }
 

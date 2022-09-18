@@ -10,6 +10,7 @@ import jonatan.andrei.repository.RecommendedListPageRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class RecommendedListPageService {
     @Inject
     RecommendedListPageQuestionService recommendedListPageQuestionService;
 
-    public RecommendedListResponseDto findOrCreatePage(Long userId, RecommendedList recommendedList, Integer pageNumber, Integer lengthQuestionListPage, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
+    public RecommendedListResponseDto findOrCreatePage(Long userId, RecommendedList recommendedList, Integer pageNumber, Integer lengthQuestionListPage, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
         if (isNull(pageNumber) || pageNumber < 1) {
             throw new RequiredDataException("Attribute 'pageNumber' is required and must be greater than zero");
         }

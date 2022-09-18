@@ -2,6 +2,7 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jonatan.andrei.domain.RecommendationChannelType;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
 import jonatan.andrei.factory.QuestionViewFactory;
@@ -37,7 +38,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question3 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDateAndUpdateDate("3", dateOfRecommendations.minusYears(2), dateOfRecommendations.minusYears(2));
         Question question4 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDateAndUpdateDate("4", dateOfRecommendations.minusDays(8), LocalDateTime.now());
         Question question5 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDateAndUpdateDate("5", dateOfRecommendations.minusDays(8), LocalDateTime.now().minusDays(6));
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -58,7 +59,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setAnswers(1);
         questionRepository.save(question);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -77,7 +78,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         questionRepository.save(question);
         entityManager.flush();
         entityManager.clear();
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -95,7 +96,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
         question.setBestAnswerId(answer.getPostId());
         questionRepository.save(question);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -115,7 +116,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         questionRepository.save(originalQuestion);
         question.setDuplicateQuestionId(originalQuestion.getPostId());
         questionRepository.save(question);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -132,13 +133,13 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setViews(10);
         questionRepository.save(question);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(30));
+        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(2));
     }
 
     @Test
@@ -149,7 +150,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setFollowers(5);
         questionRepository.save(question);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -166,7 +167,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setUpvotes(5);
         questionRepository.save(question);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -183,7 +184,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setDownvotes(2);
         questionRepository.save(question);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -201,7 +202,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
         answer.setUserId(user.getUserId());
         answerRepository.save(answer);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -221,7 +222,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("4", question.getPostId());
         AnswerComment answerComment1 = answerCommentTestUtils.saveWithIntegrationPostIdAndAnswerIdAndUserId("5", answer.getPostId(), user.getUserId());
         AnswerComment answerComment2 = answerCommentTestUtils.saveWithIntegrationPostIdAndAnswerIdAndUserId("6", answer.getPostId(), user.getUserId());
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -245,7 +246,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
                 .followerId(user.getUserId())
                 .startDate(LocalDateTime.now())
                 .build());
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -264,7 +265,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
         questionView.setNumberOfViews(10);
         questionViewRepository.save(questionView);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -283,7 +284,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
         questionView.setNumberOfRecommendationsInList(10);
         questionViewRepository.save(questionView);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -302,7 +303,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
         questionView.setNumberOfRecommendationsInEmail(1);
         questionViewRepository.save(questionView);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -321,7 +322,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
         questionView.setNotifiedQuestion(true);
         questionViewRepository.save(questionView);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -341,7 +342,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setExplicitRecommendation(true);
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -361,7 +362,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setIgnored(true);
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -383,7 +384,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -407,7 +408,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -431,7 +432,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsCommented(BigDecimal.valueOf(15));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -455,7 +456,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsViewed(BigDecimal.valueOf(10));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -479,7 +480,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsFollowed(BigDecimal.valueOf(3));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -503,7 +504,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -527,7 +528,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsDownvoted(BigDecimal.valueOf(8));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -551,7 +552,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberAnswersUpvoted(BigDecimal.valueOf(15));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -575,7 +576,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberAnswersDownvoted(BigDecimal.valueOf(2));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -599,7 +600,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberCommentsUpvoted(BigDecimal.valueOf(1));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -623,7 +624,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberCommentsDownvoted(BigDecimal.valueOf(5));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -654,7 +655,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         userTag2.setExplicitRecommendation(true);
         userTagRepository.save(userTag2);
         UserTag userTag3 = userTagTestUtils.save(user, tag3);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -679,7 +680,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAsked(BigDecimal.valueOf(2));
         userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -701,7 +702,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setExplicitRecommendation(true);
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -721,7 +722,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setIgnored(true);
         userCategoryTestUtils.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
         List<RecommendedQuestionOfPageDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
@@ -743,7 +744,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -767,7 +768,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -791,7 +792,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsCommented(BigDecimal.valueOf(15));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -815,7 +816,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsViewed(BigDecimal.valueOf(10));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -839,7 +840,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsFollowed(BigDecimal.valueOf(3));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -863,7 +864,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
         userCategoryTestUtils.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -887,7 +888,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsDownvoted(BigDecimal.valueOf(8));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -911,7 +912,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberAnswersUpvoted(BigDecimal.valueOf(15));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -935,7 +936,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberAnswersDownvoted(BigDecimal.valueOf(2));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -959,7 +960,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberCommentsUpvoted(BigDecimal.valueOf(1));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -983,7 +984,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberCommentsDownvoted(BigDecimal.valueOf(5));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -1014,7 +1015,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         userCategory2.setExplicitRecommendation(true);
         userCategoryRepository.save(userCategory2);
         UserCategory userCategory3 = userCategoryTestUtils.save(user, category3);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 
@@ -1039,7 +1040,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(2));
         userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, Integer> recommendationSettings = recommendationSettingsService.findRecommendationSettings();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 

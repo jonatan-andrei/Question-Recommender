@@ -1,10 +1,12 @@
 package jonatan.andrei.model;
 
+import jonatan.andrei.domain.RecommendationChannelType;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -23,11 +25,15 @@ public class RecommendationSettings {
     private Long recommendationSettingsId;
 
     @NotNull
-    @Column(name = "name", unique = true, length = 100)
+    @Column(name = "channel", length = 100)
+    private RecommendationChannelType channel;
+
+    @NotNull
+    @Column(name = "name", length = 100)
     private RecommendationSettingsType name;
 
     @NotNull
     @Column(name = "value", length = 100)
-    private Integer value;
+    private BigDecimal value;
 
 }

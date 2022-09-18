@@ -1,12 +1,15 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.RecommendationChannelType;
 import jonatan.andrei.domain.RecommendationSettingsType;
+import jonatan.andrei.dto.RecommendationSettingsRequestDto;
 import jonatan.andrei.model.RecommendationSettings;
 import jonatan.andrei.repository.RecommendationSettingsRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.util.*;
 
 @ApplicationScoped
@@ -16,33 +19,41 @@ public class RecommendationSettingsService {
     RecommendationSettingsRepository recommendationSettingsRepository;
 
     @Transactional
-    public void save(Map<RecommendationSettingsType, Integer> recommendationSettingsMap) {
+    public void save(List<RecommendationSettingsRequestDto> recommendationSettings) {
         recommendationSettingsRepository.deleteAll();
         List<RecommendationSettings> recommendationSettingsList = new ArrayList<>();
+        for (RecommendationChannelType recommendationChannelType : RecommendationChannelType.values()) {
+            Map<RecommendationSettingsType, BigDecimal> recommendationSettingsByChannel = recommendationChannelType.getSettings();
+            for (var recommendationSettingsType : recommendationSettingsByChannel.entrySet()) {
+                BigDecimal value = recommendationSettings.stream().filter(
+                                rs -> recommendationChannelType.equals(rs.getChannel())
+                                        && recommendationSettingsType.getKey().equals(rs.getSetting())
+                        ).findFirst()
+                        .map(RecommendationSettingsRequestDto::getValue)
+                        .orElse(recommendationSettingsType.getValue());
 
-        for (RecommendationSettingsType recommendationSettingsType : RecommendationSettingsType.values()) {
-            Integer value = Optional.ofNullable(recommendationSettingsMap.get(recommendationSettingsType))
-                    .orElse(recommendationSettingsType.getDefaultValue());
-
-            recommendationSettingsList.add(RecommendationSettings.builder()
-                    .name(recommendationSettingsType)
-                    .value(value)
-                    .build());
+                recommendationSettingsList.add(RecommendationSettings.builder()
+                        .name(recommendationSettingsType.getKey())
+                        .channel(recommendationChannelType)
+                        .value(value)
+                        .build());
+            }
         }
 
         recommendationSettingsRepository.saveAll(recommendationSettingsList);
     }
 
     @Transactional
-    public Map<RecommendationSettingsType, Integer> findRecommendationSettings() {
-        List<RecommendationSettings> allRecommendationSettings = recommendationSettingsRepository.findAll();
-        Map<RecommendationSettingsType, Integer> recommendationSettingsMap = new HashMap<>();
+    public Map<RecommendationSettingsType, BigDecimal> findRecommendationSettingsByChannel(RecommendationChannelType channel) {
+        List<RecommendationSettings> recommendationSettingsByChannel = recommendationSettingsRepository.findByChannel(channel);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettingsMap = new HashMap<>();
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = RecommendationChannelType.findSettingsByChannel(channel);
 
-        for (RecommendationSettingsType recommendationSettingsType : RecommendationSettingsType.values()) {
-            Optional<RecommendationSettings> settings = allRecommendationSettings.stream()
-                    .filter(s -> s.getName().equals(recommendationSettingsType)).findFirst();
-            recommendationSettingsMap.put(recommendationSettingsType,
-                    settings.map(RecommendationSettings::getValue).orElse(recommendationSettingsType.getDefaultValue()));
+        for (var recommendationSettingsType : recommendationSettings.entrySet()) {
+            Optional<RecommendationSettings> settings = recommendationSettingsByChannel.stream()
+                    .filter(s -> s.getName().equals(recommendationSettingsType.getKey())).findFirst();
+            recommendationSettingsMap.put(recommendationSettingsType.getKey(),
+                    settings.map(RecommendationSettings::getValue).orElse(recommendationSettingsType.getValue()));
         }
 
         return recommendationSettingsMap;

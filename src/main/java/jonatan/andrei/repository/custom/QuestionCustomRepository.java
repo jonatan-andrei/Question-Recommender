@@ -24,7 +24,7 @@ public class QuestionCustomRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, Integer> recommendationSettings, LocalDateTime dateOfRecommendations) {
+    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT q.post_id, p.integration_post_id,
                                  
@@ -343,56 +343,56 @@ public class QuestionCustomRepository {
         nativeQuery.setParameter("recommendedListId", recommendedListId);
         nativeQuery.setParameter("limit", lengthQuestionListPage);
         nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionListPage);
-        nativeQuery.setParameter("minimumOfActivitiesToConsiderMaximumScore", recommendationSettings.get(QUESTION_LIST_MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE));
+        nativeQuery.setParameter("minimumOfActivitiesToConsiderMaximumScore", recommendationSettings.get(MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE));
 
-        nativeQuery.setParameter("numberOfDaysQuestionIsRecent", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RECENT));
-        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", recommendationSettings.get(QUESTION_LIST_NUMBER_OF_DAYS_QUESTION_IS_RELEVANT));
+        nativeQuery.setParameter("numberOfDaysQuestionIsRecent", recommendationSettings.get(NUMBER_OF_DAYS_QUESTION_IS_RECENT));
+        nativeQuery.setParameter("numberOfDaysQuestionIsRelevant", recommendationSettings.get(NUMBER_OF_DAYS_QUESTION_IS_RELEVANT));
         nativeQuery.setParameter("numberOfSecondsInDay", 86400);
-        nativeQuery.setParameter("relevancePublicationDateRecent", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PUBLICATION_DATE_RECENT));
-        nativeQuery.setParameter("relevancePublicationDateRelevant", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PUBLICATION_DATE_RELEVANT));
-        nativeQuery.setParameter("relevanceUpdateDateRecent", recommendationSettings.get(QUESTION_LIST_RELEVANCE_UPDATE_DATE_RECENT));
-        nativeQuery.setParameter("relevanceHasAnswers", recommendationSettings.get(QUESTION_LIST_RELEVANCE_HAS_ANSWER));
-        nativeQuery.setParameter("relevancePerAnswer", recommendationSettings.get(QUESTION_LIST_RELEVANCE_PER_ANSWER));
-        nativeQuery.setParameter("relevanceHasBestAnswer", recommendationSettings.get(QUESTION_LIST_RELEVANCE_HAS_BEST_ANSWER));
-        nativeQuery.setParameter("relevanceDuplicateQuestion", recommendationSettings.get(QUESTION_LIST_RELEVANCE_DUPLICATE_QUESTION));
-        nativeQuery.setParameter("relevanceQuestionNumberViews", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_VIEWS));
-        nativeQuery.setParameter("relevanceQuestionNumberFollowers", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_FOLLOWERS));
-        nativeQuery.setParameter("relevanceQuestionNumberUpvotes", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_UPVOTES));
-        nativeQuery.setParameter("relevanceQuestionNumberDownvotes", recommendationSettings.get(QUESTION_LIST_RELEVANCE_NUMBER_DOWNVOTES));
-        nativeQuery.setParameter("relevanceUserAlreadyAnswered", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_ANSWERED));
-        nativeQuery.setParameter("relevanceUserAlreadyCommented", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_COMMENTED));
-        nativeQuery.setParameter("relevanceUserFollowerAsker", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_FOLLOWER_ASKER));
+        nativeQuery.setParameter("relevancePublicationDateRecent", recommendationSettings.get(RELEVANCE_PUBLICATION_DATE_RECENT));
+        nativeQuery.setParameter("relevancePublicationDateRelevant", recommendationSettings.get(RELEVANCE_PUBLICATION_DATE_RELEVANT));
+        nativeQuery.setParameter("relevanceUpdateDateRecent", recommendationSettings.get(RELEVANCE_UPDATE_DATE_RECENT));
+        nativeQuery.setParameter("relevanceHasAnswers", recommendationSettings.get(RELEVANCE_QUESTION_HAS_ANSWER));
+        nativeQuery.setParameter("relevancePerAnswer", recommendationSettings.get(RELEVANCE_QUESTION_PER_ANSWER));
+        nativeQuery.setParameter("relevanceHasBestAnswer", recommendationSettings.get(RELEVANCE_QUESTION_HAS_BEST_ANSWER));
+        nativeQuery.setParameter("relevanceDuplicateQuestion", recommendationSettings.get(RELEVANCE_DUPLICATE_QUESTION));
+        nativeQuery.setParameter("relevanceQuestionNumberViews", recommendationSettings.get(RELEVANCE_QUESTION_NUMBER_VIEWS));
+        nativeQuery.setParameter("relevanceQuestionNumberFollowers", recommendationSettings.get(RELEVANCE_QUESTION_NUMBER_FOLLOWERS));
+        nativeQuery.setParameter("relevanceQuestionNumberUpvotes", recommendationSettings.get(RELEVANCE_QUESTION_NUMBER_UPVOTES));
+        nativeQuery.setParameter("relevanceQuestionNumberDownvotes", recommendationSettings.get(RELEVANCE_QUESTION_NUMBER_DOWNVOTES));
+        nativeQuery.setParameter("relevanceUserAlreadyAnswered", recommendationSettings.get(RELEVANCE_USER_ALREADY_ANSWERED));
+        nativeQuery.setParameter("relevanceUserAlreadyCommented", recommendationSettings.get(RELEVANCE_USER_ALREADY_COMMENTED));
+        nativeQuery.setParameter("relevanceUserFollowerAsker", recommendationSettings.get(RELEVANCE_USER_FOLLOWER_ASKER));
 
-        nativeQuery.setParameter("relevanceUserAlreadyViewed", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED));
-        nativeQuery.setParameter("relevanceUserAlreadyViewedInList", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED_IN_LIST));
-        nativeQuery.setParameter("relevanceUserAlreadyViewedInEmail", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED_IN_EMAIL));
-        nativeQuery.setParameter("relevanceUserAlreadyViewedInNotification", recommendationSettings.get(QUESTION_LIST_RELEVANCE_USER_ALREADY_VIEWED_IN_NOTIFICATION));
+        nativeQuery.setParameter("relevanceUserAlreadyViewed", recommendationSettings.get(RELEVANCE_USER_ALREADY_VIEWED));
+        nativeQuery.setParameter("relevanceUserAlreadyViewedInList", recommendationSettings.get(RELEVANCE_USER_ALREADY_VIEWED_IN_LIST));
+        nativeQuery.setParameter("relevanceUserAlreadyViewedInEmail", recommendationSettings.get(RELEVANCE_USER_ALREADY_VIEWED_IN_EMAIL));
+        nativeQuery.setParameter("relevanceUserAlreadyViewedInNotification", recommendationSettings.get(RELEVANCE_USER_ALREADY_VIEWED_IN_NOTIFICATION));
 
-        nativeQuery.setParameter("relevanceExplicitRecommendationTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_TAG));
-        nativeQuery.setParameter("relevanceQuestionsAskedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ASKED_IN_TAG));
-        nativeQuery.setParameter("relevanceQuestionsAnsweredInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ANSWERED_IN_TAG));
-        nativeQuery.setParameter("relevanceQuestionsCommentedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_COMMENTED_IN_TAG));
-        nativeQuery.setParameter("relevanceQuestionsViewedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_VIEWED_IN_TAG));
-        nativeQuery.setParameter("relevanceQuestionsFollowedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG));
-        nativeQuery.setParameter("relevanceQuestionsUpvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_UPVOTED_IN_TAG));
-        nativeQuery.setParameter("relevanceQuestionsDownvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_DOWNVOTED_IN_TAG));
-        nativeQuery.setParameter("relevanceAnswersUpvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_ANSWERS_UPVOTED_IN_TAG));
-        nativeQuery.setParameter("relevanceAnswersDownvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_ANSWERS_DOWNVOTED_IN_TAG));
-        nativeQuery.setParameter("relevanceCommentsUpvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_COMMENTS_UPVOTED_IN_TAG));
-        nativeQuery.setParameter("relevanceCommentsDownvotedInTag", recommendationSettings.get(QUESTION_LIST_RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceExplicitRecommendationTag", recommendationSettings.get(RELEVANCE_EXPLICIT_TAG));
+        nativeQuery.setParameter("relevanceQuestionsAskedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_ASKED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsAnsweredInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_ANSWERED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsCommentedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_COMMENTED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsViewedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_VIEWED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsFollowedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsUpvotedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsDownvotedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_DOWNVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceAnswersUpvotedInTag", recommendationSettings.get(RELEVANCE_ANSWERS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceAnswersDownvotedInTag", recommendationSettings.get(RELEVANCE_ANSWERS_DOWNVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceCommentsUpvotedInTag", recommendationSettings.get(RELEVANCE_COMMENTS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceCommentsDownvotedInTag", recommendationSettings.get(RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG));
 
-        nativeQuery.setParameter("relevanceExplicitRecommendationCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_EXPLICIT_CATEGORY));
-        nativeQuery.setParameter("relevanceQuestionsAskedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ASKED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceQuestionsAnsweredInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_ANSWERED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceQuestionsCommentedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_COMMENTED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceQuestionsViewedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_VIEWED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceQuestionsFollowedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_FOLLOWED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceQuestionsUpvotedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_UPVOTED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceQuestionsDownvotedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_QUESTIONS_DOWNVOTED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceAnswersUpvotedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_ANSWERS_UPVOTED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceAnswersDownvotedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_ANSWERS_DOWNVOTED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceCommentsUpvotedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_COMMENTS_UPVOTED_IN_CATEGORY));
-        nativeQuery.setParameter("relevanceCommentsDownvotedInCategory", recommendationSettings.get(QUESTION_LIST_RELEVANCE_COMMENTS_DOWNVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceExplicitRecommendationCategory", recommendationSettings.get(RELEVANCE_EXPLICIT_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsAskedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_ASKED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsAnsweredInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_ANSWERED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsCommentedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_COMMENTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsViewedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_VIEWED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsFollowedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_FOLLOWED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsUpvotedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_UPVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsDownvotedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_DOWNVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceAnswersUpvotedInCategory", recommendationSettings.get(RELEVANCE_ANSWERS_UPVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceAnswersDownvotedInCategory", recommendationSettings.get(RELEVANCE_ANSWERS_DOWNVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceCommentsUpvotedInCategory", recommendationSettings.get(RELEVANCE_COMMENTS_UPVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceCommentsDownvotedInCategory", recommendationSettings.get(RELEVANCE_COMMENTS_DOWNVOTED_IN_CATEGORY));
 
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()
