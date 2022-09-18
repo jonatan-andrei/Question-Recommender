@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class RecommendationSettingsRequestDto {
 
-    private RecommendationSettingsType setting;
+    private RecommendationSettingsType name;
 
     private RecommendationChannelType channel;
 

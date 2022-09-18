@@ -27,7 +27,7 @@ public class RecommendationSettingsService {
             for (var recommendationSettingsType : recommendationSettingsByChannel.entrySet()) {
                 BigDecimal value = recommendationSettings.stream().filter(
                                 rs -> recommendationChannelType.equals(rs.getChannel())
-                                        && recommendationSettingsType.getKey().equals(rs.getSetting())
+                                        && recommendationSettingsType.getKey().equals(rs.getName())
                         ).findFirst()
                         .map(RecommendationSettingsRequestDto::getValue)
                         .orElse(recommendationSettingsType.getValue());
