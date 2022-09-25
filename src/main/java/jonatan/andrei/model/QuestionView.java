@@ -42,7 +42,7 @@ public class QuestionView {
     private Integer numberOfRecommendationsInEmail;
 
     @NotNull
-    @Column(name = "notified_question")
-    private boolean notifiedQuestion;
+    @Column(name = "recommended_in_notification")
+    private boolean recommendedInNotification;
 
 }

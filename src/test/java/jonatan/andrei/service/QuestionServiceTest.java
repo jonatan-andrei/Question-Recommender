@@ -320,7 +320,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         questionRepository.save(question);
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
-        questionView.setNotifiedQuestion(true);
+        questionView.setRecommendedInNotification(true);
         questionViewRepository.save(questionView);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 

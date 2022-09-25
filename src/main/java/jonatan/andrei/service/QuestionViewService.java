@@ -52,7 +52,7 @@ public class QuestionViewService {
             case VIEW_IN_EMAIL ->
                     questionView.setNumberOfRecommendationsInEmail(questionView.getNumberOfRecommendationsInEmail()
                             + 1);
-            case VIEW_IN_NOTIFICATION -> questionView.setNotifiedQuestion(true);
+            case VIEW_IN_NOTIFICATION -> questionView.setRecommendedInNotification(true);
         }
 
         return questionView;

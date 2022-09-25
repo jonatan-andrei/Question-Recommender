@@ -11,7 +11,7 @@ public class QuestionViewFactory {
                 .numberOfViews(0)
                 .numberOfRecommendationsInList(0)
                 .numberOfRecommendationsInEmail(0)
-                .notifiedQuestion(false)
+                .recommendedInNotification(false)
                 .build();
     }
 }

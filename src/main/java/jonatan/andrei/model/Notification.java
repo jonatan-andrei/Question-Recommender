@@ -28,7 +28,7 @@ public class Notification {
 
     @NotNull
     @Column(name = "notification_date")
-    private LocalDateTime notificationDate;
+    private LocalDateTime sendDate;
 
     @NotNull
     @Column(name = "question_id")
