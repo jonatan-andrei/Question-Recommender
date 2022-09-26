@@ -39,7 +39,7 @@ public class RecommendedListPageQuestionService {
                         lengthQuestionListPage, recommendedListPage.getRecommendedListId(), recommendationSettings, dateOfRecommendations)
                 .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPage.getRecommendedListPageId()))
                 .collect(Collectors.toList());
-        questionViewService.registerQuestionsViewInList(recommendedQuestions.stream().map(RecommendedListPageQuestion::getQuestionId).collect(Collectors.toList()), userId, QuestionViewType.VIEW_IN_LIST);
+        questionViewService.registerQuestionsViewInList(recommendedQuestions.stream().map(RecommendedListPageQuestion::getQuestionId).collect(Collectors.toList()), userId, QuestionViewType.VIEW_IN_RECOMMENDED_LIST);
         recommendedListPageQuestionRepository.saveAll(recommendedQuestions);
         return recommendedQuestions.stream()
                 .map(rq -> RecommendedListResponseDto.RecommendedQuestionResponseDto.builder()

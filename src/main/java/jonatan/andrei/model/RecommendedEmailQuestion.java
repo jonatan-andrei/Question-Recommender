@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @Entity
 @Getter
@@ -28,6 +29,14 @@ public class RecommendedEmailQuestion {
     @NotNull
     @Column(name = "question_id")
     private Long questionId;
+
+    @NotNull
+    @Column(name = "integration_question_id")
+    private String integrationQuestionId;
+
+    @NotNull
+    @Column(name = "score")
+    private BigDecimal score;
 
 }
 

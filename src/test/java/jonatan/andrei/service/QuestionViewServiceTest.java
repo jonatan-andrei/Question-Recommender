@@ -67,7 +67,7 @@ public class QuestionViewServiceTest extends AbstractServiceTest {
         List<Long> questions = asList(question1.getPostId(), question2.getPostId(), question3.getPostId(), question4.getPostId());
 
         // Act
-        questionViewService.registerQuestionsViewInList(questions, user.getUserId(), QuestionViewType.VIEW_IN_LIST);
+        questionViewService.registerQuestionsViewInList(questions, user.getUserId(), QuestionViewType.VIEW_IN_RECOMMENDED_LIST);
         entityManager.flush();
         entityManager.clear();
 

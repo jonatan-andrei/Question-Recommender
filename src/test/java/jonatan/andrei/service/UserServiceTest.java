@@ -58,7 +58,6 @@ public class UserServiceTest extends AbstractServiceTest {
         assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
         assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());
         assertEquals(createUserRequestDto.getUserPreferences().isNotificationEnable(), user.isNotificationEnable());
-        assertEquals(createUserRequestDto.getUserPreferences().isRecommendationEnable(), user.isRecommendationEnable());
     }
 
     @Test
@@ -93,7 +92,6 @@ public class UserServiceTest extends AbstractServiceTest {
         assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
         assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());
         assertEquals(createUserRequestDto.getUserPreferences().isNotificationEnable(), user.isNotificationEnable());
-        assertEquals(createUserRequestDto.getUserPreferences().isRecommendationEnable(), user.isRecommendationEnable());
         assertEquals(true, user.isActive());
         assertEquals(false, user.isAnonymous());
     }
@@ -399,6 +397,89 @@ public class UserServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(users.isEmpty());
+    }
+
+    @Test
+    public void findUsersToSendRecommendedEmail_lastActivityDate() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+        user.setLastActivityDate(LocalDateTime.now().minusYears(1));
+        userRepository.save(user);
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        Integer hour = startDate.getHour();
+        boolean isDefaultHour = true;
+        LocalDateTime minimumLastActivityDate = startDate.minusDays(60);
+        Integer pageNumber = 1;
+        Integer lengthPage = 10;
+
+        // Act
+        List<UserToSendRecommendedEmailDto> users = userService.findUsersToSendRecommendedEmail(startDate, hour, isDefaultHour, minimumLastActivityDate, pageNumber, lengthPage);
+
+        // Assert
+        assertEquals(0, users.size());
+    }
+
+    @Test
+    public void findUsersToSendRecommendedEmail_emailNotificationEnableFalse() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+        user.setEmailNotificationEnable(false);
+        userRepository.save(user);
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        Integer hour = startDate.getHour();
+        boolean isDefaultHour = true;
+        LocalDateTime minimumLastActivityDate = startDate.minusDays(60);
+        Integer pageNumber = 1;
+        Integer lengthPage = 10;
+
+        // Act
+        List<UserToSendRecommendedEmailDto> users = userService.findUsersToSendRecommendedEmail(startDate, hour, isDefaultHour, minimumLastActivityDate, pageNumber, lengthPage);
+
+        // Assert
+        assertEquals(0, users.size());
+    }
+
+    @Test
+    public void findUsersToSendRecommendedEmail_defaultHour() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        Integer hour = startDate.getHour();
+        boolean isDefaultHour = true;
+        LocalDateTime minimumLastActivityDate = startDate.minusDays(60);
+        Integer pageNumber = 1;
+        Integer lengthPage = 10;
+
+        // Act
+        List<UserToSendRecommendedEmailDto> users = userService.findUsersToSendRecommendedEmail(startDate, hour, isDefaultHour, minimumLastActivityDate, pageNumber, lengthPage);
+
+        // Assert
+        assertEquals(1, users.size());
+        assertEquals(user.getIntegrationUserId(), users.get(0).getIntegrationUserId());
+    }
+
+    @Test
+    public void findUsersToSendRecommendedEmail_emailNotificationHour() {
+        // Arrange
+        LocalDateTime startDate = LocalDateTime.now().plusDays(1);
+        Integer hour = startDate.getHour();
+        User user1 = userTestUtils.saveWithIntegrationUserId("1");
+        user1.setEmailNotificationHour(hour);
+        userRepository.save(user1);
+        User user2 = userTestUtils.saveWithIntegrationUserId("2");
+        user2.setEmailNotificationHour(hour + 2);
+        userRepository.save(user2);
+        boolean isDefaultHour = false;
+        LocalDateTime minimumLastActivityDate = startDate.minusDays(60);
+        Integer pageNumber = 1;
+        Integer lengthPage = 10;
+
+        // Act
+        List<UserToSendRecommendedEmailDto> users = userService.findUsersToSendRecommendedEmail(startDate, hour, isDefaultHour, minimumLastActivityDate, pageNumber, lengthPage);
+
+        // Assert
+        assertEquals(1, users.size());
+        assertEquals(user1.getIntegrationUserId(), users.get(0).getIntegrationUserId());
     }
 
 }

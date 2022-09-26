@@ -1,6 +1,7 @@
 package jonatan.andrei.repository.custom;
 
 import jonatan.andrei.dto.QuestionsAnsweredByUserDto;
+import jonatan.andrei.dto.UserToSendRecommendedEmailDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -57,6 +58,39 @@ public class UserCustomRepository {
                         t.get(4, Integer.class),
                         t.get(5, String.class),
                         t.get(6, Timestamp.class).toLocalDateTime()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<UserToSendRecommendedEmailDto> findUsersToSendRecommendedEmail(LocalDateTime startDate, Integer hour, boolean isDefaultHour, LocalDateTime minimumLastActivityDate, Integer pageNumber, Integer lengthPage) {
+        Query nativeQuery = entityManager.createNativeQuery("""
+                                
+                SELECT u.user_id,
+                u.integration_user_id
+                FROM users u
+                WHERE u.active
+                AND u.anonymous IS FALSE
+                AND u.email_notification_enable
+                AND ((u.email_notification_hour IS NULL AND :isDefaultHour) OR (u.email_notification_hour IS NOT NULL AND u.email_notification_hour = :hour))
+                AND u.integration_date <= :startDate
+                AND u.last_activity_date >= :minimumLastActivityDate
+                ORDER BY u.integration_date
+                LIMIT :limit OFFSET :offset
+                                
+                """, Tuple.class);
+
+        nativeQuery.setParameter("startDate", startDate);
+        nativeQuery.setParameter("hour", hour);
+        nativeQuery.setParameter("isDefaultHour", isDefaultHour);
+        nativeQuery.setParameter("minimumLastActivityDate", minimumLastActivityDate);
+        nativeQuery.setParameter("limit", lengthPage);
+        nativeQuery.setParameter("offset", (pageNumber - 1) * lengthPage);
+
+        List<Tuple> result = nativeQuery.getResultList();
+        return result.stream()
+                .map(t -> new UserToSendRecommendedEmailDto(
+                        t.get(0, BigInteger.class).longValue(),
+                        t.get(1, String.class)
                 ))
                 .collect(Collectors.toList());
     }

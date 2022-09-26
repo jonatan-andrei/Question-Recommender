@@ -5,17 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecommendedQuestionOfPageDto {
+public class UserToSendRecommendedEmailDto {
 
-    private Long postId;
+    private Long userId;
 
-    private String integrationPostId;
+    private String integrationUserId;
 
-    private BigDecimal score;
 }

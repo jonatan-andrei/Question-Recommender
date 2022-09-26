@@ -27,6 +27,10 @@ public class RecommendedEmail {
     private Long userId;
 
     @NotNull
+    @Column(name = "integration_user_id")
+    private String integrationUserId;
+
+    @NotNull
     @Column(name = "send_date")
     private LocalDateTime sendDate;
 }

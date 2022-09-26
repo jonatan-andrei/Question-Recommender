@@ -62,10 +62,6 @@ public class User {
     private boolean notificationEnable;
 
     @NotNull
-    @Column(name = "recommendation_enable")
-    private boolean recommendationEnable;
-
-    @NotNull
     @Column(name = "last_activity_date")
     private LocalDateTime lastActivityDate;
 

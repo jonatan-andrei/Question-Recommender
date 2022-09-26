@@ -47,9 +47,9 @@ public class QuestionViewService {
     private QuestionView increaseByType(QuestionView questionView, QuestionViewType questionViewType) {
         switch (questionViewType) {
             case VIEW -> questionView.setNumberOfViews(questionView.getNumberOfViews() + 1);
-            case VIEW_IN_LIST ->
+            case VIEW_IN_RECOMMENDED_LIST ->
                     questionView.setNumberOfRecommendationsInList(questionView.getNumberOfRecommendationsInList() + 1);
-            case VIEW_IN_EMAIL ->
+            case VIEW_IN_RECOMMENDED_EMAIL ->
                     questionView.setNumberOfRecommendationsInEmail(questionView.getNumberOfRecommendationsInEmail()
                             + 1);
             case VIEW_IN_NOTIFICATION -> questionView.setRecommendedInNotification(true);

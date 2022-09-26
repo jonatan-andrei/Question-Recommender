@@ -1,7 +1,7 @@
 package jonatan.andrei.repository.custom;
 
 import jonatan.andrei.domain.RecommendationSettingsType;
-import jonatan.andrei.dto.RecommendedQuestionOfPageDto;
+import jonatan.andrei.dto.RecommendedQuestionOfListDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -14,6 +14,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static jonatan.andrei.domain.RecommendationSettingsType.*;
@@ -24,7 +25,7 @@ public class QuestionCustomRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    public List<RecommendedQuestionOfPageDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionListPage, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
+    public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT q.post_id, p.integration_post_id,
                                  
@@ -154,7 +155,7 @@ public class QuestionCustomRepository {
                                  
                 -- USER ALREADY VIEWED IN NOTIFICATION
                 (CASE
-                       WHEN qv.notified_question IS TRUE THEN :relevanceUserAlreadyViewedInNotification
+                       WHEN qv.recommended_in_notification IS TRUE THEN :relevanceUserAlreadyViewedInNotification
                        ELSE 0
                  END)
                                  
@@ -340,9 +341,9 @@ public class QuestionCustomRepository {
                         """, Tuple.class);
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
-        nativeQuery.setParameter("recommendedListId", recommendedListId);
-        nativeQuery.setParameter("limit", lengthQuestionListPage);
-        nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionListPage);
+        nativeQuery.setParameter("recommendedListId", Optional.ofNullable(recommendedListId).orElse(0L));
+        nativeQuery.setParameter("limit", lengthQuestionList);
+        nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionList);
         nativeQuery.setParameter("minimumOfActivitiesToConsiderMaximumScore", recommendationSettings.get(MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE));
 
         nativeQuery.setParameter("numberOfDaysQuestionIsRecent", recommendationSettings.get(NUMBER_OF_DAYS_QUESTION_IS_RECENT));
@@ -396,7 +397,7 @@ public class QuestionCustomRepository {
 
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()
-                .map(t -> new RecommendedQuestionOfPageDto(
+                .map(t -> new RecommendedQuestionOfListDto(
                         t.get(0, BigInteger.class).longValue(),
                         t.get(1, String.class),
                         t.get(2, BigDecimal.class).setScale(2, RoundingMode.HALF_UP)

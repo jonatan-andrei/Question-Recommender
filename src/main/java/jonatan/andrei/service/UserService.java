@@ -126,6 +126,10 @@ public class UserService {
         }
     }
 
+    public List<UserToSendRecommendedEmailDto> findUsersToSendRecommendedEmail(LocalDateTime startDate, Integer hour, boolean isDefaultHour, LocalDateTime minimumLastActivityDate, Integer pageNumber, Integer lengthPage) {
+        return userCustomRepository.findUsersToSendRecommendedEmail(startDate, hour, isDefaultHour, minimumLastActivityDate, pageNumber, lengthPage);
+    }
+
     private void validateIntegrationUserIdInformed(String integrationUserId) {
         if (isNull(integrationUserId)) {
             throw new RequiredDataException("Attribute 'integrationUserId' is required");

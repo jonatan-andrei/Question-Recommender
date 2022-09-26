@@ -1,5 +1,7 @@
 # Integração de dados
 
+# Seu sistema -> Question Recommender
+
 ## Posts
 
 ### POST /post
@@ -104,7 +106,6 @@ registrationDate (LocalDateTime): Data de cadastro do usuário.
 userPreferences.emailNotificationEnable (boolean): Se o usuário permite notificações por email.
 userPreferences.emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
 userPreferences.notificationEnable (boolean): Se o usuário permite notificações.
-userPreferences.recommendationEnable (boolean): Se o usuário permite recomendações.
 userPreferences.explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
 userPreferences.explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
 userPreferences.ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
@@ -122,7 +123,6 @@ active (boolean): Se usuário está ativo.
 userPreferences.emailNotificationEnable (boolean): Se o usuário permite notificações por email.
 userPreferences.emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
 userPreferences.notificationEnable (boolean): Se o usuário permite notificações.
-userPreferences.recommendationEnable (boolean): Se o usuário permite recomendações.
 userPreferences.explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
 userPreferences.explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
 userPreferences.ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
@@ -169,7 +169,7 @@ active (boolean): Se a tag deve ser considerada.
 ### POST /tag/list
 Endpoint para integração de uma lista de tags com Question Recommender. Os dados que devem ser enviados são iguais ao endpoint POST /tag.
 
-## Recomendações
+## Lista de perguntas recomendadas
 
 ### GET /recommended-list
 Endpoint para buscar lista de perguntas recomendadas para usuário.
@@ -198,11 +198,27 @@ Endpoint para alterar configurações de recomendação.
 recommendationSettings (Map<String, Integer>): Configurações de recomendações. Os valores possíveis são os do enum RecommendationSettingsType.
 ```
 
-## Notificações
-TODO
+# Integração de dados
 
-## Emails
-TODO
+# Question Recommender -> Seu sistema
 
-## Lista de perguntas
-TODO
+## Notificações de perguntas recomendadas
+### POST /notification
+Endpoint para integrar lista de notificações que devem ser enviadas.
+```
+notifications (list)
+    integrationUserId (String): Id do usuário no sistema principal.
+    integrationQuestionId (String): Id da publicação no sistema principal.
+    score (BigDecimal): Relevância da recomendação.
+```
+
+## Email de perguntas recomendadas
+### POST /recommended-email
+Endpoint para integrar lista de emails que devem ser enviados.
+```
+emails (List)
+    integrationUserId (String): Id do usuário no sistema principal.
+        questions (List): Lista de perguntas recomendadas:
+        integrationQuestionId (String): Id da publicação no sistema principal.
+        score (BigDecimal): Relevância da recomendação.
+```

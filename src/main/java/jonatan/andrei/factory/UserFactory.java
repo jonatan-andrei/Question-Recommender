@@ -21,7 +21,6 @@ public class UserFactory {
                 .emailNotificationEnable(createUserRequestDto.getUserPreferences().isEmailNotificationEnable())
                 .emailNotificationHour(createUserRequestDto.getUserPreferences().getEmailNotificationHour())
                 .notificationEnable(createUserRequestDto.getUserPreferences().isNotificationEnable())
-                .recommendationEnable(createUserRequestDto.getUserPreferences().isRecommendationEnable())
                 .lastActivityDate(LocalDateTime.now())
                 .numberQuestionsAsked(BigDecimal.ZERO)
                 .numberQuestionsViewed(BigDecimal.ZERO)
@@ -46,7 +45,6 @@ public class UserFactory {
         user.setEmailNotificationEnable(createUserRequestDto.getUserPreferences().isEmailNotificationEnable());
         user.setEmailNotificationHour(createUserRequestDto.getUserPreferences().getEmailNotificationHour());
         user.setNotificationEnable(createUserRequestDto.getUserPreferences().isNotificationEnable());
-        user.setRecommendationEnable(createUserRequestDto.getUserPreferences().isRecommendationEnable());
         user.setLastActivityDate(LocalDateTime.now());
         return user;
     }
@@ -57,7 +55,6 @@ public class UserFactory {
         user.setEmailNotificationEnable(updateUserRequestDto.getUserPreferences().isEmailNotificationEnable());
         user.setEmailNotificationHour(updateUserRequestDto.getUserPreferences().getEmailNotificationHour());
         user.setNotificationEnable(updateUserRequestDto.getUserPreferences().isNotificationEnable());
-        user.setRecommendationEnable(updateUserRequestDto.getUserPreferences().isRecommendationEnable());
         user.setLastActivityDate(LocalDateTime.now());
         return user;
     }
@@ -71,7 +68,6 @@ public class UserFactory {
                 .active(true)
                 .emailNotificationEnable(false)
                 .notificationEnable(false)
-                .recommendationEnable(true)
                 .lastActivityDate(LocalDateTime.now())
                 .numberQuestionsAsked(BigDecimal.ZERO)
                 .numberQuestionsViewed(BigDecimal.ZERO)
