@@ -166,20 +166,20 @@ public class UserService {
     }
 
     public void updateQuestionViewed(List<User> users) {
-        users.forEach(u -> updateByAction(u, UserActionType.QUESTION_VIEWED, UserActionUpdateType.INCREASE));
+        users.forEach(u -> updateByAction(u, UserActionType.QUESTION_VIEWED, UserActionUpdateType.INCREASE, LocalDateTime.now()));
     }
 
-    public void updateByActionAndPostType(User user, UserActionUpdateType userActionUpdateType, PostType postType) {
+    public void updateByActionAndPostType(User user, UserActionUpdateType userActionUpdateType, PostType postType, LocalDateTime actionDate) {
         UserActionType userActionType = switch (postType) {
             case QUESTION -> UserActionType.QUESTION_ASKED;
             case ANSWER -> UserActionType.QUESTION_ANSWERED;
             case QUESTION_COMMENT, ANSWER_COMMENT -> UserActionType.QUESTION_COMMENTED;
         };
 
-        updateByAction(user, userActionType, userActionUpdateType);
+        updateByAction(user, userActionType, userActionUpdateType, actionDate);
     }
 
-    public void updateVotesByActionAndPostType(User user, UserActionUpdateType userActionUpdateType, PostType postType, boolean upvoted) {
+    public void updateVotesByActionAndPostType(User user, UserActionUpdateType userActionUpdateType, PostType postType, boolean upvoted, LocalDateTime voteDate) {
         UserActionType userActionType = switch (postType) {
             case QUESTION -> upvoted ? UserActionType.QUESTION_UPVOTED : UserActionType.QUESTION_DOWNVOTED;
             case ANSWER -> upvoted ? UserActionType.ANSWER_UPVOTED : UserActionType.ANSWER_DOWNVOTED;
@@ -187,10 +187,10 @@ public class UserService {
                     upvoted ? UserActionType.COMMENT_UPVOTED : UserActionType.COMMENT_DOWNVOTED;
         };
 
-        updateByAction(user, userActionType, userActionUpdateType);
+        updateByAction(user, userActionType, userActionUpdateType, voteDate);
     }
 
-    public void updateByAction(User user, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
+    public void updateByAction(User user, UserActionType userActionType, UserActionUpdateType userActionUpdateType, LocalDateTime actionDate) {
         switch (userActionType) {
             case QUESTION_ASKED ->
                     user.setNumberQuestionsAsked(user.getNumberQuestionsAsked().add(userActionUpdateType.getValue()));
@@ -215,6 +215,7 @@ public class UserService {
             case COMMENT_DOWNVOTED ->
                     user.setNumberCommentsDownvoted(user.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
         }
+        user.setLastActivityDate(Optional.ofNullable(actionDate).orElse(LocalDateTime.now()));
         userRepository.save(user);
     }
 

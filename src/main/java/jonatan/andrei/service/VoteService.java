@@ -11,6 +11,7 @@ import jonatan.andrei.repository.VoteRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,7 +48,7 @@ public class VoteService {
         }
         userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.INCREASE, vote.getVoteType().equals(VoteType.UPVOTE));
         userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.INCREASE, vote.getVoteType().equals(VoteType.UPVOTE));
-        userService.updateVotesByActionAndPostType(user, UserActionUpdateType.INCREASE, post.getPostType(), vote.getVoteType().equals(VoteType.UPVOTE));
+        userService.updateVotesByActionAndPostType(user, UserActionUpdateType.INCREASE, post.getPostType(), vote.getVoteType().equals(VoteType.UPVOTE), voteRequestDto.getVoteDate());
         return post;
     }
 
@@ -64,7 +65,7 @@ public class VoteService {
         voteRepository.delete(existingVote);
         userCategoryService.updateNumberQuestionsVoted(user, post, questionCategories, UserActionUpdateType.DECREASE, existingVote.getVoteType().equals(VoteType.UPVOTE));
         userTagService.updateNumberQuestionsVoted(user, post, questionTags, UserActionUpdateType.DECREASE, existingVote.getVoteType().equals(VoteType.UPVOTE));
-        userService.updateVotesByActionAndPostType(user, UserActionUpdateType.DECREASE, post.getPostType(), existingVote.getVoteType().equals(VoteType.UPVOTE));
+        userService.updateVotesByActionAndPostType(user, UserActionUpdateType.DECREASE, post.getPostType(), existingVote.getVoteType().equals(VoteType.UPVOTE), LocalDateTime.now());
     }
 
     public void validateVoteRequest(VoteRequestDto voteRequestDto) {

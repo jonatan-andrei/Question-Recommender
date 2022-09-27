@@ -69,7 +69,7 @@ public class PostService {
         postRepository.updateDateByPostId(originQuestionId, LocalDateTime.now());
         List<QuestionCategory> questionCategories = PostType.QUESTION.equals(postType) ? null : questionService.findCategoriesByQuestionId(originQuestionId);
         List<QuestionTag> questionTags = PostType.QUESTION.equals(postType) ? null : questionService.findTagsByQuestionId(originQuestionId);
-        userService.updateByActionAndPostType(user, UserActionUpdateType.INCREASE, postType);
+        userService.updateByActionAndPostType(user, UserActionUpdateType.INCREASE, postType, createPostRequestDto.getPublicationDate());
 
         return switch (createPostRequestDto.getPostType()) {
             case QUESTION -> questionService.save(createPostRequestDto, user);
@@ -221,7 +221,7 @@ public class PostService {
         User user = userService.findByIntegrationUserId(questionFollowerRequestDto.getIntegrationUserId());
         question = questionFollowerService.registerQuestionFollower(questionFollowerRequestDto, user, question, questionCategories, questionTags);
         postRepository.save(question);
-        userService.updateByAction(user, UserActionType.QUESTION_FOLLOWED, questionFollowerRequestDto.isFollowed() ? UserActionUpdateType.INCREASE : UserActionUpdateType.DECREASE);
+        userService.updateByAction(user, UserActionType.QUESTION_FOLLOWED, questionFollowerRequestDto.isFollowed() ? UserActionUpdateType.INCREASE : UserActionUpdateType.DECREASE, questionFollowerRequestDto.getStartDate());
     }
 
     @Transactional

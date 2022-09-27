@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
@@ -823,6 +824,31 @@ public class PostServiceTest extends AbstractServiceTest {
 
         UserTag user3Tag2 = userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag2.getTagId());
         assertEquals(BigDecimal.valueOf(1), user3Tag2.getNumberQuestionsViewed().stripTrailingZeros());
+    }
+
+    @Test
+    public void registerViews_updateLasActivityDate() {
+        // Arrange
+        Question question = questionTestUtils.saveWithIntegrationPostId("100");
+
+        User user = userTestUtils.saveWithIntegrationUserId("1");
+        user.setLastActivityDate(LocalDateTime.now().minusYears(1));
+        userRepository.save(user);
+
+        ViewsRequestDto viewsRequestDto = ViewsRequestDto.builder()
+                .integrationQuestionId(question.getIntegrationPostId())
+                .totalViews(10)
+                .integrationUsersId(asList(user.getIntegrationUserId()))
+                .build();
+
+        // Act
+        postService.registerViews(viewsRequestDto);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Assert
+        user = userRepository.findByIntegrationUserId(user.getIntegrationUserId()).get();
+        assertEquals(user.getLastActivityDate().toLocalDate(), LocalDate.now());
     }
 
     @Test
