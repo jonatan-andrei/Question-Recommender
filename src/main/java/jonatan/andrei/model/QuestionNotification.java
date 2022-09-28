@@ -13,15 +13,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "notification")
-public class Notification {
+@Table(name = "question_notification")
+public class QuestionNotification {
 
     @Id
-    @SequenceGenerator(name = "notificationSeq", sequenceName = "notification_id_seq", allocationSize = 1, initialValue = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notificationSeq")
+    @SequenceGenerator(name = "questionNotificationSeq", sequenceName = "question_notification_id_seq", allocationSize = 1, initialValue = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questionNotificationSeq")
     @NotNull
-    @Column(name = "notification_id")
-    private Long notificationId;
+    @Column(name = "question_notification_id")
+    private Long questionNotificationId;
 
     @NotNull
     @Column(name = "user_id")

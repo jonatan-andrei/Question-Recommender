@@ -105,7 +105,7 @@ integrationAnonymousUserId (String): Id da sessão do usuário no sistema princi
 registrationDate (LocalDateTime): Data de cadastro do usuário.
 userPreferences.emailNotificationEnable (boolean): Se o usuário permite notificações por email.
 userPreferences.emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
-userPreferences.notificationEnable (boolean): Se o usuário permite notificações.
+userPreferences.questionNotificationEnable (boolean): Se o usuário permite notificações de perguntas recomendadas.
 userPreferences.explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
 userPreferences.explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
 userPreferences.ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
@@ -122,7 +122,7 @@ integrationUserId (String): Id do usuário no sistema principal.
 active (boolean): Se usuário está ativo.
 userPreferences.emailNotificationEnable (boolean): Se o usuário permite notificações por email.
 userPreferences.emailNotificationHour (Integer): A hora do dia para envio das notificações por email (opcional).
-userPreferences.notificationEnable (boolean): Se o usuário permite notificações.
+userPreferences.questionNotificationEnable (boolean): Se o usuário permite notificações de perguntas recomendadas.
 userPreferences.explicitIntegrationCategoriesIds (List-String): Categorias que o usuário demonstrou interesse explicitamente.
 userPreferences.explicitTags (List-String): Tags que o usuário demonstrou interesse explicitamente.
 userPreferences.ignoredIntegrationCategoriesIds (List-String): Categorias que o usuário quer ignorar.
@@ -203,7 +203,7 @@ recommendationSettings (Map<String, Integer>): Configurações de recomendaçõe
 # Question Recommender -> Seu sistema
 
 ## Notificações de perguntas recomendadas
-### POST /notification
+### POST /question-notification
 Endpoint para integrar lista de notificações que devem ser enviadas.
 ```
 notifications (list)

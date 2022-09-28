@@ -39,7 +39,7 @@ public class UserServiceTest extends AbstractServiceTest {
                 .userPreferences(UserPreferencesRequestDto.builder()
                         .emailNotificationEnable(true)
                         .emailNotificationHour(17)
-                        .notificationEnable(true)
+                        .questionNotificationEnable(true)
                         .recommendationEnable(true)
                         .explicitIntegrationCategoriesIds(Collections.EMPTY_LIST)
                         .ignoredIntegrationCategoriesIds(Collections.EMPTY_LIST)
@@ -57,7 +57,7 @@ public class UserServiceTest extends AbstractServiceTest {
         assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
         assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
         assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());
-        assertEquals(createUserRequestDto.getUserPreferences().isNotificationEnable(), user.isNotificationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().isQuestionNotificationEnable(), user.isQuestionNotificationEnable());
     }
 
     @Test
@@ -73,7 +73,7 @@ public class UserServiceTest extends AbstractServiceTest {
                 .userPreferences(UserPreferencesRequestDto.builder()
                         .emailNotificationEnable(true)
                         .emailNotificationHour(17)
-                        .notificationEnable(true)
+                        .questionNotificationEnable(true)
                         .recommendationEnable(true)
                         .explicitIntegrationCategoriesIds(Collections.EMPTY_LIST)
                         .ignoredIntegrationCategoriesIds(Collections.EMPTY_LIST)
@@ -91,7 +91,7 @@ public class UserServiceTest extends AbstractServiceTest {
         assertEquals(createUserRequestDto.getRegistrationDate(), user.getRegistrationDate());
         assertEquals(createUserRequestDto.getUserPreferences().isEmailNotificationEnable(), user.isEmailNotificationEnable());
         assertEquals(createUserRequestDto.getUserPreferences().getEmailNotificationHour(), user.getEmailNotificationHour());
-        assertEquals(createUserRequestDto.getUserPreferences().isNotificationEnable(), user.isNotificationEnable());
+        assertEquals(createUserRequestDto.getUserPreferences().isQuestionNotificationEnable(), user.isQuestionNotificationEnable());
         assertEquals(true, user.isActive());
         assertEquals(false, user.isAnonymous());
     }

@@ -4,6 +4,7 @@ import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.RecommendedQuestionOfListDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
+import jonatan.andrei.dto.UserToSendQuestionNotificationDto;
 import jonatan.andrei.factory.QuestionFactory;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.QuestionCategory;
@@ -35,11 +36,15 @@ public class QuestionService {
     @Inject
     QuestionTagService questionTagService;
 
+    @Inject
+    QuestionNotificationQueueService questionNotificationQueueService;
+
     public Question save(CreatePostRequestDto createPostRequestDto, User user) {
         Question question = QuestionFactory.newQuestion(createPostRequestDto, user.getUserId());
         question = questionRepository.save(question);
         questionCategoryService.save(question, createPostRequestDto.getIntegrationCategoriesIds(), user);
         questionTagService.save(question, createPostRequestDto.getTags(), user);
+        questionNotificationQueueService.saveQuestionNotificationQueue(question.getPostId(), question.getPublicationDate());
         return question;
     }
 
@@ -78,6 +83,10 @@ public class QuestionService {
 
     public List<QuestionTag> findQuestionTags(Long postId) {
         return questionTagService.findByQuestionId(postId);
+    }
+
+    public List<UserToSendQuestionNotificationDto> findUsersToNotifyQuestion(Long questionId, Integer pageNumber, Integer lengthUsersList, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime minimumLastActivityDate) {
+        return questionCustomRepository.findUsersToNotifyQuestion(questionId, pageNumber, lengthUsersList, recommendationSettings, minimumLastActivityDate);
     }
 
     public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {

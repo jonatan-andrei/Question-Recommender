@@ -44,11 +44,11 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(235.44));
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(1), question2.getIntegrationPostId(), BigDecimal.valueOf(220.88));
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(2), question4.getIntegrationPostId(), BigDecimal.valueOf(147.81));
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(3), question5.getIntegrationPostId(), BigDecimal.valueOf(104.95));
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(4), question3.getIntegrationPostId(), BigDecimal.valueOf(0.00));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(235.44));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(1), question2.getIntegrationPostId(), BigDecimal.valueOf(220.88));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(2), question4.getIntegrationPostId(), BigDecimal.valueOf(147.81));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(3), question5.getIntegrationPostId(), BigDecimal.valueOf(104.95));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(4), question3.getIntegrationPostId(), BigDecimal.valueOf(0.00));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-40));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-40));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-110));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-110));
     }
 
     @Test
@@ -102,7 +102,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-50));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-100));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-100));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(2));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(2));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
     }
 
     @Test
@@ -173,7 +173,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-20));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-20));
     }
 
     @Test
@@ -208,7 +208,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-25));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-25));
     }
 
     @Test
@@ -229,7 +229,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-80));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-80));
     }
 
     @Test
@@ -252,7 +252,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(100));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(100));
     }
 
     @Test
@@ -271,7 +271,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-200));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-200));
     }
 
     @Test
@@ -290,7 +290,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-150));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-150));
     }
 
     @Test
@@ -309,7 +309,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-15));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-15));
     }
 
     @Test
@@ -328,7 +328,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-30));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-30));
     }
 
     @Test
@@ -348,7 +348,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(100));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(100));
     }
 
     @Test
@@ -392,7 +392,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(15));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(15));
     }
 
     @Test
@@ -416,7 +416,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(12));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(12));
     }
 
     @Test
@@ -440,7 +440,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(25));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(25));
     }
 
     @Test
@@ -464,7 +464,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
@@ -488,7 +488,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
@@ -512,7 +512,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(50));
     }
 
     @Test
@@ -536,7 +536,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-4));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-4));
     }
 
     @Test
@@ -560,7 +560,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(37.5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(37.5));
     }
 
     @Test
@@ -584,7 +584,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
     }
 
     @Test
@@ -608,7 +608,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(2));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(2));
     }
 
     @Test
@@ -632,7 +632,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-1));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-1));
     }
 
     @Test
@@ -664,7 +664,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(115));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(115));
     }
 
     @Test
@@ -688,7 +688,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
     @Test
@@ -708,7 +708,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(100));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(100));
     }
 
     @Test
@@ -752,7 +752,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(15));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(15));
     }
 
     @Test
@@ -776,7 +776,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(12));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(12));
     }
 
     @Test
@@ -800,7 +800,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(25));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(25));
     }
 
     @Test
@@ -824,7 +824,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
@@ -848,7 +848,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
@@ -872,7 +872,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(50));
     }
 
     @Test
@@ -896,7 +896,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-4));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-4));
     }
 
     @Test
@@ -920,7 +920,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(37.5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(37.5));
     }
 
     @Test
@@ -944,7 +944,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
     }
 
     @Test
@@ -968,7 +968,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(2));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(2));
     }
 
     @Test
@@ -992,7 +992,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-1));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-1));
     }
 
     @Test
@@ -1024,7 +1024,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(115));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(115));
     }
 
     @Test
@@ -1048,11 +1048,11 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfPageDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
 
-    private void assertRecommendedQuestionOfPageDto(RecommendedQuestionOfListDto recommendedQuestionOfListDto, String integrationPostId, BigDecimal score) {
+    private void assertRecommendedQuestionOfListDto(RecommendedQuestionOfListDto recommendedQuestionOfListDto, String integrationPostId, BigDecimal score) {
         Assertions.assertEquals(recommendedQuestionOfListDto.getIntegrationQuestionId(), integrationPostId);
         Assertions.assertEquals(recommendedQuestionOfListDto.getScore().setScale(2, RoundingMode.HALF_UP), score.setScale(2, RoundingMode.HALF_UP));
     }

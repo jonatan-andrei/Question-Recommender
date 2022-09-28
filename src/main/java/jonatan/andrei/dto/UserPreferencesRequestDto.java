@@ -17,7 +17,7 @@ public class UserPreferencesRequestDto {
 
     private Integer emailNotificationHour;
 
-    private boolean notificationEnable;
+    private boolean questionNotificationEnable;
 
     private boolean recommendationEnable;
 

@@ -58,8 +58,8 @@ public class User {
     private Integer emailNotificationHour;
 
     @NotNull
-    @Column(name = "notification_enable")
-    private boolean notificationEnable;
+    @Column(name = "question_notification_enable")
+    private boolean questionNotificationEnable;
 
     @NotNull
     @Column(name = "last_activity_date")

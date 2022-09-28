@@ -117,7 +117,7 @@ public enum RecommendationChannelType {
             entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10))
     )),
 
-    NOTIFICATION(Map.ofEntries(
+    QUESTION_NOTIFICATION(Map.ofEntries(
             entry(RELEVANCE_USER_FOLLOWER_ASKER, BigDecimal.valueOf(100)),
             entry(MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(10)),
             entry(RELEVANCE_EXPLICIT_CATEGORY, BigDecimal.valueOf(100)),

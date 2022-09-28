@@ -99,6 +99,12 @@ public abstract class AbstractServiceTest {
     RecommendedEmailQuestionRepository recommendedEmailQuestionRepository;
 
     @Inject
+    QuestionNotificationRepository questionNotificationRepository;
+
+    @Inject
+    QuestionNotificationQueueRepository questionNotificationQueueRepository;
+
+    @Inject
     TestResultRepository testResultRepository;
 
     @Inject

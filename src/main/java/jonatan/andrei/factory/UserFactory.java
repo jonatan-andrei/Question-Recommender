@@ -20,7 +20,7 @@ public class UserFactory {
                 .active(true)
                 .emailNotificationEnable(createUserRequestDto.getUserPreferences().isEmailNotificationEnable())
                 .emailNotificationHour(createUserRequestDto.getUserPreferences().getEmailNotificationHour())
-                .notificationEnable(createUserRequestDto.getUserPreferences().isNotificationEnable())
+                .questionNotificationEnable(createUserRequestDto.getUserPreferences().isQuestionNotificationEnable())
                 .lastActivityDate(LocalDateTime.now())
                 .numberQuestionsAsked(BigDecimal.ZERO)
                 .numberQuestionsViewed(BigDecimal.ZERO)
@@ -44,7 +44,7 @@ public class UserFactory {
         user.setActive(true);
         user.setEmailNotificationEnable(createUserRequestDto.getUserPreferences().isEmailNotificationEnable());
         user.setEmailNotificationHour(createUserRequestDto.getUserPreferences().getEmailNotificationHour());
-        user.setNotificationEnable(createUserRequestDto.getUserPreferences().isNotificationEnable());
+        user.setQuestionNotificationEnable(createUserRequestDto.getUserPreferences().isQuestionNotificationEnable());
         user.setLastActivityDate(LocalDateTime.now());
         return user;
     }
@@ -54,7 +54,7 @@ public class UserFactory {
         user.setActive(updateUserRequestDto.isActive());
         user.setEmailNotificationEnable(updateUserRequestDto.getUserPreferences().isEmailNotificationEnable());
         user.setEmailNotificationHour(updateUserRequestDto.getUserPreferences().getEmailNotificationHour());
-        user.setNotificationEnable(updateUserRequestDto.getUserPreferences().isNotificationEnable());
+        user.setQuestionNotificationEnable(updateUserRequestDto.getUserPreferences().isQuestionNotificationEnable());
         user.setLastActivityDate(LocalDateTime.now());
         return user;
     }
@@ -67,7 +67,7 @@ public class UserFactory {
                 .anonymous(true)
                 .active(true)
                 .emailNotificationEnable(false)
-                .notificationEnable(false)
+                .questionNotificationEnable(false)
                 .lastActivityDate(LocalDateTime.now())
                 .numberQuestionsAsked(BigDecimal.ZERO)
                 .numberQuestionsViewed(BigDecimal.ZERO)

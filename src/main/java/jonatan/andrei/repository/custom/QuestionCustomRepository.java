@@ -2,6 +2,7 @@ package jonatan.andrei.repository.custom;
 
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedQuestionOfListDto;
+import jonatan.andrei.dto.UserToSendQuestionNotificationDto;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
@@ -24,6 +25,233 @@ public class QuestionCustomRepository {
 
     @PersistenceContext
     EntityManager entityManager;
+
+    public List<UserToSendQuestionNotificationDto> findUsersToNotifyQuestion(Long questionId, Integer pageNumber, Integer lengthUsersList, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime minimumLastActivityDate){
+        Query nativeQuery = entityManager.createNativeQuery("""
+                SELECT u.user_id, u.integration_user_id,
+             
+                -- USER FOLLOWER ASKER
+                 (CASE
+                       WHEN uf.follower_id IS NOT NULL THEN :relevanceUserFollowerAsker
+                       ELSE 0
+                 END)
+                                 
+                +
+                                  
+                -- USER TAG SCORE
+                (SELECT
+                   COALESCE(SUM(
+                   
+                   -- TAG - EXPLICIT RECOMMENDATION
+                   (CASE
+                       WHEN ut.explicit_recommendation THEN :relevanceExplicitRecommendationTag
+                       ELSE 0
+                   END)
+                   
+                   """
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_asked", "relevanceQuestionsAskedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+
+                +
+
+                """                                  
+                           ),0)
+                         
+                         AS user_tag_score
+                         
+                         FROM user_tag ut
+                         INNER JOIN question_tag qt ON qt.tag_id = ut.tag_id AND qt.question_id = :questionId
+                         WHERE ut.user_id = u.user_id
+                         )
+                         
+                         +
+                         
+                        -- USER CATEGORY SCORE
+                        (SELECT
+                           COALESCE(SUM(
+                           
+                           -- CATEGORY - EXPLICIT RECOMMENDATION
+                           (CASE
+                               WHEN uc.explicit_recommendation THEN :relevanceExplicitRecommendationCategory
+                               ELSE 0
+                           END)
+                           """
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+
+                +
+
+                appendRuleCategoryOrTag("uc", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
+
+                +
+
+                """
+                            ),0)
+                          
+                          AS user_category_score
+                          
+                          FROM user_category uc
+                          INNER JOIN question_category qc ON qc.category_id = uc.category_id AND qc.question_id = :questionId
+                          WHERE uc.user_id = u.user_id
+                          )
+                         
+                         AS score
+                         FROM users ufr
+                         LEFT JOIN user_follower uf ON follower_id = ufr.user_id AND uf.user_id = (SELECT user_id FROM post p WHERE p.post_id = :questionId)
+                         
+                         WHERE
+                         
+                           score >= :minimumScoreToSendQuestionToUser
+                           
+                          AND
+                          
+                            u.last_activity_date >= :minimumLastActivityDate
+                           
+                          AND
+                                                        
+                            NOT EXISTS (SELECT 1 FROM question_category qc
+                                        INNER JOIN user_category uc
+                                        ON qc.category_id = uc.category_id 
+                                        AND qc.question_id = :questionId
+                                        AND uc.user_id = u.user_id
+                                        WHERE uc.ignored)
+                                        
+                          AND
+                          
+                            NOT EXISTS (SELECT 1 FROM question_tag qt
+                                        INNER JOIN user_tag ut
+                                        ON qt.tag_id = ut.tag_id
+                                        AND qt.question_id = :questionId
+                                        AND ut.user_id = u.user_id
+                                        WHERE ut.ignored)
+                         
+                         LIMIT :limit OFFSET :offset
+                                        
+                        """, Tuple.class);
+
+        nativeQuery.setParameter("questionId", questionId);
+        nativeQuery.setParameter("limit", lengthUsersList);
+        nativeQuery.setParameter("offset", (pageNumber - 1) * lengthUsersList);
+        nativeQuery.setParameter("minimumOfActivitiesToConsiderMaximumScore", recommendationSettings.get(MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE));
+        nativeQuery.setParameter("relevanceUserFollowerAsker", recommendationSettings.get(RELEVANCE_USER_FOLLOWER_ASKER));
+        nativeQuery.setParameter("minimumScoreToSendQuestionToUser", recommendationSettings.get(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER));
+        nativeQuery.setParameter("minimumLastActivityDate", minimumLastActivityDate);
+
+        nativeQuery.setParameter("relevanceExplicitRecommendationTag", recommendationSettings.get(RELEVANCE_EXPLICIT_TAG));
+        nativeQuery.setParameter("relevanceQuestionsAskedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_ASKED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsAnsweredInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_ANSWERED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsCommentedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_COMMENTED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsViewedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_VIEWED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsFollowedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsUpvotedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceQuestionsDownvotedInTag", recommendationSettings.get(RELEVANCE_QUESTIONS_DOWNVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceAnswersUpvotedInTag", recommendationSettings.get(RELEVANCE_ANSWERS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceAnswersDownvotedInTag", recommendationSettings.get(RELEVANCE_ANSWERS_DOWNVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceCommentsUpvotedInTag", recommendationSettings.get(RELEVANCE_COMMENTS_UPVOTED_IN_TAG));
+        nativeQuery.setParameter("relevanceCommentsDownvotedInTag", recommendationSettings.get(RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG));
+
+        nativeQuery.setParameter("relevanceExplicitRecommendationCategory", recommendationSettings.get(RELEVANCE_EXPLICIT_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsAskedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_ASKED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsAnsweredInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_ANSWERED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsCommentedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_COMMENTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsViewedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_VIEWED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsFollowedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_FOLLOWED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsUpvotedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_UPVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceQuestionsDownvotedInCategory", recommendationSettings.get(RELEVANCE_QUESTIONS_DOWNVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceAnswersUpvotedInCategory", recommendationSettings.get(RELEVANCE_ANSWERS_UPVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceAnswersDownvotedInCategory", recommendationSettings.get(RELEVANCE_ANSWERS_DOWNVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceCommentsUpvotedInCategory", recommendationSettings.get(RELEVANCE_COMMENTS_UPVOTED_IN_CATEGORY));
+        nativeQuery.setParameter("relevanceCommentsDownvotedInCategory", recommendationSettings.get(RELEVANCE_COMMENTS_DOWNVOTED_IN_CATEGORY));
+
+        List<Tuple> result = nativeQuery.getResultList();
+        return result.stream()
+                .map(t -> new UserToSendQuestionNotificationDto(
+                        t.get(0, BigInteger.class).longValue(),
+                        t.get(1, String.class),
+                        t.get(2, BigDecimal.class).setScale(2, RoundingMode.HALF_UP)
+                ))
+                .collect(Collectors.toList());
+    }
 
     public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
         Query nativeQuery = entityManager.createNativeQuery("""
@@ -226,7 +454,6 @@ public class QuestionCustomRepository {
                          
                          FROM question_tag qt
                          INNER JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
-                         INNER JOIN tag t ON qt.tag_id = t.tag_id
                          WHERE qt.question_id = q.post_id
                          )
                          

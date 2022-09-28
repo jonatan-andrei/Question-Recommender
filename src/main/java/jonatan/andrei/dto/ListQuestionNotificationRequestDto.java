@@ -12,15 +12,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListNotificationRequestDto {
+public class ListQuestionNotificationRequestDto {
 
-    private List<NotificationRequestDto> notifications;
+    private List<QuestionNotificationRequestDto> notifications;
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class NotificationRequestDto {
+    public static class QuestionNotificationRequestDto {
 
         private String integrationUserId;
 
