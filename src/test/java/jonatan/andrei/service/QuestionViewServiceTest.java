@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,9 +36,10 @@ public class QuestionViewServiceTest extends AbstractServiceTest {
         questionViewRepository.save(questionViewUser3);
         User user4 = userTestUtils.saveWithIntegrationUserId("4");
         List<User> users = asList(user1, user2, user3, user4);
+        List<Long> usersIds = users.stream().map(User::getUserId).collect(Collectors.toList());
 
         // Act
-        questionViewService.registerQuestionViews(question, users, QuestionViewType.VIEW);
+        questionViewService.registerQuestionViews(question.getPostId(), usersIds, QuestionViewType.VIEW);
         entityManager.flush();
         entityManager.clear();
 

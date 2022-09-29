@@ -1187,6 +1187,8 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
     // TODO avaliar nas notificações como ter também o comportamento do peso negativo, creio que poderia ser a mesma query da lista de recomendações e não precise do RIGHT JOIN
 
+    // TODO validar na query para não enviar a pergunta para o próprio usuário
+
     private void assertUserToSendQuestionNotificationDto(UserToSendQuestionNotificationDto user, String integrationUserId, BigDecimal score) {
         Assertions.assertEquals(user.getIntegrationUserId(), integrationUserId);
     }

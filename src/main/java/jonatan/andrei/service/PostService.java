@@ -136,7 +136,8 @@ public class PostService {
         userService.updateQuestionCategoriesViewed(users, categories);
         userService.updateQuestionTagsViewed(users, tags);
         userService.updateQuestionViewed(users);
-        questionViewService.registerQuestionViews(question, users, QuestionViewType.VIEW);
+        List<Long> usersIds = users.stream().map(User::getUserId).collect(Collectors.toList());
+        questionViewService.registerQuestionViews(question.getPostId(), usersIds, QuestionViewType.VIEW);
     }
 
     @Transactional

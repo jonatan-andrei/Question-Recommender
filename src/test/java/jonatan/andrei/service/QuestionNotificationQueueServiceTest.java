@@ -49,7 +49,7 @@ public class QuestionNotificationQueueServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findBySendDateIsNull() {
+    public void findBySendDateIsNullAndDateWasIgnoredIsNull() {
         // Arrange
         questionNotificationQueueRepository.save(QuestionNotificationQueue.builder().questionId(1L).build());
         questionNotificationQueueRepository.save(QuestionNotificationQueue.builder().questionId(2L).sendDate(LocalDateTime.now()).build());

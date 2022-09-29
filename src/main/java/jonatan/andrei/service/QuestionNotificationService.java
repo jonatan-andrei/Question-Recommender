@@ -1,12 +1,15 @@
 package jonatan.andrei.service;
 
 import jonatan.andrei.domain.IntegrationMethodType;
+import jonatan.andrei.domain.QuestionViewType;
 import jonatan.andrei.domain.RecommendationChannelType;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.ListQuestionNotificationRequestDto;
 import jonatan.andrei.dto.UserToSendQuestionNotificationDto;
+import jonatan.andrei.model.QuestionNotification;
 import jonatan.andrei.model.QuestionNotificationQueue;
 import jonatan.andrei.proxy.QuestionNotificationProxy;
+import jonatan.andrei.repository.QuestionNotificationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -36,8 +39,14 @@ public class QuestionNotificationService {
     QuestionService questionService;
 
     @Inject
+    QuestionViewService questionViewService;
+
+    @Inject
     @RestClient
     QuestionNotificationProxy questionNotificationProxy;
+
+    @Inject
+    QuestionNotificationRepository questionNotificationRepository;
 
     @Transactional
     public void generateQuestionNotifications(IntegrationMethodType integrationMethodType) {
@@ -65,18 +74,20 @@ public class QuestionNotificationService {
         List<UserToSendQuestionNotificationDto> users = new ArrayList<>();
         Integer pageNumber = 0;
         do {
-            users = questionService.findUsersToNotifyQuestion(questionId, pageNumber, maximumNumberOfRows, recommendationSettings, minimumLastActivityDate);
-            List<ListQuestionNotificationRequestDto.QuestionNotificationRequestDto> notifications = users.stream()
-                    .map(u -> ListQuestionNotificationRequestDto.QuestionNotificationRequestDto.builder()
+            users = questionService.findUsersToNotifyQuestion(questionId, ++pageNumber, maximumNumberOfRows, recommendationSettings, minimumLastActivityDate);
+            List<QuestionNotification> notifications = saveQuestionNotifications(users, questionId, integrationQuestionId);
+            List<ListQuestionNotificationRequestDto.QuestionNotificationRequestDto> notificationsRequest = notifications.stream()
+                    .map(n -> ListQuestionNotificationRequestDto.QuestionNotificationRequestDto.builder()
                             .integrationQuestionId(integrationQuestionId)
-                            .integrationUserId(u.getIntegrationUserId())
+                            .integrationUserId(n.getIntegrationUserId())
                             .build())
                     .collect(Collectors.toList());
-            sendQuestionNotifications(notifications, integrationMethodType);
+            sendQuestionNotifications(notificationsRequest, integrationMethodType);
+            saveQuestionView(users, questionId);
         } while (!users.isEmpty());
     }
 
-    public void sendQuestionNotifications(List<ListQuestionNotificationRequestDto.QuestionNotificationRequestDto> notifications, IntegrationMethodType integrationMethodType) {
+    private void sendQuestionNotifications(List<ListQuestionNotificationRequestDto.QuestionNotificationRequestDto> notifications, IntegrationMethodType integrationMethodType) {
         if (notifications.isEmpty()) {
             return;
         }
@@ -88,5 +99,24 @@ public class QuestionNotificationService {
             default:
                 break;
         }
+    }
+
+    private List<QuestionNotification> saveQuestionNotifications(List<UserToSendQuestionNotificationDto> users, Long questionId, String integrationQuestionId) {
+        List<QuestionNotification> notifications = users.stream()
+                .map(u -> QuestionNotification.builder()
+                        .userId(u.getUserId())
+                        .integrationUserId(u.getIntegrationUserId())
+                        .questionId(questionId)
+                        .integrationQuestionId(integrationQuestionId)
+                        .sendDate(LocalDateTime.now())
+                        .build())
+                .collect(Collectors.toList());
+        questionNotificationRepository.saveAll(notifications);
+        return notifications;
+    }
+
+    private void saveQuestionView(List<UserToSendQuestionNotificationDto> users, Long questionId) {
+        List<Long> usersIds = users.stream().map(UserToSendQuestionNotificationDto::getUserId).collect(Collectors.toList());
+        questionViewService.registerQuestionViews(questionId, usersIds, QuestionViewType.VIEW_IN_NOTIFICATION);
     }
 }

@@ -19,13 +19,12 @@ public class QuestionViewService {
     @Inject
     QuestionViewRepository questionViewRepository;
 
-    public void registerQuestionViews(Question question, List<User> users, QuestionViewType questionViewType) {
+    public void registerQuestionViews(Long questionId, List<Long> usersIds, QuestionViewType questionViewType) {
         List<QuestionView> questionViews = new ArrayList<>();
-        List<Long> usersIds = users.stream().map(User::getUserId).collect(Collectors.toList());
-        List<QuestionView> existingQuestionViews = questionViewRepository.findByQuestionIdAndUserIdIn(question.getPostId(), usersIds);
-        for (User user : users) {
-            QuestionView questionView = existingQuestionViews.stream().filter(qv -> qv.getUserId().equals(user.getUserId()))
-                    .findFirst().orElseGet(() -> QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId()));
+        List<QuestionView> existingQuestionViews = questionViewRepository.findByQuestionIdAndUserIdIn(questionId, usersIds);
+        for (Long userId : usersIds) {
+            QuestionView questionView = existingQuestionViews.stream().filter(qv -> qv.getUserId().equals(userId))
+                    .findFirst().orElseGet(() -> QuestionViewFactory.newQuestionView(questionId, userId));
             increaseByType(questionView, questionViewType);
             questionViews.add(questionView);
         }
