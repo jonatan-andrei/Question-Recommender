@@ -386,9 +386,9 @@ public class QuestionServiceTest extends AbstractServiceTest {
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
+        questionTagTestUtils.saveQuestionTags(question1, asList(tag));
         tag.setNumberQuestionsAsked(BigDecimal.valueOf(10));
         tagRepository.save(tag);
-        questionTagTestUtils.saveQuestionTags(question1, asList(tag));
         totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(100));
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAsked(BigDecimal.valueOf(6));
@@ -1102,15 +1102,15 @@ public class QuestionServiceTest extends AbstractServiceTest {
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question = questionTestUtils.saveWithIntegrationPostId("1");
         Tag tag = tagTestUtils.saveWithName("Tag");
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
         tag.setNumberQuestionsAsked(BigDecimal.valueOf(10));
         tagRepository.save(tag);
-        questionTagTestUtils.saveQuestionTags(question, asList(tag));
         totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(100));
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.QUESTION_NOTIFICATION);
-        recommendationSettings.put(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(9.99));
+        recommendationSettings.put(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(10));
         entityManager.flush();
         entityManager.clear();
 

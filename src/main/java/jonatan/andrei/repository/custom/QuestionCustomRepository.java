@@ -60,43 +60,43 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_answered", "relevanceQuestionsAnsweredInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_commented", "relevanceQuestionsCommentedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_viewed", "relevanceQuestionsViewedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut","t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut","t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut","t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut","t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut","t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_comments_upvoted", "relevanceCommentsUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_comments_downvoted", "relevanceCommentsDownvotedInTag")
 
                 +
 
@@ -127,47 +127,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+                appendRuleCategoryOrTag("uc","c", "number_questions_asked", "relevanceQuestionsAskedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+                appendRuleCategoryOrTag("uc","c",  "number_questions_commented", "relevanceQuestionsCommentedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc","c",  "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
 
                 +
 
@@ -405,43 +405,43 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut","t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_commented", "relevanceQuestionsCommentedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_viewed", "relevanceQuestionsViewedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_followed", "relevanceQuestionsFollowedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_answers_upvoted", "relevanceAnswersUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t","number_answers_downvoted", "relevanceAnswersDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut","t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
 
                 +
 
@@ -472,47 +472,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+                appendRuleCategoryOrTag("uc","c",  "number_questions_commented", "relevanceQuestionsCommentedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+                appendRuleCategoryOrTag("uc","c",  "number_questions_viewed", "relevanceQuestionsViewedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+                appendRuleCategoryOrTag("uc","c",  "number_questions_followed", "relevanceQuestionsFollowedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+                appendRuleCategoryOrTag("uc","c",  "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
 
                 +
 
