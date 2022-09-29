@@ -414,7 +414,9 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberQuestionsAnswered(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ANSWERED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
@@ -426,47 +428,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(12));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
     @Test
     public void findRecommendedList_userTagRelevance_numberQuestionsCommented() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsCommented(BigDecimal.valueOf(30));
+        user.setNumberQuestionsCommented(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberQuestionsCommented(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_COMMENTED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberQuestionsCommented(BigDecimal.valueOf(15));
-        userTagRepository.save(userTag);
-        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
-        entityManager.flush();
-        entityManager.clear();
-
-        // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
-
-        // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(25));
-    }
-
-    @Test
-    public void findRecommendedList_userTagRelevance_numberQuestionsViewed() {
-        // Arrange
-        User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsViewed(BigDecimal.valueOf(200));
-        userRepository.save(user);
-        LocalDateTime dateOfRecommendations = LocalDateTime.now();
-        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
-        Tag tag = tagTestUtils.saveWithName("Tag");
-        questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
-        UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberQuestionsViewed(BigDecimal.valueOf(10));
+        userTag.setNumberQuestionsCommented(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -480,18 +459,47 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_userTagRelevance_numberQuestionsFollowed() {
+    public void findRecommendedList_userTagRelevance_numberQuestionsViewed() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsFollowed(BigDecimal.valueOf(30));
+        user.setNumberQuestionsViewed(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberQuestionsViewed(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_VIEWED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberQuestionsFollowed(BigDecimal.valueOf(3));
+        userTag.setNumberQuestionsViewed(BigDecimal.valueOf(6));
+        userTagRepository.save(userTag);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+    }
+
+    @Test
+    public void findRecommendedList_userTagRelevance_numberQuestionsFollowed() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsFollowed(BigDecimal.valueOf(50));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Tag tag = tagTestUtils.saveWithName("Tag");
+        questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        tag.setNumberQuestionsFollowed(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_FOLLOWED, BigDecimal.valueOf(1000));
+        UserTag userTag = userTagTestUtils.save(user, tag);
+        userTag.setNumberQuestionsFollowed(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -508,15 +516,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
     public void findRecommendedList_userTagRelevance_numberQuestionsUpvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
+        user.setNumberQuestionsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberQuestionsUpvoted(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_UPVOTED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
+        userTag.setNumberQuestionsUpvoted(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -526,22 +536,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
     public void findRecommendedList_userTagRelevance_numberQuestionsDownvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsDownvoted(BigDecimal.valueOf(10));
+        user.setNumberQuestionsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberQuestionsDownvoted(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_DOWNVOTED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberQuestionsDownvoted(BigDecimal.valueOf(8));
+        userTag.setNumberQuestionsDownvoted(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -551,22 +563,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-4));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
     }
 
     @Test
     public void findRecommendedList_userTagRelevance_numberAnswersUpvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberAnswersUpvoted(BigDecimal.valueOf(20));
+        user.setNumberAnswersUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberAnswersUpvoted(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.ANSWER_UPVOTED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberAnswersUpvoted(BigDecimal.valueOf(15));
+        userTag.setNumberAnswersUpvoted(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -576,22 +590,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(37.5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
     public void findRecommendedList_userTagRelevance_numberAnswersDownvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberAnswersDownvoted(BigDecimal.valueOf(20));
+        user.setNumberAnswersDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberAnswersDownvoted(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.ANSWER_DOWNVOTED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberAnswersDownvoted(BigDecimal.valueOf(2));
+        userTag.setNumberAnswersDownvoted(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -608,15 +624,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
     public void findRecommendedList_userTagRelevance_numberCommentsUpvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberCommentsUpvoted(BigDecimal.valueOf(10));
+        user.setNumberCommentsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberCommentsUpvoted(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.COMMENT_UPVOTED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberCommentsUpvoted(BigDecimal.valueOf(1));
+        userTag.setNumberCommentsUpvoted(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -633,15 +651,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
     public void findRecommendedList_userTagRelevance_numberCommentsDownvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberCommentsDownvoted(BigDecimal.valueOf(10));
+        user.setNumberCommentsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberCommentsDownvoted(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.COMMENT_DOWNVOTED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberCommentsDownvoted(BigDecimal.valueOf(5));
+        userTag.setNumberCommentsDownvoted(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -651,7 +671,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-1));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.2));
     }
 
     @Test
@@ -667,15 +687,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Tag tag3 = tagTestUtils.saveWithName("Tag3");
         Tag tag4 = tagTestUtils.saveWithName("Tag4");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag1, tag2, tag3, tag4));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(4));
+        tag1.setNumberQuestionsAsked(BigDecimal.valueOf(30));
+        tagRepository.save(tag1);
+        tag2.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        tagRepository.save(tag2);
+        tag3.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        tagRepository.save(tag3);
+        tag4.setNumberQuestionsAsked(BigDecimal.valueOf(5));
+        tagRepository.save(tag4);
         UserTag userTag1 = userTagTestUtils.save(user, tag1);
-        userTag1.setNumberQuestionsAsked(BigDecimal.valueOf(6));
+        userTag1.setNumberQuestionsAsked(BigDecimal.valueOf(9));
         userTagRepository.save(userTag1);
         UserTag userTag2 = userTagTestUtils.save(user, tag2);
+        userTag2.setNumberQuestionsAsked(BigDecimal.valueOf(5));
         userTag2.setExplicitRecommendation(true);
         userTagRepository.save(userTag2);
         UserTag userTag3 = userTagTestUtils.save(user, tag3);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(1000));
         entityManager.flush();
         entityManager.clear();
 
@@ -684,22 +713,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(115));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(118.75));
     }
 
     @Test
     public void findRecommendedList_userTagRelevance_minimumOfActivitiesToConsiderMaximumScore() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsAsked(BigDecimal.valueOf(5));
+        user.setNumberQuestionsAsked(BigDecimal.valueOf(8));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        tag.setNumberQuestionsAsked(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(1000));
         UserTag userTag = userTagTestUtils.save(user, tag);
-        userTag.setNumberQuestionsAsked(BigDecimal.valueOf(2));
+        userTag.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -709,7 +740,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(29.2));
     }
 
     @Test

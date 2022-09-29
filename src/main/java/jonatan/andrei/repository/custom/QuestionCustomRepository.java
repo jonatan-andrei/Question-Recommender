@@ -664,27 +664,16 @@ public class QuestionCustomRepository {
         return ((BigInteger) nativeQuery.getSingleResult()).intValue();
     }
 
-    private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String columnName, String parameterName) {
-        StringBuilder str = new StringBuilder();
-        str.append(" + ");
-        str.append(" (COALESCE(" + aliasUserCategoryOrUserTag + "." + columnName + " * (");
-        str.append(" NULLIF(CASE ");
-        str.append(" WHEN ufr." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
-        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * ufr." + columnName);
-        str.append(" END, 0)) / NULLIF(ufr." + columnName + ",0),0))");
-        return str.toString();
-    }
-
     private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
         StringBuilder str = new StringBuilder();
-        str.append(" + ");
+        str.append(" + COALESCE( ");
         str.append("((COALESCE(NULLIF(" + aliasUserCategoryOrUserTag + "." + columnName + ",0) / " + "NULLIF(ufr." + columnName + ",0),0))");
         str.append(" - ");
         str.append("(COALESCE(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0),0)))");
         str.append(" * (NULLIF(CASE ");
         str.append(" WHEN ufr." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
         str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * ufr." + columnName);
-        str.append(" END, 0))");
+        str.append(" END, 0)),0)");
         return str.toString();
     }
 }
