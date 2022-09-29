@@ -28,7 +28,7 @@ public class QuestionNotificationQueueServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostId("1");
 
         // Act
-        questionNotificationQueueService.saveQuestionNotificationQueue(question.getPostId(), LocalDateTime.now());
+        questionNotificationQueueService.saveQuestionNotificationQueue(question.getPostId(), question.getIntegrationPostId(), LocalDateTime.now());
 
         // Assert
         QuestionNotificationQueue questionNotificationQueue = questionNotificationQueueRepository.findByQuestionId(question.getPostId());
@@ -41,7 +41,7 @@ public class QuestionNotificationQueueServiceTest extends AbstractServiceTest {
         Question question = questionTestUtils.saveWithIntegrationPostId("1");
 
         // Act
-        questionNotificationQueueService.saveQuestionNotificationQueue(question.getPostId(), LocalDateTime.now().minusMonths(1));
+        questionNotificationQueueService.saveQuestionNotificationQueue(question.getPostId(), question.getIntegrationPostId(), LocalDateTime.now().minusMonths(1));
 
         // Assert
         QuestionNotificationQueue questionNotificationQueue = questionNotificationQueueRepository.findByQuestionId(question.getPostId());

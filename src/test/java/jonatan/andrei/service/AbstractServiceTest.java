@@ -114,6 +114,9 @@ public abstract class AbstractServiceTest {
     TotalActivitySystemRepository totalActivitySystemRepository;
 
     @Inject
+    TotalActivitySystemService totalActivitySystemService;
+
+    @Inject
     RecommendationSettingsService recommendationSettingsService;
 
     @Inject

@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Data
 @Builder
 @NoArgsConstructor
@@ -16,6 +14,4 @@ public class UserToSendQuestionNotificationDto {
     private Long userId;
 
     private String integrationUserId;
-
-    private BigDecimal score;
 }

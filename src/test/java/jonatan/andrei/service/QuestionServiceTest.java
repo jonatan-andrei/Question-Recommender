@@ -2,9 +2,12 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jonatan.andrei.domain.PostClassificationType;
 import jonatan.andrei.domain.RecommendationChannelType;
 import jonatan.andrei.domain.RecommendationSettingsType;
+import jonatan.andrei.domain.UserActionType;
 import jonatan.andrei.dto.RecommendedQuestionOfListDto;
+import jonatan.andrei.dto.UserToSendQuestionNotificationDto;
 import jonatan.andrei.factory.QuestionViewFactory;
 import jonatan.andrei.model.*;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static jonatan.andrei.domain.RecommendationSettingsType.MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -339,6 +343,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setExplicitRecommendation(true);
         userTagRepository.save(userTag);
@@ -359,6 +364,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setIgnored(true);
         userTagRepository.save(userTag);
@@ -380,7 +386,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
+        tag.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        tagRepository.save(tag);
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(100));
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
@@ -392,7 +401,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(15));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
     @Test
@@ -405,6 +414,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
         userTagRepository.save(userTag);
@@ -429,6 +439,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsCommented(BigDecimal.valueOf(15));
         userTagRepository.save(userTag);
@@ -453,6 +464,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsViewed(BigDecimal.valueOf(10));
         userTagRepository.save(userTag);
@@ -477,6 +489,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsFollowed(BigDecimal.valueOf(3));
         userTagRepository.save(userTag);
@@ -501,6 +514,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
         userTagRepository.save(userTag);
@@ -525,6 +539,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsDownvoted(BigDecimal.valueOf(8));
         userTagRepository.save(userTag);
@@ -549,6 +564,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberAnswersUpvoted(BigDecimal.valueOf(15));
         userTagRepository.save(userTag);
@@ -573,6 +589,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberAnswersDownvoted(BigDecimal.valueOf(2));
         userTagRepository.save(userTag);
@@ -597,6 +614,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberCommentsUpvoted(BigDecimal.valueOf(1));
         userTagRepository.save(userTag);
@@ -621,6 +639,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberCommentsDownvoted(BigDecimal.valueOf(5));
         userTagRepository.save(userTag);
@@ -648,6 +667,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Tag tag3 = tagTestUtils.saveWithName("Tag3");
         Tag tag4 = tagTestUtils.saveWithName("Tag4");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag1, tag2, tag3, tag4));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(4));
         UserTag userTag1 = userTagTestUtils.save(user, tag1);
         userTag1.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userTagRepository.save(userTag1);
@@ -677,6 +697,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserTag userTag = userTagTestUtils.save(user, tag);
         userTag.setNumberQuestionsAsked(BigDecimal.valueOf(2));
         userTagRepository.save(userTag);
@@ -700,6 +721,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         userCategory.setExplicitRecommendation(true);
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
@@ -719,6 +741,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setIgnored(true);
         userCategoryTestUtils.save(userCategory);
@@ -741,6 +764,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
@@ -765,6 +789,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
@@ -789,6 +814,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsCommented(BigDecimal.valueOf(15));
         userCategoryRepository.save(userCategory);
@@ -813,6 +839,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsViewed(BigDecimal.valueOf(10));
         userCategoryRepository.save(userCategory);
@@ -837,6 +864,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsFollowed(BigDecimal.valueOf(3));
         userCategoryRepository.save(userCategory);
@@ -861,6 +889,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
         userCategoryTestUtils.save(userCategory);
@@ -885,6 +914,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsDownvoted(BigDecimal.valueOf(8));
         userCategoryRepository.save(userCategory);
@@ -909,6 +939,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberAnswersUpvoted(BigDecimal.valueOf(15));
         userCategoryRepository.save(userCategory);
@@ -933,6 +964,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberAnswersDownvoted(BigDecimal.valueOf(2));
         userCategoryRepository.save(userCategory);
@@ -957,6 +989,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberCommentsUpvoted(BigDecimal.valueOf(1));
         userCategoryRepository.save(userCategory);
@@ -981,6 +1014,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberCommentsDownvoted(BigDecimal.valueOf(5));
         userCategoryRepository.save(userCategory);
@@ -1007,6 +1041,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Category category2 = categoryTestUtils.saveWithIntegrationCategoryId("2");
         Category category3 = categoryTestUtils.saveWithIntegrationCategoryId("3");
         Category category4 = categoryTestUtils.saveWithIntegrationCategoryId("4");
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(4));
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category1, category2, category3, category4));
         UserCategory userCategory1 = userCategoryTestUtils.save(user, category1);
         userCategory1.setNumberQuestionsAsked(BigDecimal.valueOf(6));
@@ -1037,6 +1072,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(2));
         userCategoryRepository.save(userCategory);
@@ -1055,5 +1091,37 @@ public class QuestionServiceTest extends AbstractServiceTest {
     private void assertRecommendedQuestionOfListDto(RecommendedQuestionOfListDto recommendedQuestionOfListDto, String integrationPostId, BigDecimal score) {
         Assertions.assertEquals(recommendedQuestionOfListDto.getIntegrationQuestionId(), integrationPostId);
         Assertions.assertEquals(recommendedQuestionOfListDto.getScore().setScale(2, RoundingMode.HALF_UP), score.setScale(2, RoundingMode.HALF_UP));
+    }
+
+    @Test
+    public void findUsersToNotifyQuestion_userTagRelevance_numberQuestionsAsked() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Tag tag = tagTestUtils.saveWithName("Tag");
+        tag.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        tagRepository.save(tag);
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(100));
+        UserTag userTag = userTagTestUtils.save(user, tag);
+        userTag.setNumberQuestionsAsked(BigDecimal.valueOf(6));
+        userTagRepository.save(userTag);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.QUESTION_NOTIFICATION);
+        recommendationSettings.put(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(9.99));
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<UserToSendQuestionNotificationDto> users = questionService.findUsersToNotifyQuestion(question.getPostId(), 1, 20, recommendationSettings, dateOfRecommendations.minusDays(60));
+
+        // Assert
+        assertUserToSendQuestionNotificationDto(users.get(0), user.getIntegrationUserId(), BigDecimal.valueOf(10));
+    }
+
+    private void assertUserToSendQuestionNotificationDto(UserToSendQuestionNotificationDto user, String integrationUserId, BigDecimal score) {
+        Assertions.assertEquals(user.getIntegrationUserId(), integrationUserId);
     }
 }

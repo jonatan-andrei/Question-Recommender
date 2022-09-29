@@ -44,7 +44,7 @@ public class QuestionService {
         question = questionRepository.save(question);
         questionCategoryService.save(question, createPostRequestDto.getIntegrationCategoriesIds(), user);
         questionTagService.save(question, createPostRequestDto.getTags(), user);
-        questionNotificationQueueService.saveQuestionNotificationQueue(question.getPostId(), question.getPublicationDate());
+        questionNotificationQueueService.saveQuestionNotificationQueue(question.getPostId(), question.getIntegrationPostId(), question.getPublicationDate());
         return question;
     }
 

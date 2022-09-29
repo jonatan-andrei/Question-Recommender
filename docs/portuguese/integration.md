@@ -209,7 +209,6 @@ Endpoint para integrar lista de notificações que devem ser enviadas.
 notifications (list)
     integrationUserId (String): Id do usuário no sistema principal.
     integrationQuestionId (String): Id da publicação no sistema principal.
-    score (BigDecimal): Relevância da recomendação.
 ```
 
 ## Email de perguntas recomendadas

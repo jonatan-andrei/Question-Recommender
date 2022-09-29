@@ -4,7 +4,6 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -42,10 +41,6 @@ public class QuestionNotification {
     @NotNull
     @Column(name = "integration_question_id")
     private String integrationQuestionId;
-
-    @NotNull
-    @Column(name = "score")
-    private BigDecimal score;
 
 }
 

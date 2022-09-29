@@ -26,10 +26,14 @@ public class QuestionCustomRepository {
     @PersistenceContext
     EntityManager entityManager;
 
-    public List<UserToSendQuestionNotificationDto> findUsersToNotifyQuestion(Long questionId, Integer pageNumber, Integer lengthUsersList, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime minimumLastActivityDate){
+    public List<UserToSendQuestionNotificationDto> findUsersToNotifyQuestion(Long questionId, Integer pageNumber, Integer lengthUsersList, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime minimumLastActivityDate) {
         Query nativeQuery = entityManager.createNativeQuery("""
-                SELECT u.user_id, u.integration_user_id,
-             
+                SELECT ufr.user_id, ufr.integration_user_id
+                FROM users ufr
+                LEFT JOIN user_follower uf ON follower_id = ufr.user_id AND uf.user_id = (SELECT user_id FROM post p WHERE p.post_id = :questionId)
+                                
+                WHERE :minimumScoreToSendQuestionToUser <= (
+                             
                 -- USER FOLLOWER ASKER
                  (CASE
                        WHEN uf.follower_id IS NOT NULL THEN :relevanceUserFollowerAsker
@@ -52,7 +56,7 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
 
                 +
 
@@ -103,7 +107,9 @@ public class QuestionCustomRepository {
                          
                          FROM user_tag ut
                          INNER JOIN question_tag qt ON qt.tag_id = ut.tag_id AND qt.question_id = :questionId
-                         WHERE ut.user_id = u.user_id
+                         INNER JOIN tag t ON t.tag_id = qt.tag_id
+                         INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
+                         WHERE ut.user_id = ufr.user_id
                          )
                          
                          +
@@ -172,20 +178,14 @@ public class QuestionCustomRepository {
                           
                           FROM user_category uc
                           INNER JOIN question_category qc ON qc.category_id = uc.category_id AND qc.question_id = :questionId
-                          WHERE uc.user_id = u.user_id
-                          )
-                         
-                         AS score
-                         FROM users ufr
-                         LEFT JOIN user_follower uf ON follower_id = ufr.user_id AND uf.user_id = (SELECT user_id FROM post p WHERE p.post_id = :questionId)
-                         
-                         WHERE
-                         
-                           score >= :minimumScoreToSendQuestionToUser
+                          INNER JOIN category c ON c.category_id = qc.category_id
+                          INNER JOIN total_activity_system tas ON tas.post_classification_type = 'CATEGORY'
+                          WHERE uc.user_id = ufr.user_id
+                          ))
                            
                           AND
                           
-                            u.last_activity_date >= :minimumLastActivityDate
+                            ufr.last_activity_date >= :minimumLastActivityDate
                            
                           AND
                                                         
@@ -193,7 +193,7 @@ public class QuestionCustomRepository {
                                         INNER JOIN user_category uc
                                         ON qc.category_id = uc.category_id 
                                         AND qc.question_id = :questionId
-                                        AND uc.user_id = u.user_id
+                                        AND uc.user_id = ufr.user_id
                                         WHERE uc.ignored)
                                         
                           AND
@@ -202,7 +202,7 @@ public class QuestionCustomRepository {
                                         INNER JOIN user_tag ut
                                         ON qt.tag_id = ut.tag_id
                                         AND qt.question_id = :questionId
-                                        AND ut.user_id = u.user_id
+                                        AND ut.user_id = ufr.user_id
                                         WHERE ut.ignored)
                          
                          LIMIT :limit OFFSET :offset
@@ -247,9 +247,7 @@ public class QuestionCustomRepository {
         return result.stream()
                 .map(t -> new UserToSendQuestionNotificationDto(
                         t.get(0, BigInteger.class).longValue(),
-                        t.get(1, String.class),
-                        t.get(2, BigDecimal.class).setScale(2, RoundingMode.HALF_UP)
-                ))
+                        t.get(1, String.class)))
                 .collect(Collectors.toList());
     }
 
@@ -403,7 +401,7 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
 
                 +
 
@@ -454,6 +452,8 @@ public class QuestionCustomRepository {
                          
                          FROM question_tag qt
                          INNER JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
+                         INNER JOIN tag t ON t.tag_id = qt.tag_id
+                         INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
                          WHERE qt.question_id = q.post_id
                          )
                          
@@ -523,6 +523,8 @@ public class QuestionCustomRepository {
                           
                           FROM question_category qc
                           INNER JOIN user_category uc ON qc.category_id = uc.category_id AND uc.user_id = :userId
+                          INNER JOIN category c ON c.category_id = qc.category_id
+                          INNER JOIN total_activity_system tas ON tas.post_classification_type = 'CATEGORY'
                           WHERE qc.question_id = q.post_id
                           )
                          
@@ -673,25 +675,16 @@ public class QuestionCustomRepository {
         return str.toString();
     }
 
-    private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName, Integer totalActivityInSystem) {
+    private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
         StringBuilder str = new StringBuilder();
         str.append(" + ");
-        str.append("((" + aliasUserCategoryOrUserTag + "." + columnName + " / " + "ufr." + columnName + ")");
+        str.append("((COALESCE(NULLIF(" + aliasUserCategoryOrUserTag + "." + columnName + ",0) / " + "NULLIF(ufr." + columnName + ",0),0))");
         str.append(" - ");
-        str.append("(" + aliasCategoryOrTag + "." + columnName + " / " + totalActivityInSystem + "))");
-        str.append(" * :"  + parameterName);
-        // Tratar null
-        // Tratar divisão por zero
-        // Tratar minimumOfActivitiesToConsiderMaximumScore
-        // Tratar para não retornar nulo no final
-
-
-        str.append(" + ");
-        str.append(" (COALESCE(" + aliasUserCategoryOrUserTag + "." + columnName + " * (");
-        str.append(" NULLIF(CASE ");
+        str.append("(COALESCE(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0),0)))");
+        str.append(" * (NULLIF(CASE ");
         str.append(" WHEN ufr." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
         str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * ufr." + columnName);
-        str.append(" END, 0)) / NULLIF(ufr." + columnName + ",0),0))");
+        str.append(" END, 0))");
         return str.toString();
     }
 }

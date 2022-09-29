@@ -14,10 +14,11 @@ public class QuestionNotificationQueueService {
     @Inject
     QuestionNotificationQueueRepository questionNotificationQueueRepository;
 
-    public void saveQuestionNotificationQueue(Long questionId, LocalDateTime publicationDate) {
+    public void saveQuestionNotificationQueue(Long questionId, String integrationQuestionId, LocalDateTime publicationDate) {
         if (publicationDate.isAfter(LocalDateTime.now().minusDays(1))) {
             questionNotificationQueueRepository.save(QuestionNotificationQueue.builder()
                     .questionId(questionId)
+                    .integrationQuestionId(integrationQuestionId)
                     .build());
         }
     }

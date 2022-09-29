@@ -26,6 +26,10 @@ public class QuestionNotificationQueue {
     @Column(name = "question_id")
     private Long questionId;
 
+    @NotNull
+    @Column(name = "integration_question_id")
+    private String integrationQuestionId;
+
     @Column(name = "send_date")
     private LocalDateTime sendDate;
 
