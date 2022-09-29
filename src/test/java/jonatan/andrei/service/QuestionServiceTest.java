@@ -713,7 +713,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(118.75));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(132.25));
     }
 
     @Test
@@ -795,7 +795,9 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(100));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
@@ -807,7 +809,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(15));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
     @Test
@@ -820,7 +822,9 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberQuestionsAnswered(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ANSWERED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
         userCategory.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
@@ -832,47 +836,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(12));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
     @Test
     public void findRecommendedList_userCategoryRelevance_numberQuestionsCommented() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsCommented(BigDecimal.valueOf(30));
+        user.setNumberQuestionsCommented(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberQuestionsCommented(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_COMMENTED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberQuestionsCommented(BigDecimal.valueOf(15));
-        userCategoryRepository.save(userCategory);
-        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
-        entityManager.flush();
-        entityManager.clear();
-
-        // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
-
-        // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(25));
-    }
-
-    @Test
-    public void findRecommendedList_userCategoryRelevance_numberQuestionsViewed() {
-        // Arrange
-        User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsViewed(BigDecimal.valueOf(200));
-        userRepository.save(user);
-        LocalDateTime dateOfRecommendations = LocalDateTime.now();
-        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
-        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
-        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
-        UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberQuestionsViewed(BigDecimal.valueOf(10));
+        userCategory.setNumberQuestionsCommented(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -886,18 +867,47 @@ public class QuestionServiceTest extends AbstractServiceTest {
     }
 
     @Test
-    public void findRecommendedList_userCategoryRelevance_numberQuestionsFollowed() {
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsViewed() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsFollowed(BigDecimal.valueOf(30));
+        user.setNumberQuestionsViewed(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberQuestionsViewed(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_VIEWED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberQuestionsFollowed(BigDecimal.valueOf(3));
+        userCategory.setNumberQuestionsViewed(BigDecimal.valueOf(6));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+
+        // Assert
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+    }
+
+    @Test
+    public void findRecommendedList_userCategoryRelevance_numberQuestionsFollowed() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsFollowed(BigDecimal.valueOf(50));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        category.setNumberQuestionsFollowed(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_FOLLOWED, BigDecimal.valueOf(1000));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsFollowed(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -914,15 +924,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
     public void findRecommendedList_userCategoryRelevance_numberQuestionsUpvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
+        user.setNumberQuestionsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberQuestionsUpvoted(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_UPVOTED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberQuestionsUpvoted(BigDecimal.valueOf(40));
+        userCategory.setNumberQuestionsUpvoted(BigDecimal.valueOf(6));
         userCategoryTestUtils.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -932,22 +944,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
     public void findRecommendedList_userCategoryRelevance_numberQuestionsDownvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsDownvoted(BigDecimal.valueOf(10));
+        user.setNumberQuestionsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberQuestionsDownvoted(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_DOWNVOTED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberQuestionsDownvoted(BigDecimal.valueOf(8));
+        userCategory.setNumberQuestionsDownvoted(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -957,22 +971,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-4));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
     }
 
     @Test
     public void findRecommendedList_userCategoryRelevance_numberAnswersUpvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberAnswersUpvoted(BigDecimal.valueOf(20));
+        user.setNumberAnswersUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberAnswersUpvoted(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.ANSWER_UPVOTED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberAnswersUpvoted(BigDecimal.valueOf(15));
+        userCategory.setNumberAnswersUpvoted(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -982,22 +998,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(37.5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
     public void findRecommendedList_userCategoryRelevance_numberAnswersDownvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberAnswersDownvoted(BigDecimal.valueOf(20));
+        user.setNumberAnswersDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberAnswersDownvoted(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.ANSWER_DOWNVOTED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberAnswersDownvoted(BigDecimal.valueOf(2));
+        userCategory.setNumberAnswersDownvoted(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -1014,15 +1032,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
     public void findRecommendedList_userCategoryRelevance_numberCommentsUpvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberCommentsUpvoted(BigDecimal.valueOf(10));
+        user.setNumberCommentsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberCommentsUpvoted(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.COMMENT_UPVOTED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberCommentsUpvoted(BigDecimal.valueOf(1));
+        userCategory.setNumberCommentsUpvoted(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -1039,15 +1059,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
     public void findRecommendedList_userCategoryRelevance_numberCommentsDownvoted() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberCommentsDownvoted(BigDecimal.valueOf(10));
+        user.setNumberCommentsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberCommentsDownvoted(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.COMMENT_DOWNVOTED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberCommentsDownvoted(BigDecimal.valueOf(5));
+        userCategory.setNumberCommentsDownvoted(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -1057,7 +1079,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-1));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.2));
     }
 
     @Test
@@ -1072,16 +1094,25 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Category category2 = categoryTestUtils.saveWithIntegrationCategoryId("2");
         Category category3 = categoryTestUtils.saveWithIntegrationCategoryId("3");
         Category category4 = categoryTestUtils.saveWithIntegrationCategoryId("4");
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(4));
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category1, category2, category3, category4));
+        category1.setNumberQuestionsAsked(BigDecimal.valueOf(30));
+        categoryRepository.save(category1);
+        category2.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        categoryRepository.save(category2);
+        category3.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        categoryRepository.save(category3);
+        category4.setNumberQuestionsAsked(BigDecimal.valueOf(5));
+        categoryRepository.save(category4);
         UserCategory userCategory1 = userCategoryTestUtils.save(user, category1);
-        userCategory1.setNumberQuestionsAsked(BigDecimal.valueOf(6));
+        userCategory1.setNumberQuestionsAsked(BigDecimal.valueOf(9));
         userCategoryRepository.save(userCategory1);
         UserCategory userCategory2 = userCategoryTestUtils.save(user, category2);
         userCategory2.setExplicitRecommendation(true);
+        userCategory2.setNumberQuestionsAsked(BigDecimal.valueOf(5));
         userCategoryRepository.save(userCategory2);
         UserCategory userCategory3 = userCategoryTestUtils.save(user, category3);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(1000));
         entityManager.flush();
         entityManager.clear();
 
@@ -1090,22 +1121,24 @@ public class QuestionServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(115));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(132.25));
     }
 
     @Test
     public void findRecommendedList_userCategoryRelevance_minimumOfActivitiesToConsiderMaximumScore() {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
-        user.setNumberQuestionsAsked(BigDecimal.valueOf(5));
+        user.setNumberQuestionsAsked(BigDecimal.valueOf(8));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.ONE);
+        category.setNumberQuestionsAsked(BigDecimal.valueOf(20));
+        categoryRepository.save(category);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(1000));
         UserCategory userCategory = userCategoryTestUtils.save(user, category);
-        userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(2));
+        userCategory.setNumberQuestionsAsked(BigDecimal.valueOf(6));
         userCategoryRepository.save(userCategory);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
         entityManager.flush();
@@ -1115,7 +1148,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(29.2));
     }
 
 
@@ -1151,6 +1184,8 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Assert
         assertUserToSendQuestionNotificationDto(users.get(0), user.getIntegrationUserId(), BigDecimal.valueOf(10));
     }
+
+    // TODO avaliar nas notificações como ter também o comportamento do peso negativo, creio que poderia ser a mesma query da lista de recomendações e não precise do RIGHT JOIN
 
     private void assertUserToSendQuestionNotificationDto(UserToSendQuestionNotificationDto user, String integrationUserId, BigDecimal score) {
         Assertions.assertEquals(user.getIntegrationUserId(), integrationUserId);

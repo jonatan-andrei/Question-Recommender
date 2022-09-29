@@ -106,7 +106,7 @@ public class QuestionCustomRepository {
                          AS user_tag_score
                          
                          FROM user_tag ut
-                         INNER JOIN question_tag qt ON qt.tag_id = ut.tag_id AND qt.question_id = :questionId
+                         RIGHT JOIN question_tag qt ON qt.tag_id = ut.tag_id AND qt.question_id = :questionId
                          INNER JOIN tag t ON t.tag_id = qt.tag_id
                          INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
                          WHERE ut.user_id = ufr.user_id
@@ -177,7 +177,7 @@ public class QuestionCustomRepository {
                           AS user_category_score
                           
                           FROM user_category uc
-                          INNER JOIN question_category qc ON qc.category_id = uc.category_id AND qc.question_id = :questionId
+                          RIGHT JOIN question_category qc ON qc.category_id = uc.category_id AND qc.question_id = :questionId
                           INNER JOIN category c ON c.category_id = qc.category_id
                           INNER JOIN total_activity_system tas ON tas.post_classification_type = 'CATEGORY'
                           WHERE uc.user_id = ufr.user_id
@@ -451,9 +451,9 @@ public class QuestionCustomRepository {
                          AS user_tag_score
                          
                          FROM question_tag qt
-                         INNER JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId
                          INNER JOIN tag t ON t.tag_id = qt.tag_id
                          INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
+                         LEFT JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId 
                          WHERE qt.question_id = q.post_id
                          )
                          
@@ -522,9 +522,9 @@ public class QuestionCustomRepository {
                           AS user_category_score
                           
                           FROM question_category qc
-                          INNER JOIN user_category uc ON qc.category_id = uc.category_id AND uc.user_id = :userId
                           INNER JOIN category c ON c.category_id = qc.category_id
                           INNER JOIN total_activity_system tas ON tas.post_classification_type = 'CATEGORY'
+                          LEFT JOIN user_category uc ON qc.category_id = uc.category_id AND uc.user_id = :userId
                           WHERE qc.question_id = q.post_id
                           )
                          
