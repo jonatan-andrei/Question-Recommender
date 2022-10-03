@@ -33,10 +33,15 @@ public class QuestionNotificationServiceTest extends AbstractServiceTest {
         User user2 = userTestUtils.saveWithIntegrationUserId("2");
         Question question = questionTestUtils.saveWithIntegrationPostId("A");
         recommendationSettingsService.save(asList(RecommendationSettingsRequestDto.builder()
-                .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
-                .name(RecommendationSettingsType.MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER)
-                .value(BigDecimal.ZERO)
-                .build()));
+                        .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
+                        .name(RecommendationSettingsType.MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER)
+                        .value(BigDecimal.ZERO)
+                        .build(),
+                RecommendationSettingsRequestDto.builder()
+                        .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
+                        .name(RecommendationSettingsType.ENABLE_CHANNEL)
+                        .value(BigDecimal.ONE)
+                        .build()));
         questionNotificationQueueRepository.save(QuestionNotificationQueue.builder()
                 .questionId(question.getPostId())
                 .integrationQuestionId(question.getIntegrationPostId())
@@ -60,14 +65,20 @@ public class QuestionNotificationServiceTest extends AbstractServiceTest {
         User user3 = userTestUtils.saveWithIntegrationUserId("3");
         Question question = questionTestUtils.saveWithIntegrationPostId("A");
         recommendationSettingsService.save(asList(RecommendationSettingsRequestDto.builder()
-                .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
-                .name(RecommendationSettingsType.MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER)
-                .value(BigDecimal.ZERO)
-                .build(),RecommendationSettingsRequestDto.builder()
-                .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
-                .name(RecommendationSettingsType.MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST)
-                .value(BigDecimal.valueOf(2))
-                .build()));
+                        .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
+                        .name(RecommendationSettingsType.MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER)
+                        .value(BigDecimal.ZERO)
+                        .build(),
+                RecommendationSettingsRequestDto.builder()
+                        .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
+                        .name(RecommendationSettingsType.MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST)
+                        .value(BigDecimal.valueOf(2))
+                        .build(),
+                RecommendationSettingsRequestDto.builder()
+                        .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
+                        .name(RecommendationSettingsType.ENABLE_CHANNEL)
+                        .value(BigDecimal.ONE)
+                        .build()));
         questionNotificationQueueRepository.save(QuestionNotificationQueue.builder()
                 .questionId(question.getPostId())
                 .integrationQuestionId(question.getIntegrationPostId())
@@ -90,10 +101,15 @@ public class QuestionNotificationServiceTest extends AbstractServiceTest {
         // Arrange
         Question question = questionTestUtils.saveWithIntegrationPostId("A");
         recommendationSettingsService.save(asList(RecommendationSettingsRequestDto.builder()
-                .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
-                .name(RecommendationSettingsType.MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER)
-                .value(BigDecimal.ZERO)
-                .build()));
+                        .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
+                        .name(RecommendationSettingsType.MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER)
+                        .value(BigDecimal.ZERO)
+                        .build(),
+                RecommendationSettingsRequestDto.builder()
+                        .channel(RecommendationChannelType.QUESTION_NOTIFICATION)
+                        .name(RecommendationSettingsType.ENABLE_CHANNEL)
+                        .value(BigDecimal.ONE)
+                        .build()));
         questionNotificationQueueRepository.save(QuestionNotificationQueue.builder()
                 .questionId(question.getPostId())
                 .integrationQuestionId(question.getIntegrationPostId())

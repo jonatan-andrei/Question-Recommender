@@ -111,7 +111,7 @@ public enum RecommendationChannelType {
             entry(RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG, BigDecimal.valueOf(-2)),
             entry(DEFAULT_LENGTH, BigDecimal.valueOf(5)),
             entry(MINIMUM_LENGTH, BigDecimal.valueOf(3)),
-            entry(ENABLE_CHANNEL, BigDecimal.valueOf(1)),
+            entry(ENABLE_CHANNEL, BigDecimal.valueOf(0)),
             entry(DEFAULT_HOUR_OF_THE_DAY_TO_SEND_RECOMMENDATIONS, BigDecimal.valueOf(8)),
             entry(DAYS_OF_USER_INACTIVITY_TO_SUSPEND_RECOMMENDATIONS, BigDecimal.valueOf(60)),
             entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10))
@@ -145,7 +145,7 @@ public enum RecommendationChannelType {
             entry(RELEVANCE_COMMENTS_UPVOTED_IN_TAG, BigDecimal.valueOf(20)),
             entry(RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG, BigDecimal.valueOf(-2)),
             entry(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(200)),
-            entry(ENABLE_CHANNEL, BigDecimal.valueOf(1)),
+            entry(ENABLE_CHANNEL, BigDecimal.valueOf(0)),
             entry(DAYS_OF_USER_INACTIVITY_TO_SUSPEND_RECOMMENDATIONS, BigDecimal.valueOf(30)),
             entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10))
     ));

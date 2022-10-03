@@ -2,10 +2,14 @@
 
 # Seu sistema -> Question Recommender
 
+Abaixo, estão listados os endpoints para que você integre dados do seu sistema com o Question Recommender.<br/>
+Os endpoints devem ser acionados no momento que ocorre a ação do usuário em seu sistema (por exemplo: uma nova pergunta foi publicada).<br/>
+Se o seu sistema já tem dados e você está começando a utilizar QR agora, faça a integração de todo conteúdo já existente. Os endpoints /list foram desenvolvidos para ajudar nessa tarefa.
+
 ## Posts
 
 ### POST /post
-Endpoint para salvar um post.
+Endpoint para salvar uma publicação (pergunta, resposta ou comentário).
 ```
 integrationPostId (String): Id da publicação no sistema principal.
 integrationParentPostId (String): Id da pergunta ou resposta onde está a resposta ou comentário.
@@ -21,10 +25,10 @@ integrationAnonymousUserId: Id da sessão do usuário no sistema principal, caso
 ```
 
 ### POST /post/list
-Endpoint para salvar uma lista de posts. Os dados que devem ser enviados são iguais ao endpoint POST /post.
+Endpoint para salvar uma lista de publicações. Os dados que devem ser enviados são iguais ao endpoint POST /post.
 
 ### PUT /post
-Endpoint para atualizar um post.
+Endpoint para atualizar uma publicação.
 ```
 integrationPostId (String): Id da publicação no sistema principal.
 postType (String): Tipo da publicação. Valores possíveis: QUESTION, ANSWER, QUESTION_COMMENT, ANSWER_COMMENT.
@@ -192,15 +196,17 @@ questions (List): Lista de perguntas recomendadas:
 
 ## Configurações
 
-### POST /recommendation-settings
+### PUT /recommendation-settings
 Endpoint para alterar configurações de recomendação.
 ```
-recommendationSettings (Map<String, Integer>): Configurações de recomendações. Os valores possíveis são os do enum RecommendationSettingsType.
+recommendationSettings (list)
+    name (String): Nome do parâmetro.
+    channel (String): Canal. Valores possíveis: RECOMMENDED_LIST, RECOMMENDED_EMAIL e QUESTION_NOTIFICATION.
+    value (BigDecimal): Peso que o parâmetro terá nas recomendações do canal.
 ```
 
-# Integração de dados
-
 # Question Recommender -> Seu sistema
+Abaixo, estão listados os endpoints que você deve disponibilizar no seu sistema para que o Question Recommender envie as recomendações geradas, caso os canais notificação ou e-mail estejam habilitados.<br/>
 
 ## Notificações de perguntas recomendadas
 ### POST /question-notification

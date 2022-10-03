@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
-import static org.codehaus.groovy.runtime.InvokerHelper.asList;
+import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -46,7 +46,12 @@ public class RecommendedEmailServiceTest extends AbstractServiceTest {
                 .channel(RecommendationChannelType.RECOMMENDED_EMAIL)
                 .name(RecommendationSettingsType.DEFAULT_HOUR_OF_THE_DAY_TO_SEND_RECOMMENDATIONS)
                 .value(BigDecimal.valueOf(LocalDateTime.now().getHour()))
-                .build()));
+                .build(),
+                RecommendationSettingsRequestDto.builder()
+                        .channel(RecommendationChannelType.RECOMMENDED_EMAIL)
+                        .name(RecommendationSettingsType.ENABLE_CHANNEL)
+                        .value(BigDecimal.ONE)
+                        .build()));
 
         // Act
         recommendedEmailService.generateRecommendedEmails(IntegrationMethodType.NONE);
