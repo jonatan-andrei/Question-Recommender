@@ -41,6 +41,12 @@ public class UserTagCustomRepository {
                  INNER JOIN users u
                  ON ut.user_id = u.user_id
                  WHERE u.integration_user_id = :integrationUserId
+                 ORDER BY
+                 ut.number_questions_asked + ut.number_questions_viewed + ut.number_questions_answered +
+                 ut.number_questions_commented + ut.number_questions_followed + ut.number_questions_upvoted +
+                 ut.number_questions_downvoted + ut.number_answers_upvoted + ut.number_answers_downvoted +
+                 ut.number_comments_upvoted + ut.number_comments_downvoted
+                 DESC
                                 
                 """, Tuple.class);
 
