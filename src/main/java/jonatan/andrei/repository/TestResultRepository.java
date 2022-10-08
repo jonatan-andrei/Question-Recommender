@@ -1,7 +1,7 @@
 package jonatan.andrei.repository;
 
 import jonatan.andrei.model.TestResult;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TestResultRepository extends CrudRepository<TestResult, Long> {
+public interface TestResultRepository extends JpaRepository<TestResult, Long> {
 }
