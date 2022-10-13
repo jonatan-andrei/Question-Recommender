@@ -30,6 +30,6 @@ public class TestResultResponseDto {
 
     private BigDecimal percentageOfCorrectRecommendations;
 
-    private LocalDateTime testDate;
+    private String testDate;
 
 }

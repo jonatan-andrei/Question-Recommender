@@ -7,6 +7,7 @@ import jonatan.andrei.dto.TestResultUserDetailsResponseDto;
 import jonatan.andrei.model.TestResult;
 import jonatan.andrei.model.TestResultUser;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +38,7 @@ public class TestResultFactory {
                 .numberOfQuestions(testResult.getNumberOfQuestions())
                 .numberOfRecommendedQuestions(testResult.getNumberOfRecommendedQuestions())
                 .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
-                .testDate(testResult.getTestDate())
+                .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
                 .build();
     }
 
@@ -51,7 +52,7 @@ public class TestResultFactory {
                 .numberOfQuestions(testResult.getNumberOfQuestions())
                 .numberOfRecommendedQuestions(testResult.getNumberOfRecommendedQuestions())
                 .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
-                .testDate(testResult.getTestDate())
+                .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
                 .users(users.stream()
                         .map(u -> TestResultDetailsResponseDto.TestResultUserResponseDto.builder()
                                 .testResultUserId(u.getTestResultUserId())
@@ -65,6 +66,7 @@ public class TestResultFactory {
     }
 
     public static TestResultUserDetailsResponseDto toDto(TestResultUser testResultUser, TestResult testResult) {
+
         return TestResultUserDetailsResponseDto.builder()
                 .testResultUserId(testResultUser.getTestResultUserId())
                 .integrationUserId(testResultUser.getIntegrationUserId())
@@ -83,7 +85,7 @@ public class TestResultFactory {
                         .numberOfQuestions(testResult.getNumberOfQuestions())
                         .numberOfRecommendedQuestions(testResult.getNumberOfRecommendedQuestions())
                         .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
-                        .testDate(testResult.getTestDate())
+                        .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
                         .settings(testResult.getSettings())
                         .totalActivitySystem(testResult.getTotalActivitySystem())
                         .build())

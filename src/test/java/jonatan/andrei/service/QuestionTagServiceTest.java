@@ -8,7 +8,6 @@ import jonatan.andrei.model.User;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-
 import java.math.BigDecimal;
 
 import static java.util.Arrays.asList;

@@ -54,7 +54,7 @@ public class TestResultUserDetailsResponseDto {
 
         private BigDecimal percentageOfCorrectRecommendations;
 
-        private LocalDateTime testDate;
+        private String testDate;
 
         private String settings;
 
