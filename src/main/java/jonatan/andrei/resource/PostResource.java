@@ -3,7 +3,6 @@ package jonatan.andrei.resource;
 import jonatan.andrei.dto.*;
 import jonatan.andrei.model.Post;
 import jonatan.andrei.service.PostService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -16,7 +15,6 @@ import java.util.List;
 
 @Path("/post")
 @ApplicationScoped
-@Slf4j
 public class PostResource {
 
     @Inject

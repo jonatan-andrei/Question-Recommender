@@ -11,7 +11,7 @@ import jonatan.andrei.factory.RecommendedEmailFactory;
 import jonatan.andrei.model.RecommendedEmail;
 import jonatan.andrei.proxy.RecommendedEmailProxy;
 import jonatan.andrei.repository.RecommendedEmailRepository;
-import lombok.extern.slf4j.Slf4j;
+import io.quarkus.logging.Log;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 import static jonatan.andrei.domain.RecommendationSettingsType.*;
 
 @ApplicationScoped
-@Slf4j
 public class RecommendedEmailService {
 
     @Inject
@@ -80,7 +79,7 @@ public class RecommendedEmailService {
                 }
                 sendRecommendedEmailList(emails, integrationMethodType);
             } catch (Exception e) {
-                log.error("Error to send recommended emails: ", e);
+                Log.error("Error to send recommended emails: ", e);
             }
         } while (!users.isEmpty());
     }

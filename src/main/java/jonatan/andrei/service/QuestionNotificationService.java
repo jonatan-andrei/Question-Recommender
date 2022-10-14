@@ -10,7 +10,7 @@ import jonatan.andrei.model.QuestionNotification;
 import jonatan.andrei.model.QuestionNotificationQueue;
 import jonatan.andrei.proxy.QuestionNotificationProxy;
 import jonatan.andrei.repository.QuestionNotificationRepository;
-import lombok.extern.slf4j.Slf4j;
+import io.quarkus.logging.Log;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import static jonatan.andrei.domain.RecommendationSettingsType.*;
 
 @ApplicationScoped
-@Slf4j
 public class QuestionNotificationService {
 
     @Inject
@@ -64,7 +63,7 @@ public class QuestionNotificationService {
                     qnq.setDateWasIgnored(LocalDateTime.now());
                 }
             } catch (Exception e) {
-                log.error("Error to send notifications for question " + qnq.getQuestionId(), e);
+                Log.error("Error to send notifications for question " + qnq.getQuestionId(), e);
             }
         }
         questionNotificationQueueService.save(pendingList);
