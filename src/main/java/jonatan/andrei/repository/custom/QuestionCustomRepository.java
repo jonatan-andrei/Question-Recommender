@@ -543,6 +543,9 @@ public class QuestionCustomRepository {
                             ON rlp.recommended_list_page_id = rlpq.recommended_list_page_id WHERE rlp.recommended_list_id = :recommendedListId
                             )
                             
+                         AND
+                            p.publication_date >= :minimumQuestionDate
+                            
                          AND 
                             p.publication_date <= :dateOfRecommendations
                             
@@ -570,6 +573,7 @@ public class QuestionCustomRepository {
                         """, Tuple.class);
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
+        nativeQuery.setParameter("minimumQuestionDate", LocalDateTime.of(2016, 02, 27, 06, 05, 16));
         nativeQuery.setParameter("recommendedListId", Optional.ofNullable(recommendedListId).orElse(0L));
         nativeQuery.setParameter("limit", lengthQuestionList);
         nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionList);
