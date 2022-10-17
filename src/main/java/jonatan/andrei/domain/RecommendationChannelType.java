@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import static java.util.Map.entry;
 import static jonatan.andrei.domain.RecommendationSettingsType.*;
+import static jonatan.andrei.domain.RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS;
 
 @Getter
 @AllArgsConstructor
@@ -60,7 +61,8 @@ public enum RecommendationChannelType {
             entry(RELEVANCE_ANSWERS_DOWNVOTED_IN_TAG, BigDecimal.valueOf(-5)),
             entry(RELEVANCE_COMMENTS_UPVOTED_IN_TAG, BigDecimal.valueOf(20)),
             entry(RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG, BigDecimal.valueOf(-2)),
-            entry(DEFAULT_LENGTH, BigDecimal.valueOf(20))
+            entry(DEFAULT_LENGTH, BigDecimal.valueOf(20)),
+            entry(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(20))
     )),
 
     RECOMMENDED_EMAIL(Map.ofEntries(
@@ -114,7 +116,8 @@ public enum RecommendationChannelType {
             entry(ENABLE_CHANNEL, BigDecimal.valueOf(0)),
             entry(DEFAULT_HOUR_OF_THE_DAY_TO_SEND_RECOMMENDATIONS, BigDecimal.valueOf(8)),
             entry(DAYS_OF_USER_INACTIVITY_TO_SUSPEND_RECOMMENDATIONS, BigDecimal.valueOf(60)),
-            entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10))
+            entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10)),
+            entry(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(60))
     )),
 
     QUESTION_NOTIFICATION(Map.ofEntries(

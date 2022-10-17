@@ -17,8 +17,8 @@ public class RecommendationSettingsRequestDto {
 
     private RecommendationSettingsType name;
 
-    private RecommendationChannelType channel;
-
     private BigDecimal value;
+
+    private RecommendationChannelType channel;
 
 }
