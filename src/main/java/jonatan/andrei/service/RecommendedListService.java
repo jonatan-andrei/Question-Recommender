@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static jonatan.andrei.domain.RecommendationSettingsType.DEFAULT_LENGTH;
+import static jonatan.andrei.domain.RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS;
 
 @ApplicationScoped
 public class RecommendedListService {
@@ -49,7 +50,7 @@ public class RecommendedListService {
         lengthQuestionListPage = isNull(lengthQuestionListPage) ? recommendationSettings.get(DEFAULT_LENGTH).intValue() : lengthQuestionListPage;
         dateOfRecommendations = isNull(dateOfRecommendations) ? LocalDateTime.now() : dateOfRecommendations;
         RecommendedList recommendedList = isNull(recommendedListId)
-                ? createRecommendedList(lengthQuestionListPage, user.getUserId(), dateOfRecommendations)
+                ? createRecommendedList(lengthQuestionListPage, user.getUserId(), dateOfRecommendations, recommendationSettings)
                 : findByRecommendedListId(recommendedListId);
 
         return recommendedListPageService.findOrCreatePage(user.getUserId(), recommendedList, pageNumber, lengthQuestionListPage, recommendationSettings, dateOfRecommendations);
@@ -60,11 +61,13 @@ public class RecommendedListService {
                 .orElseThrow(() -> new InconsistentIntegratedDataException("Not found recommended list with id " + recommendedListId));
     }
 
-    private RecommendedList createRecommendedList(Integer lengthQuestionListPage, Long userId, LocalDateTime dateOfRecommendations) {
+    private RecommendedList createRecommendedList(Integer lengthQuestionListPage, Long userId, LocalDateTime dateOfRecommendations, Map<RecommendationSettingsType, BigDecimal> recommendationSettings) {
         Integer totalQuestions = questionService.countForRecommendedList(userId, dateOfRecommendations);
         Integer totalPages = calculateTotalNumberOfPages(totalQuestions, lengthQuestionListPage);
+        Integer maximumNumberOfPagesWithRecommendedQuestions = recommendationSettings.get(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS).intValue();
+        LocalDateTime minimumDateForRecommendedQuestions = findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumNumberOfPagesWithRecommendedQuestions, lengthQuestionListPage, maximumNumberOfPagesWithRecommendedQuestions);
         return recommendedListRepository.save(RecommendedListFactory.newRecommendedList(
-                lengthQuestionListPage, userId, totalPages, totalQuestions, dateOfRecommendations));
+                lengthQuestionListPage, userId, totalPages, totalQuestions, dateOfRecommendations, maximumNumberOfPagesWithRecommendedQuestions, minimumDateForRecommendedQuestions));
     }
 
     private Integer calculateTotalNumberOfPages(Integer totalQuestions, Integer lengthQuestionListPage) {
@@ -76,5 +79,13 @@ public class RecommendedListService {
 
     public void clear() {
         recommendedListRepository.deleteAll();
+    }
+
+    private LocalDateTime findMinimumDateForRecommendedQuestions(Long userId, LocalDateTime dateOfRecommendations, Integer maximumNumberOfPagesWithRecommendedQuestions, Integer lengthQuestionListPage, Integer totalQuestions) {
+        Integer maximumQuestions = maximumNumberOfPagesWithRecommendedQuestions * lengthQuestionListPage;
+        if (totalQuestions <= maximumQuestions) {
+            return LocalDateTime.MIN;
+        }
+        return questionService.findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumQuestions);
     }
 }

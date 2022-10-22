@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import io.quarkus.logging.Log;
 import jonatan.andrei.domain.IntegrationMethodType;
 import jonatan.andrei.domain.QuestionViewType;
 import jonatan.andrei.domain.RecommendationChannelType;
@@ -11,7 +12,6 @@ import jonatan.andrei.factory.RecommendedEmailFactory;
 import jonatan.andrei.model.RecommendedEmail;
 import jonatan.andrei.proxy.RecommendedEmailProxy;
 import jonatan.andrei.repository.RecommendedEmailRepository;
-import io.quarkus.logging.Log;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -63,13 +63,14 @@ public class RecommendedEmailService {
         Integer maximumNumberOfRows = settings.get(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST).intValue();
         Integer lengthQuestionListEmail = settings.get(DEFAULT_LENGTH).intValue();
         Integer minimumLength = settings.get(MINIMUM_LENGTH).intValue();
+        Integer maximumNumberOfPagesWithRecommendedQuestions = settings.get(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS).intValue();
         Integer pageNumber = 0;
         do {
             try {
                 users = userService.findUsersToSendRecommendedEmail(startDate, hour, isDefaultHour, minimumLastActivityDate, ++pageNumber, maximumNumberOfRows);
                 List<ListRecommendedEmailRequestDto.RecommendedEmailRequestDto> emails = new ArrayList<>();
                 for (UserToSendRecommendedEmailDto user : users) {
-                    List<RecommendedQuestionOfListDto> questions = recommendedEmailQuestionService.newEmail(user.getUserId(), lengthQuestionListEmail, settings, startDate);
+                    List<RecommendedQuestionOfListDto> questions = recommendedEmailQuestionService.newEmail(user.getUserId(), lengthQuestionListEmail, settings, startDate, maximumNumberOfPagesWithRecommendedQuestions);
                     if (questions.size() >= minimumLength) {
                         RecommendedEmail recommendedEmail = save(user, startDate);
                         recommendedEmailQuestionService.save(questions, recommendedEmail.getRecommendedEmailId());

@@ -26,10 +26,12 @@ public class RecommendationSettings {
 
     @NotNull
     @Column(name = "channel", length = 100)
+    @Enumerated(EnumType.STRING)
     private RecommendationChannelType channel;
 
     @NotNull
     @Column(name = "name", length = 100)
+    @Enumerated(EnumType.STRING)
     private RecommendationSettingsType name;
 
     @NotNull

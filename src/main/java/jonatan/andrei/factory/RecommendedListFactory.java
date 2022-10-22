@@ -10,12 +10,16 @@ public class RecommendedListFactory {
                                                      Long userId,
                                                      Integer totalPages,
                                                      Integer totalQuestions,
-                                                     LocalDateTime dateOfRecommendations) {
+                                                     LocalDateTime dateOfRecommendations,
+                                                     Integer totalPagesWithRecommendedQuestions,
+                                                     LocalDateTime minimumDateForRecommendedQuestions) {
         return RecommendedList.builder()
                 .userId(userId)
                 .totalNumberOfPages(totalPages)
                 .totalNumberOfQuestions(totalQuestions)
                 .listDate(dateOfRecommendations)
+                .totalPagesWithRecommendedQuestions(totalPagesWithRecommendedQuestions)
+                .minimumDateForRecommendedQuestions(minimumDateForRecommendedQuestions)
                 .lengthQuestionListPage(lengthQuestionListPage)
                 .build();
     }

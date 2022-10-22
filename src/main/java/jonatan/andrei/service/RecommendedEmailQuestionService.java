@@ -23,9 +23,15 @@ public class RecommendedEmailQuestionService {
     @Inject
     RecommendedEmailQuestionRepository recommendedEmailQuestionRepository;
 
-    public List<RecommendedQuestionOfListDto> newEmail(Long userId, Integer lengthQuestionListEmail, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
-        return questionService.findRecommendedList(userId, 1,
-                lengthQuestionListEmail, null, recommendationSettings, dateOfRecommendations);
+    public List<RecommendedQuestionOfListDto> newEmail(Long userId, Integer lengthQuestionListEmail, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations, Integer maximumNumberOfPagesWithRecommendedQuestions) {
+        Integer maximumQuestions = maximumNumberOfPagesWithRecommendedQuestions * lengthQuestionListEmail;
+        Integer totalQuestions = questionService.countForRecommendedList(userId, dateOfRecommendations);
+        LocalDateTime minimumDateForRecommendedQuestions = totalQuestions > maximumQuestions
+                ? questionService.findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumQuestions)
+                : LocalDateTime.MIN;
+
+        return questionService.findRecommendedList(userId, 1, 1,
+                lengthQuestionListEmail, null, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
     }
 
     public void save(List<RecommendedQuestionOfListDto> questionsDto, Long recommendedEmailId) {

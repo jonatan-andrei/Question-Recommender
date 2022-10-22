@@ -60,43 +60,43 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut","t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut","t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut","t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut","t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut","t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
 
                 +
 
@@ -127,7 +127,7 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc","c", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory")
 
                 +
 
@@ -135,7 +135,7 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc","c",  "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
 
                 +
 
@@ -163,7 +163,7 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc","c",  "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
 
                 +
 
@@ -251,7 +251,54 @@ public class QuestionCustomRepository {
                 .collect(Collectors.toList());
     }
 
-    public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
+    public List<RecommendedQuestionOfListDto> findQuestionsList(Long userId, Integer pageNumber, Integer lengthQuestionList, LocalDateTime dateOfRecommendations) {
+        Query nativeQuery = entityManager.createNativeQuery("""
+                SELECT q.post_id, p.integration_post_id
+                         FROM question q
+                         INNER JOIN post p ON p.post_id = q.post_id
+                         
+                         WHERE
+                            
+                            p.publication_date <= :dateOfRecommendations
+                            
+                         AND   
+                            p.hidden IS NOT TRUE
+                            
+                         AND
+                            NOT EXISTS (SELECT 1 FROM question_category qc
+                                        INNER JOIN user_category uc
+                                        ON qc.category_id = uc.category_id
+                                        AND uc.user_id = :userId
+                                        INNER JOIN category c
+                                        ON qc.category_id = c.category_id
+                                        WHERE qc.question_id = q.post_id AND uc.ignored)
+                          AND
+                            NOT EXISTS (SELECT 1 FROM question_tag qt
+                                        INNER JOIN user_tag ut
+                                        ON qt.tag_id = ut.tag_id
+                                        AND ut.user_id = :userId
+                                        WHERE qt.question_id = q.post_id AND ut.ignored)
+                         
+                         ORDER BY p.publication_date DESC
+                         LIMIT :limit OFFSET :offset
+                                        
+                        """, Tuple.class);
+        nativeQuery.setParameter("userId", userId);
+        nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
+        nativeQuery.setParameter("limit", lengthQuestionList);
+        nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionList);
+
+        List<Tuple> result = nativeQuery.getResultList();
+        return result.stream()
+                .map(t -> new RecommendedQuestionOfListDto(
+                        t.get(0, BigInteger.class).longValue(),
+                        t.get(1, String.class),
+                        BigDecimal.ZERO
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations, LocalDateTime minimumDateForRecommendedQuestions) {
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT q.post_id, p.integration_post_id,
                                  
@@ -405,39 +452,39 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut","t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t","number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
 
                 +
 
-                appendRuleCategoryOrTag("ut","t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
 
                 +
 
@@ -480,15 +527,15 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc","c",  "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc","c",  "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
 
                 +
 
-                appendRuleCategoryOrTag("uc","c",  "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
 
                 +
 
@@ -500,7 +547,7 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc","c",  "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
 
                 +
 
@@ -544,7 +591,7 @@ public class QuestionCustomRepository {
                             )
                             
                          AND
-                            p.publication_date >= :minimumQuestionDate
+                            p.publication_date >= :minimumDateForRecommendedQuestions
                             
                          AND 
                             p.publication_date <= :dateOfRecommendations
@@ -573,7 +620,7 @@ public class QuestionCustomRepository {
                         """, Tuple.class);
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
-        nativeQuery.setParameter("minimumQuestionDate", LocalDateTime.of(2016, 02, 27, 06, 05, 16));
+        nativeQuery.setParameter("minimumDateForRecommendedQuestions", minimumDateForRecommendedQuestions);
         nativeQuery.setParameter("recommendedListId", Optional.ofNullable(recommendedListId).orElse(0L));
         nativeQuery.setParameter("limit", lengthQuestionList);
         nativeQuery.setParameter("offset", (pageNumber - 1) * lengthQuestionList);
@@ -666,6 +713,39 @@ public class QuestionCustomRepository {
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
         return ((BigInteger) nativeQuery.getSingleResult()).intValue();
+    }
+
+    public LocalDateTime findMinimumDateForRecommendedQuestions(Long userId, LocalDateTime dateOfRecommendations, Integer maximumQuestions) {
+        Query nativeQuery = entityManager.createNativeQuery("""
+                 SELECT p.publication_date
+                 FROM question q
+                 INNER JOIN post p on p.post_id = q.post_id
+                 
+                 WHERE
+                    p.hidden IS NOT TRUE
+                 AND
+                    p.publication_date <= :dateOfRecommendations
+                 AND
+                    NOT EXISTS (SELECT 1 FROM question_category qc
+                                INNER JOIN user_category uc
+                                ON qc.category_id = uc.category_id
+                                AND uc.user_id = :userId
+                                WHERE qc.question_id = q.post_id AND uc.ignored IS TRUE)
+                  AND
+                    NOT EXISTS (SELECT 1 FROM question_tag qt
+                                INNER JOIN user_tag ut
+                                ON qt.tag_id = ut.tag_id
+                                AND ut.user_id = :userId
+                                WHERE qt.question_id = q.post_id AND ut.ignored IS TRUE)
+                                
+                 ORDER BY p.publication_date
+                 LIMIT 1 OFFSET (:maximumQuestions - 1)
+                                
+                """);
+        nativeQuery.setParameter("userId", userId);
+        nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
+        nativeQuery.setParameter("maximumQuestions", maximumQuestions);
+        return (LocalDateTime) nativeQuery.getResultList().stream().findFirst().orElse(LocalDateTime.now());
     }
 
     private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {

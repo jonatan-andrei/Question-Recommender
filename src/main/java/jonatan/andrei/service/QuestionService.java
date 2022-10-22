@@ -89,12 +89,20 @@ public class QuestionService {
         return questionCustomRepository.findUsersToNotifyQuestion(questionId, pageNumber, lengthUsersList, recommendationSettings, minimumLastActivityDate);
     }
 
-    public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
-        return questionCustomRepository.findRecommendedList(userId, pageNumber, lengthQuestionList, recommendedListId, recommendationSettings, dateOfRecommendations);
+    public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer realPageNumber, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations, LocalDateTime minimumDateForRecommendedQuestions, boolean pageWithRecommendedQuestions) {
+        if (pageWithRecommendedQuestions) {
+            return questionCustomRepository.findRecommendedList(userId, realPageNumber, lengthQuestionList, recommendedListId, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions);
+        } else {
+            return questionCustomRepository.findQuestionsList(userId, pageNumber, lengthQuestionList, dateOfRecommendations);
+        }
     }
 
     public Integer countForRecommendedList(Long userId, LocalDateTime dateOfRecommendations) {
         return questionCustomRepository.countForRecommendedList(userId, dateOfRecommendations);
+    }
+
+    public LocalDateTime findMinimumDateForRecommendedQuestions(Long userId, LocalDateTime dateOfRecommendations, Integer maximumQuestions) {
+        return questionCustomRepository.findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumQuestions);
     }
 
     public void clear() {

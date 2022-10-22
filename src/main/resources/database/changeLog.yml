@@ -1,3 +1,5 @@
 databaseChangeLog:
   - include:
       file: database/versions/version001.sql
+  - include:
+      file: database/versions/version001-1.sql

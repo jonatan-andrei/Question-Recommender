@@ -40,6 +40,14 @@ public class RecommendedList {
     private LocalDateTime listDate;
 
     @NotNull
+    @Column(name = "total_pages_with_recommended_questions")
+    private Integer totalPagesWithRecommendedQuestions;
+
+    @NotNull
+    @Column(name = "minimum_date_for_recommended_questions")
+    private LocalDateTime minimumDateForRecommendedQuestions;
+
+    @NotNull
     @Column(name = "length_question_list_page")
     private Integer lengthQuestionListPage;
 }

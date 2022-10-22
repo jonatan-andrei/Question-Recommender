@@ -48,7 +48,7 @@ public class RecommendedListPageService {
 
         Integer realPageNumber = defineRealPageNumberIgnoringExistingPages(existingPages, pageNumber);
 
-        var questions = recommendedListPageQuestionService.newPage(userId, recommendedListPage, lengthQuestionListPage, realPageNumber, recommendationSettings, dateOfRecommendations);
+        var questions = recommendedListPageQuestionService.newPage(userId, recommendedListPage, lengthQuestionListPage, realPageNumber, pageNumber, recommendedList.getTotalPagesWithRecommendedQuestions(), recommendationSettings, dateOfRecommendations, recommendedList.getMinimumDateForRecommendedQuestions());
         return RecommendedListResponseFactory.newRecommendedListResponseDto(recommendedList, questions);
     }
 

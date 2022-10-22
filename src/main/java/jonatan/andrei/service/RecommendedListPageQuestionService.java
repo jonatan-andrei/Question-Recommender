@@ -34,9 +34,10 @@ public class RecommendedListPageQuestionService {
                 .collect(Collectors.toList());
     }
 
-    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(Long userId, RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
-        List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList(userId, realPageNumber,
-                        lengthQuestionListPage, recommendedListPage.getRecommendedListId(), recommendationSettings, dateOfRecommendations)
+    public List<RecommendedListResponseDto.RecommendedQuestionResponseDto> newPage(Long userId, RecommendedListPage recommendedListPage, Integer lengthQuestionListPage, Integer realPageNumber, Integer pageNumber, Integer totalPagesWithRecommendedQuestions, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations, LocalDateTime minimumDateForRecommendedQuestions) {
+        boolean pageWithRecommendedQuestions = pageNumber <= totalPagesWithRecommendedQuestions;
+        List<RecommendedListPageQuestion> recommendedQuestions = questionService.findRecommendedList(userId, realPageNumber, pageNumber,
+                        lengthQuestionListPage, recommendedListPage.getRecommendedListId(), recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, pageWithRecommendedQuestions)
                 .stream().map(rq -> RecommendedListPageFactory.newRecommendedQuestion(rq, recommendedListPage.getRecommendedListPageId()))
                 .collect(Collectors.toList());
         questionViewService.registerQuestionsViewInList(recommendedQuestions.stream().map(RecommendedListPageQuestion::getQuestionId).collect(Collectors.toList()), userId, QuestionViewType.VIEW_IN_RECOMMENDED_LIST);
