@@ -26,8 +26,8 @@ public class RecommendationSettingsServiceTest extends AbstractServiceTest {
     public void save() {
         // Arrange
         List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_EXPLICIT_TAG, RecommendationChannelType.RECOMMENDED_LIST, BigDecimal.valueOf(50)));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, RecommendationChannelType.RECOMMENDED_LIST, BigDecimal.valueOf(25)));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_EXPLICIT_TAG, BigDecimal.valueOf(50), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(25), RecommendationChannelType.RECOMMENDED_LIST));
 
         // Act
         recommendationSettingsService.save(recommendationSettings);
