@@ -14,7 +14,9 @@ import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,11 +85,13 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
 
         // Assert
         assertEquals(firstPage.getRecommendedListId(), result.getRecommendedListId());
+        RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
+        assertEquals(LocalDate.of(2000, Month.JANUARY, 1), recommendedList.getMinimumDateForRecommendedQuestions().toLocalDate());
+        assertEquals(20, recommendedList.getTotalPagesWithRecommendedQuestions());
         assertEquals(2, result.getTotalNumberOfPages());
         assertEquals(10, result.getQuestions().size());
         assertEquals("21", result.getQuestions().get(0).getIntegrationQuestionId());
         assertEquals("30", result.getQuestions().get(9).getIntegrationQuestionId());
-        RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
         assertEquals(user.getUserId(), recommendedList.getUserId());
         assertEquals(2, recommendedList.getTotalNumberOfPages());
         assertEquals(30, recommendedList.getTotalNumberOfQuestions());
