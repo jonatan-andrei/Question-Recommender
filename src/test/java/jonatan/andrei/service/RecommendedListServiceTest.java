@@ -2,6 +2,9 @@ package jonatan.andrei.service;
 
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jonatan.andrei.domain.RecommendationChannelType;
+import jonatan.andrei.domain.RecommendationSettingsType;
+import jonatan.andrei.dto.RecommendationSettingsRequestDto;
 import jonatan.andrei.dto.RecommendedListResponseDto;
 import jonatan.andrei.exception.InconsistentIntegratedDataException;
 import jonatan.andrei.exception.RequiredDataException;
@@ -10,6 +13,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +88,47 @@ public class RecommendedListServiceTest extends AbstractServiceTest {
         assertEquals("21", result.getQuestions().get(0).getIntegrationQuestionId());
         assertEquals("30", result.getQuestions().get(9).getIntegrationQuestionId());
         RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
+        assertEquals(user.getUserId(), recommendedList.getUserId());
+        assertEquals(2, recommendedList.getTotalNumberOfPages());
+        assertEquals(30, recommendedList.getTotalNumberOfQuestions());
+        assertEquals(lengthQuestionListPage, recommendedList.getLengthQuestionListPage());
+        RecommendedListPage recommendedListPage = recommendedListPageRepository.findByRecommendedListIdAndPageNumber(recommendedList.getRecommendedListId(), pageNumber);
+        assertEquals(pageNumber, recommendedListPage.getPageNumber());
+        List<RecommendedListPageQuestion> recommendedQuestions = recommendedListPageQuestionRepository.findByRecommendedListPageId(recommendedListPage.getRecommendedListPageId());
+        assertEquals(10, recommendedQuestions.size());
+    }
+
+    @Test
+    public void findRecommendedList_secondPageWithoutRecommendations() {
+        // Arrange
+        Integer lengthQuestionListPage = 20;
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        Integer pageNumber = 2;
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        for (Integer i = 1; i <= 30; i++) {
+            questionTestUtils.saveWithIntegrationPostIdAndPublicationDate(i.toString(), LocalDateTime.now().minusDays(i));
+        }
+        recommendationSettingsService.save(asList(RecommendationSettingsRequestDto.builder()
+                .name(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS)
+                .value(BigDecimal.ONE)
+                .channel(RecommendationChannelType.RECOMMENDED_LIST)
+                .build()));
+        RecommendedListResponseDto firstPage = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), null, 1, dateOfRecommendations);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        RecommendedListResponseDto result = recommendedListService.findRecommendedList(lengthQuestionListPage, user.getIntegrationUserId(), firstPage.getRecommendedListId(), pageNumber, dateOfRecommendations);
+
+        // Assert
+        assertEquals(firstPage.getRecommendedListId(), result.getRecommendedListId());
+        RecommendedList recommendedList = recommendedListRepository.findById(result.getRecommendedListId()).get();
+        assertEquals(2, result.getTotalNumberOfPages());
+        assertEquals(LocalDateTime.now().minusDays(20).toLocalDate(), recommendedList.getMinimumDateForRecommendedQuestions().toLocalDate());
+        assertEquals(1, recommendedList.getTotalPagesWithRecommendedQuestions());
+        assertEquals(10, result.getQuestions().size());
+        assertEquals("21", result.getQuestions().get(0).getIntegrationQuestionId());
+        assertEquals("30", result.getQuestions().get(9).getIntegrationQuestionId());
         assertEquals(user.getUserId(), recommendedList.getUserId());
         assertEquals(2, recommendedList.getTotalNumberOfPages());
         assertEquals(30, recommendedList.getTotalNumberOfQuestions());

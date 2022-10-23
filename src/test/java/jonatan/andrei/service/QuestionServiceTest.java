@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDateAndUpdateDate("1", dateOfRecommendations.minusDays(1), LocalDateTime.now());
         Question question2 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDateAndUpdateDate("2", dateOfRecommendations.minusDays(2), LocalDateTime.now());
         Question question3 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDateAndUpdateDate("3", dateOfRecommendations.minusYears(2), dateOfRecommendations.minusYears(2));
@@ -45,7 +47,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(235.44));
@@ -60,13 +62,14 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setAnswers(1);
         questionRepository.save(question);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-40));
@@ -77,6 +80,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setAnswers(8);
         questionRepository.save(question);
@@ -85,7 +89,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-110));
@@ -96,6 +100,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
         question.setBestAnswerId(answer.getPostId());
@@ -103,7 +108,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-50));
@@ -114,6 +119,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Question originalQuestion = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("2", dateOfRecommendations.minusYears(3));
         originalQuestion.setHidden(true);
@@ -123,7 +129,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-100));
@@ -134,16 +140,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setViews(10);
         questionRepository.save(question);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(2));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(1));
     }
 
     @Test
@@ -151,16 +158,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setFollowers(5);
         questionRepository.save(question);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
@@ -168,16 +176,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setUpvotes(5);
         questionRepository.save(question);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(50));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(5));
     }
 
     @Test
@@ -185,16 +194,17 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         question.setDownvotes(2);
         questionRepository.save(question);
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-20));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-2));
     }
 
     @Test
@@ -202,6 +212,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Answer answer = answerTestUtils.saveWithIntegrationPostIdAndQuestionId("2", question.getPostId());
         answer.setUserId(user.getUserId());
@@ -209,10 +220,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-25));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-50));
     }
 
     @Test
@@ -220,6 +231,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         QuestionComment questionComment1 = questionCommentTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserId("2", question.getPostId(), user.getUserId());
         QuestionComment questionComment2 = questionCommentTestUtils.saveWithIntegrationPostIdAndQuestionIdAndUserId("3", question.getPostId(), user.getUserId());
@@ -229,7 +241,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
@@ -241,6 +253,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         User userFollowed = userTestUtils.saveWithIntegrationUserId("B");
         question.setUserId(userFollowed.getUserId());
@@ -253,7 +266,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(100));
@@ -264,6 +277,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         questionRepository.save(question);
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
@@ -272,7 +286,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-200));
@@ -283,6 +297,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         questionRepository.save(question);
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
@@ -291,7 +306,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-150));
@@ -302,6 +317,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         questionRepository.save(question);
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
@@ -310,7 +326,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-15));
@@ -321,6 +337,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         questionRepository.save(question);
         QuestionView questionView = QuestionViewFactory.newQuestionView(question.getPostId(), user.getUserId());
@@ -329,7 +346,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question.getIntegrationPostId(), BigDecimal.valueOf(-30));
@@ -340,6 +357,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -350,10 +368,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(100));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(200));
     }
 
     @Test
@@ -361,6 +379,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -371,7 +390,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertTrue(recommendedQuestionList.isEmpty());
@@ -384,6 +403,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -398,7 +418,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
@@ -411,6 +431,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAnswered(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -425,10 +446,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(30));
     }
 
     @Test
@@ -438,6 +459,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsCommented(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -452,10 +474,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
     @Test
@@ -465,6 +487,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsViewed(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -479,7 +502,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
@@ -492,6 +515,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsFollowed(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -506,7 +530,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
@@ -519,6 +543,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -533,7 +558,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
@@ -546,6 +571,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -560,7 +586,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
@@ -573,6 +599,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberAnswersUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -587,7 +614,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
@@ -600,6 +627,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberAnswersDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -614,7 +642,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
@@ -627,6 +655,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberCommentsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -641,7 +670,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(2));
@@ -654,6 +683,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberCommentsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -668,7 +698,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.2));
@@ -681,6 +711,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag1 = tagTestUtils.saveWithName("Tag1");
         Tag tag2 = tagTestUtils.saveWithName("Tag2");
@@ -709,11 +740,11 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(132.25));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(232.25));
     }
 
     @Test
@@ -723,6 +754,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAsked(BigDecimal.valueOf(8));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Tag tag = tagTestUtils.saveWithName("Tag");
         questionTagTestUtils.saveQuestionTags(question1, asList(tag));
@@ -737,7 +769,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(29.2));
@@ -748,6 +780,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -758,10 +791,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(100));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(200));
     }
 
     @Test
@@ -769,6 +802,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         // Arrange
         User user = userTestUtils.saveWithIntegrationUserId("A");
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -779,7 +813,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertTrue(recommendedQuestionList.isEmpty());
@@ -792,6 +826,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -806,7 +841,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
@@ -819,6 +854,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAnswered(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -833,10 +869,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(30));
     }
 
     @Test
@@ -846,6 +882,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsCommented(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -860,10 +897,10 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
     }
 
     @Test
@@ -873,6 +910,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsViewed(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -887,7 +925,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(10));
@@ -900,6 +938,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsFollowed(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -914,7 +953,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
@@ -927,6 +966,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -941,7 +981,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
@@ -954,6 +994,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -968,7 +1009,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
@@ -981,6 +1022,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberAnswersUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -995,7 +1037,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(5));
@@ -1008,6 +1050,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberAnswersDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -1022,7 +1065,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.5));
@@ -1035,6 +1078,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberCommentsUpvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -1049,7 +1093,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(2));
@@ -1062,6 +1106,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberCommentsDownvoted(BigDecimal.valueOf(50));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -1076,7 +1121,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(-0.2));
@@ -1089,6 +1134,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category1 = categoryTestUtils.saveWithIntegrationCategoryId("1");
         Category category2 = categoryTestUtils.saveWithIntegrationCategoryId("2");
@@ -1117,11 +1163,11 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertEquals(1, recommendedQuestionList.size());
-        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(132.25));
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(232.25));
     }
 
     @Test
@@ -1131,6 +1177,7 @@ public class QuestionServiceTest extends AbstractServiceTest {
         user.setNumberQuestionsAsked(BigDecimal.valueOf(8));
         userRepository.save(user);
         LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
         Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
         questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
@@ -1145,10 +1192,55 @@ public class QuestionServiceTest extends AbstractServiceTest {
         entityManager.clear();
 
         // Act
-        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 20, 1L, recommendationSettings, dateOfRecommendations);
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);
 
         // Assert
         assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.valueOf(29.2));
+    }
+
+    @Test
+    public void findRecommendedList_findQuestionsList() {
+        //  Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        LocalDateTime minimumDateForRecommendedQuestions = LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category = categoryTestUtils.saveWithIntegrationCategoryId("Category");
+        questionCategoryTestUtils.saveQuestionCategories(question1, asList(category));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_FOLLOWED, BigDecimal.valueOf(1000));
+        UserCategory userCategory = userCategoryTestUtils.save(user, category);
+        userCategory.setNumberQuestionsFollowed(BigDecimal.valueOf(6));
+        userCategoryRepository.save(userCategory);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<RecommendedQuestionOfListDto> recommendedQuestionList = questionService.findRecommendedList(user.getUserId(), 1, 1, 20, 1L, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, false);
+
+        // Assert
+        assertRecommendedQuestionOfListDto(recommendedQuestionList.get(0), question1.getIntegrationPostId(), BigDecimal.ZERO);
+    }
+
+    @Test
+    public void findMinimumDateForRecommendedQuestions() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Integer maximumQuestions = 5;
+        Question question1 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(1));
+        Question question2 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("2", dateOfRecommendations.minusYears(2));
+        Question question3 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("3", dateOfRecommendations.minusYears(3));
+        Question question4 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("4", dateOfRecommendations.minusYears(4));
+        Question question5 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("5", dateOfRecommendations.minusYears(5));
+        Question question6 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("6", dateOfRecommendations.minusYears(6));
+        Question question7 = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("7", dateOfRecommendations.minusYears(7));
+
+        // Act
+        LocalDateTime result = questionService.findMinimumDateForRecommendedQuestions(user.getUserId(), dateOfRecommendations, maximumQuestions);
+
+        // Assert
+        assertEquals(question5.getPublicationDate().toLocalDate(), result.toLocalDate());
     }
 
 

@@ -10,6 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class RecommendedEmailQuestionService {
         Integer totalQuestions = questionService.countForRecommendedList(userId, dateOfRecommendations);
         LocalDateTime minimumDateForRecommendedQuestions = totalQuestions > maximumQuestions
                 ? questionService.findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumQuestions)
-                : LocalDateTime.MIN;
+                : LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
 
         return questionService.findRecommendedList(userId, 1, 1,
                 lengthQuestionListEmail, null, recommendationSettings, dateOfRecommendations, minimumDateForRecommendedQuestions, true);

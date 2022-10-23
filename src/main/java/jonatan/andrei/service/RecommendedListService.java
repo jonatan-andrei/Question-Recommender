@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Map;
 
 import static java.util.Objects.isNull;
@@ -65,7 +66,7 @@ public class RecommendedListService {
         Integer totalQuestions = questionService.countForRecommendedList(userId, dateOfRecommendations);
         Integer totalPages = calculateTotalNumberOfPages(totalQuestions, lengthQuestionListPage);
         Integer maximumNumberOfPagesWithRecommendedQuestions = recommendationSettings.get(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS).intValue();
-        LocalDateTime minimumDateForRecommendedQuestions = findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumNumberOfPagesWithRecommendedQuestions, lengthQuestionListPage, maximumNumberOfPagesWithRecommendedQuestions);
+        LocalDateTime minimumDateForRecommendedQuestions = findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumNumberOfPagesWithRecommendedQuestions, lengthQuestionListPage, totalQuestions);
         return recommendedListRepository.save(RecommendedListFactory.newRecommendedList(
                 lengthQuestionListPage, userId, totalPages, totalQuestions, dateOfRecommendations, maximumNumberOfPagesWithRecommendedQuestions, minimumDateForRecommendedQuestions));
     }
@@ -84,7 +85,7 @@ public class RecommendedListService {
     private LocalDateTime findMinimumDateForRecommendedQuestions(Long userId, LocalDateTime dateOfRecommendations, Integer maximumNumberOfPagesWithRecommendedQuestions, Integer lengthQuestionListPage, Integer totalQuestions) {
         Integer maximumQuestions = maximumNumberOfPagesWithRecommendedQuestions * lengthQuestionListPage;
         if (totalQuestions <= maximumQuestions) {
-            return LocalDateTime.MIN;
+            return LocalDateTime.of(2000, Month.JANUARY, 1, 0, 0);
         }
         return questionService.findMinimumDateForRecommendedQuestions(userId, dateOfRecommendations, maximumQuestions);
     }

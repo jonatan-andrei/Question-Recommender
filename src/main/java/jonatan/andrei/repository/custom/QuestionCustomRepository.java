@@ -738,14 +738,14 @@ public class QuestionCustomRepository {
                                 AND ut.user_id = :userId
                                 WHERE qt.question_id = q.post_id AND ut.ignored IS TRUE)
                                 
-                 ORDER BY p.publication_date
+                 ORDER BY p.publication_date DESC
                  LIMIT 1 OFFSET (:maximumQuestions - 1)
                                 
                 """);
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("dateOfRecommendations", dateOfRecommendations);
         nativeQuery.setParameter("maximumQuestions", maximumQuestions);
-        return (LocalDateTime) nativeQuery.getResultList().stream().findFirst().orElse(LocalDateTime.now());
+        return ((java.sql.Timestamp) nativeQuery.getSingleResult()).toLocalDateTime();
     }
 
     private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
