@@ -19,7 +19,7 @@ public class TestInformationService {
     public TestInformationResponseDto findTestInformation(TestInformation testInformation, Integer settingsModel) {
         List<RecommendationSettingsRequestDto> settings = settingsModelService.findSettings(settingsModel);
         return TestInformationResponseDto.builder()
-                .dumpName(testInformation.getDump().name())
+                .dumpName(testInformation.getDump().getDumpName())
                 .dumpEndDate(testInformation.getDump().getEndDate())
                 .endDateTestInformation(testInformation.getEndDate())
                 .daysAfterPartialEndDate(testInformation.getDaysAfterPartialEndDate())
