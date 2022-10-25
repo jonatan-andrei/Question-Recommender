@@ -30,9 +30,12 @@ public class QuestionCustomRepository {
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT ufr.user_id, ufr.integration_user_id
                 FROM users ufr
-                LEFT JOIN user_follower uf ON follower_id = ufr.user_id AND uf.user_id = (SELECT user_id FROM post p WHERE p.post_id = :questionId)
+                INNER JOIN post p ON p.post_id = :questionId
+                LEFT JOIN user_follower uf ON follower_id = ufr.user_id AND uf.user_id = p.user_id
                                 
-                WHERE :minimumScoreToSendQuestionToUser <= (
+                WHERE ufr.user_id <> p.user_id
+                
+                AND :minimumScoreToSendQuestionToUser <= (
                              
                 -- USER FOLLOWER ASKER
                  (CASE
@@ -105,11 +108,11 @@ public class QuestionCustomRepository {
                          
                          AS user_tag_score
                          
-                         FROM user_tag ut
-                         RIGHT JOIN question_tag qt ON qt.tag_id = ut.tag_id AND qt.question_id = :questionId
+                         FROM question_tag qt
                          INNER JOIN tag t ON t.tag_id = qt.tag_id
                          INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
-                         WHERE ut.user_id = ufr.user_id
+                         LEFT JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = ufr.user_id
+                         WHERE qt.question_id = :questionId
                          )
                          
                          +
@@ -176,11 +179,11 @@ public class QuestionCustomRepository {
                           
                           AS user_category_score
                           
-                          FROM user_category uc
-                          RIGHT JOIN question_category qc ON qc.category_id = uc.category_id AND qc.question_id = :questionId
+                          FROM question_category qc
                           INNER JOIN category c ON c.category_id = qc.category_id
                           INNER JOIN total_activity_system tas ON tas.post_classification_type = 'CATEGORY'
-                          WHERE uc.user_id = ufr.user_id
+                          LEFT JOIN user_category uc ON qc.category_id = uc.category_id AND uc.user_id = ufr.user_id
+                          WHERE qc.question_id = :questionId
                           ))
                            
                           AND

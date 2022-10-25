@@ -1277,9 +1277,129 @@ public class QuestionServiceTest extends AbstractServiceTest {
         assertUserToSendQuestionNotificationDto(users.get(0), user.getIntegrationUserId(), BigDecimal.valueOf(10));
     }
 
-    // TODO avaliar nas notificações como ter também o comportamento do peso negativo, creio que poderia ser a mesma query da lista de recomendações e não precise do RIGHT JOIN
+    @Test
+    public void findUsersToNotifyQuestion_userTagRelevance_numberQuestionsAnswered() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsAnswered(BigDecimal.valueOf(50));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        Tag tag = tagTestUtils.saveWithName("Tag");
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        tag.setNumberQuestionsAnswered(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(100));
+        UserTag userTag = userTagTestUtils.save(user, tag);
+        userTag.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
+        userTagRepository.save(userTag);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.QUESTION_NOTIFICATION);
+        recommendationSettings.put(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(10));
+        entityManager.flush();
+        entityManager.clear();
 
-    // TODO validar na query para não enviar a pergunta para o próprio usuário
+        // Act
+        List<UserToSendQuestionNotificationDto> users = questionService.findUsersToNotifyQuestion(question.getPostId(), 1, 20, recommendationSettings, dateOfRecommendations.minusDays(60));
+
+        // Assert
+        assertUserToSendQuestionNotificationDto(users.get(0), user.getIntegrationUserId(), BigDecimal.valueOf(30));
+    }
+
+    @Test
+    public void findUsersToNotifyQuestion_notRecommendedForTheUser() {
+        // Arrange
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostId("1");
+        User user = userRepository.findByIntegrationUserId("1").get();
+        user.setNumberQuestionsAnswered(BigDecimal.valueOf(50));
+        userRepository.save(user);
+        Tag tag = tagTestUtils.saveWithName("Tag");
+        questionTagTestUtils.saveQuestionTags(question, asList(tag));
+        tag.setNumberQuestionsAnswered(BigDecimal.valueOf(20));
+        tagRepository.save(tag);
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(100));
+        UserTag userTag = userTagTestUtils.save(user, tag);
+        userTag.setNumberQuestionsAnswered(BigDecimal.valueOf(6));
+        userTagRepository.save(userTag);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.QUESTION_NOTIFICATION);
+        recommendationSettings.put(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(10));
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<UserToSendQuestionNotificationDto> users = questionService.findUsersToNotifyQuestion(question.getPostId(), 1, 20, recommendationSettings, dateOfRecommendations.minusDays(60));
+
+        // Assert
+        assertTrue(users.isEmpty());
+    }
+
+    @Test
+    public void findUsersToNotifyQuestion_relevanceUserFollowerAsker() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        User userFollowed = userTestUtils.saveWithIntegrationUserId("B");
+        question.setUserId(userFollowed.getUserId());
+        questionRepository.save(question);
+        userFollowerRepository.save(UserFollower.builder()
+                .userId(userFollowed.getUserId())
+                .followerId(user.getUserId())
+                .startDate(LocalDateTime.now())
+                .build());
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.QUESTION_NOTIFICATION);
+        recommendationSettings.put(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(10));
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<UserToSendQuestionNotificationDto> users = questionService.findUsersToNotifyQuestion(question.getPostId(), 1, 20, recommendationSettings, dateOfRecommendations.minusDays(60));
+
+        // Assert
+        assertUserToSendQuestionNotificationDto(users.get(0), user.getIntegrationUserId(), BigDecimal.valueOf(30));
+    }
+
+    @Test
+    public void findUsersToNotifyQuestion_userCategoryRelevance_fourCategories() {
+        // Arrange
+        User user = userTestUtils.saveWithIntegrationUserId("A");
+        user.setNumberQuestionsAsked(BigDecimal.valueOf(20));
+        userRepository.save(user);
+        LocalDateTime dateOfRecommendations = LocalDateTime.now();
+        Question question = questionTestUtils.saveWithIntegrationPostIdAndPublicationDate("1", dateOfRecommendations.minusYears(2));
+        Category category1 = categoryTestUtils.saveWithIntegrationCategoryId("1");
+        Category category2 = categoryTestUtils.saveWithIntegrationCategoryId("2");
+        Category category3 = categoryTestUtils.saveWithIntegrationCategoryId("3");
+        Category category4 = categoryTestUtils.saveWithIntegrationCategoryId("4");
+        questionCategoryTestUtils.saveQuestionCategories(question, asList(category1, category2, category3, category4));
+        category1.setNumberQuestionsAsked(BigDecimal.valueOf(30));
+        categoryRepository.save(category1);
+        category2.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        categoryRepository.save(category2);
+        category3.setNumberQuestionsAsked(BigDecimal.valueOf(10));
+        categoryRepository.save(category3);
+        category4.setNumberQuestionsAsked(BigDecimal.valueOf(5));
+        categoryRepository.save(category4);
+        UserCategory userCategory1 = userCategoryTestUtils.save(user, category1);
+        userCategory1.setNumberQuestionsAsked(BigDecimal.valueOf(9));
+        userCategoryRepository.save(userCategory1);
+        UserCategory userCategory2 = userCategoryTestUtils.save(user, category2);
+        userCategory2.setExplicitRecommendation(true);
+        userCategory2.setNumberQuestionsAsked(BigDecimal.valueOf(5));
+        userCategoryRepository.save(userCategory2);
+        UserCategory userCategory3 = userCategoryTestUtils.save(user, category3);
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.QUESTION_NOTIFICATION);
+        recommendationSettings.put(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(10));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, UserActionType.QUESTION_ASKED, BigDecimal.valueOf(1000));
+        entityManager.flush();
+        entityManager.clear();
+
+        // Act
+        List<UserToSendQuestionNotificationDto> users = questionService.findUsersToNotifyQuestion(question.getPostId(), 1, 20, recommendationSettings, dateOfRecommendations.minusDays(60));
+
+        // Assert
+        assertUserToSendQuestionNotificationDto(users.get(0), user.getIntegrationUserId(), BigDecimal.valueOf(232.25));
+    }
 
     private void assertUserToSendQuestionNotificationDto(UserToSendQuestionNotificationDto user, String integrationUserId, BigDecimal score) {
         Assertions.assertEquals(user.getIntegrationUserId(), integrationUserId);
