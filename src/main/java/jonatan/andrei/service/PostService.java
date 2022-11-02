@@ -285,4 +285,12 @@ public class PostService {
             throw new RequiredDataException("At least one of the fields must be informed: 'integrationCategoriesIds' or 'tags'");
         }
     }
+
+    @Transactional
+    public RecommendedListResponseDto.RecommendedQuestionResponseDto calculateQuestionScoreToUser(String integrationUserId, String integrationQuestionId, LocalDateTime dateOfRecommendations) {
+        User user = userService.findByIntegrationUserId(integrationUserId);
+        Post question = findByIntegrationPostIdAndPostType(integrationQuestionId, PostType.QUESTION);
+
+        return questionService.calculateQuestionScoreToUser(user.getUserId(), question.getPostId(), dateOfRecommendations);
+    }
 }

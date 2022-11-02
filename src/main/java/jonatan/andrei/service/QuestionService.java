@@ -1,10 +1,8 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.RecommendationChannelType;
 import jonatan.andrei.domain.RecommendationSettingsType;
-import jonatan.andrei.dto.CreatePostRequestDto;
-import jonatan.andrei.dto.RecommendedQuestionOfListDto;
-import jonatan.andrei.dto.UpdatePostRequestDto;
-import jonatan.andrei.dto.UserToSendQuestionNotificationDto;
+import jonatan.andrei.dto.*;
 import jonatan.andrei.factory.QuestionFactory;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.QuestionCategory;
@@ -38,6 +36,9 @@ public class QuestionService {
 
     @Inject
     QuestionNotificationQueueService questionNotificationQueueService;
+
+    @Inject
+    RecommendationSettingsService recommendationSettingsService;
 
     public Question save(CreatePostRequestDto createPostRequestDto, User user) {
         Question question = QuestionFactory.newQuestion(createPostRequestDto, user.getUserId());
@@ -95,6 +96,15 @@ public class QuestionService {
         } else {
             return questionCustomRepository.findQuestionsList(userId, pageNumber, lengthQuestionList, dateOfRecommendations);
         }
+    }
+
+    public RecommendedListResponseDto.RecommendedQuestionResponseDto calculateQuestionScoreToUser(Long userId, Long questionId, LocalDateTime dateOfRecommendations) {
+        Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
+        RecommendedQuestionOfListDto score = questionCustomRepository.calculateQuestionScoreToUser(userId, questionId, recommendationSettings, dateOfRecommendations);
+        return RecommendedListResponseDto.RecommendedQuestionResponseDto.builder()
+                .integrationQuestionId(score.getIntegrationQuestionId())
+                .score(score.getScore())
+                .build();
     }
 
     public Integer countForRecommendedList(Long userId, LocalDateTime dateOfRecommendations) {

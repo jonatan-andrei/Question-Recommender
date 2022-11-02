@@ -1,6 +1,7 @@
 package jonatan.andrei.resource;
 
 import jonatan.andrei.dto.RecommendedListResponseDto;
+import jonatan.andrei.service.PostService;
 import jonatan.andrei.service.RecommendedListService;
 import org.springframework.http.ResponseEntity;
 
@@ -19,6 +20,9 @@ public class RecommendedListResource {
     @Inject
     RecommendedListService recommendedListService;
 
+    @Inject
+    PostService postService;
+
     @GET
     public ResponseEntity<RecommendedListResponseDto> findRecommendedList(@QueryParam("lengthQuestionListPage") Integer lengthQuestionListPage,
                                                                           @NotNull @QueryParam("integrationUserId") String integrationUserId,
@@ -26,6 +30,14 @@ public class RecommendedListResource {
                                                                           @QueryParam("pageNumber") Integer pageNumber,
                                                                           @QueryParam("dateOfRecommendations") LocalDateTime dateOfRecommendations) {
         return ResponseEntity.ok(recommendedListService.findRecommendedList(lengthQuestionListPage, integrationUserId, recommendedListId, pageNumber, dateOfRecommendations));
+    }
+
+    @GET
+    @Path("/question/{integrationQuestionId}")
+    public ResponseEntity<RecommendedListResponseDto.RecommendedQuestionResponseDto> calculateQuestionScoreToUser(String integrationQuestionId,
+                                                                                                                  @NotNull @QueryParam("integrationUserId") String integrationUserId,
+                                                                                                                  @QueryParam("dateOfRecommendations") LocalDateTime dateOfRecommendations) {
+        return ResponseEntity.ok(postService.calculateQuestionScoreToUser(integrationUserId, integrationQuestionId, dateOfRecommendations));
     }
 
 }
