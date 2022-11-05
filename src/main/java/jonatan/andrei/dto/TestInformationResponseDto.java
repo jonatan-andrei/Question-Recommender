@@ -1,5 +1,6 @@
 package jonatan.andrei.dto;
 
+import jonatan.andrei.domain.SettingsModelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,4 +29,6 @@ public class TestInformationResponseDto {
     private BigDecimal percentage;
 
     private List<RecommendationSettingsRequestDto> settings;
+
+    private SettingsModelType settingsModel;
 }

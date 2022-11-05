@@ -2,6 +2,7 @@ package jonatan.andrei.repository.custom;
 
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.RecommendedQuestionOfListDto;
+import jonatan.andrei.dto.RecommendedQuestionScoreDto;
 import jonatan.andrei.dto.UserToSendQuestionNotificationDto;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -764,9 +765,143 @@ public class QuestionCustomRepository {
         return str.toString();
     }
 
-    public RecommendedQuestionOfListDto calculateQuestionScoreToUser(Long userId, Long questionId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
+    public RecommendedQuestionScoreDto calculateQuestionScoreToUser(Long userId, Long questionId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT q.post_id, p.integration_post_id,
+                
+                -- PUBLICATION DATE RECENT SCORE
+                (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRecent / :numberOfDaysQuestionIsRecent)
+                -- eg: (GREATEST(7 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 7)
+                -- Extract the seconds between the publish date and the current date
+                -- Considers that the date is not recent if the number of days is greater than the parameter
+                -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is recent (eg: 7)
+                AS publicationDateRecentScore,
+                
+                -- PUBLICATION DATE RELEVANT SCORE
+                (GREATEST(:numberOfDaysQuestionIsRelevant - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRelevant / :numberOfDaysQuestionIsRelevant)
+                -- eg: (GREATEST(365 - EXTRACT(EPOCH FROM now() - p.publication_date)/86400, 0) * 100 / 365)
+                -- Extract the seconds between the publish date and the current date
+                -- Considers that the date is irrelevant if the number of days is greater than the parameter
+                -- Multiply the value obtained by the desired importance (eg: 100) and divide by the number of days the question is relevant (eg: 365)
+                AS publicationDateRelevantScore,
+                
+                -- HAS ANSWERS
+                (CASE
+                       WHEN q.answers > 0 THEN :relevanceHasAnswers
+                       ELSE 0
+                 END) AS hasAnswerScore,
+                                 
+                -- PER ANSWER
+                (:relevancePerAnswer * q.answers)
+                AS perAnswerScore,
+                                 
+                -- HAS BEST ANSWER
+                (CASE
+                       WHEN q.best_answer_id IS NOT NULL THEN :relevanceHasBestAnswer
+                       ELSE 0
+                 END)
+                 AS hasBestAnswerScore,
+                 
+                -- QUESTION NUMBER VIEWS
+                (q.views * :relevanceQuestionNumberViews)
+                 AS questionNumberViewsScore,
+                                 
+                -- QUESTION NUMBER FOLLOWERS
+                (q.followers * :relevanceQuestionNumberFollowers)
+                 AS questionNumberFollowers,
+                                 
+                -- USER ALREADY ANSWERED
+                ((SELECT COUNT(*) FROM answer a
+                INNER JOIN post pa ON pa.post_id = a.post_id
+                WHERE pa.user_id = :userId AND a.question_id = q.post_id)
+                * :relevanceUserAlreadyAnswered)
+                AS userAlreadyAnsweredScore,
+                                 
+                -- USER ALREADY COMMENTED IN QUESTION
+                ((SELECT COUNT(*) FROM question_comment qc
+                INNER JOIN post pc ON pc.post_id = qc.post_id
+                WHERE pc.user_id = :userId AND qc.question_id = q.post_id)
+                * :relevanceUserAlreadyCommented)
+                 
+                 +
+                                 
+                -- USER ALREADY COMMENTED IN ANSWERS TO THE QUESTION
+                ((SELECT COUNT(*) FROM answer_comment ac
+                INNER JOIN post pc ON pc.post_id = ac.post_id
+                INNER JOIN answer a ON ac.answer_id = a.post_id
+                WHERE pc.user_id = :userId AND a.question_id = q.post_id)
+                * :relevanceUserAlreadyCommented)
+                AS userAlreadyCommentedScore,
+                
+                -- USER TAG SCORE
+                (SELECT
+                   COALESCE(SUM(
+                   
+                   -- TAG - EXPLICIT RECOMMENDATION
+                   (CASE
+                       WHEN ut.explicit_recommendation THEN :relevanceExplicitRecommendationTag
+                       ELSE 0
+                   END)
+                   
+                   """
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+
+                +
+
+                """                                  
+                           ),0)
+                         
+                         AS user_tag_score
+                         
+                         FROM question_tag qt
+                         INNER JOIN tag t ON t.tag_id = qt.tag_id
+                         INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
+                         LEFT JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId 
+                         WHERE qt.question_id = q.post_id
+                         ) AS userTagScore,
                                  
                 -- PUBLICATION DATE RECENT SCORE
                 (GREATEST(:numberOfDaysQuestionIsRecent - EXTRACT(EPOCH FROM :dateOfRecommendations - p.publication_date)/:numberOfSecondsInDay, 0) * :relevancePublicationDateRecent / :numberOfDaysQuestionIsRecent)
@@ -1093,10 +1228,20 @@ public class QuestionCustomRepository {
 
         List<Tuple> result = nativeQuery.getResultList();
         return result.stream()
-                .map(t -> new RecommendedQuestionOfListDto(
+                .map(t -> new RecommendedQuestionScoreDto(
                         t.get(0, BigInteger.class).longValue(),
                         t.get(1, String.class),
-                        t.get(2, BigDecimal.class).setScale(2, RoundingMode.HALF_UP)
+                        t.get(2, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(3, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(4, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(5, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(6, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(7, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(8, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(9, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(10, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(11, BigDecimal.class).setScale(2, RoundingMode.HALF_UP),
+                        t.get(12, BigDecimal.class).setScale(2, RoundingMode.HALF_UP)
                 )).findFirst()
                 .orElse(null);
     }

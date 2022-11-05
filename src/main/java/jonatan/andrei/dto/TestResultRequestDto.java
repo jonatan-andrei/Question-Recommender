@@ -1,5 +1,6 @@
 package jonatan.andrei.dto;
 
+import jonatan.andrei.domain.SettingsModelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,8 @@ public class TestResultRequestDto {
 
     @NotNull
     private Integer daysAfterDumpConsidered;
+
+    private SettingsModelType settingsModel;
 
     @NotNull
     private String settings;

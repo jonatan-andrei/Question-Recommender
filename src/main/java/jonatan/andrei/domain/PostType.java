@@ -14,4 +14,4 @@ public enum PostType {
 
     private PostType parentPostType;
 
-    }
+}

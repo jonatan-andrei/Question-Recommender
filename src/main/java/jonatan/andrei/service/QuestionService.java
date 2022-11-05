@@ -98,13 +98,9 @@ public class QuestionService {
         }
     }
 
-    public RecommendedListResponseDto.RecommendedQuestionResponseDto calculateQuestionScoreToUser(Long userId, Long questionId, LocalDateTime dateOfRecommendations) {
+    public RecommendedQuestionScoreDto calculateQuestionScoreToUser(Long userId, Long questionId, LocalDateTime dateOfRecommendations) {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
-        RecommendedQuestionOfListDto score = questionCustomRepository.calculateQuestionScoreToUser(userId, questionId, recommendationSettings, dateOfRecommendations);
-        return RecommendedListResponseDto.RecommendedQuestionResponseDto.builder()
-                .integrationQuestionId(score.getIntegrationQuestionId())
-                .score(score.getScore())
-                .build();
+        return questionCustomRepository.calculateQuestionScoreToUser(userId, questionId, recommendationSettings, dateOfRecommendations);
     }
 
     public Integer countForRecommendedList(Long userId, LocalDateTime dateOfRecommendations) {

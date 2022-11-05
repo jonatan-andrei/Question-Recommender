@@ -1,0 +1,1 @@
+ALTER TABLE public.test_result ADD COLUMN "settings_model" varchar(2);

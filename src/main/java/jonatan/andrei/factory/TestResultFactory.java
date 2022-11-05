@@ -7,7 +7,6 @@ import jonatan.andrei.dto.TestResultUserDetailsResponseDto;
 import jonatan.andrei.model.TestResult;
 import jonatan.andrei.model.TestResultUser;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +18,7 @@ public class TestResultFactory {
                 .integratedDumpPercentage(testResultRequestDto.getIntegratedDumpPercentage())
                 .daysAfterDumpConsidered(testResultRequestDto.getDaysAfterDumpConsidered())
                 .settings(testResultRequestDto.getSettings())
+                .settingsModel(testResultRequestDto.getSettingsModel())
                 .totalActivitySystem(testResultRequestDto.getTotalActivitySystem())
                 .numberOfUsers(testResultRequestDto.getNumberOfUsers())
                 .numberOfQuestions(testResultRequestDto.getNumberOfQuestions())
@@ -39,6 +39,7 @@ public class TestResultFactory {
                 .numberOfRecommendedQuestions(testResult.getNumberOfRecommendedQuestions())
                 .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
                 .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
+                .settingsModel(testResult.getSettingsModel())
                 .build();
     }
 
@@ -47,6 +48,7 @@ public class TestResultFactory {
                 .testResultId(testResult.getTestResultId())
                 .dumpName(testResult.getDumpName())
                 .integratedDumpPercentage(testResult.getIntegratedDumpPercentage())
+                .settingsModel(testResult.getSettingsModel())
                 .daysAfterDumpConsidered(testResult.getDaysAfterDumpConsidered())
                 .numberOfUsers(testResult.getNumberOfUsers())
                 .numberOfQuestions(testResult.getNumberOfQuestions())
@@ -87,6 +89,7 @@ public class TestResultFactory {
                         .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
                         .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
                         .settings(testResult.getSettings())
+                        .settingsModel(testResult.getSettingsModel())
                         .totalActivitySystem(testResult.getTotalActivitySystem())
                         .build())
                 .build();

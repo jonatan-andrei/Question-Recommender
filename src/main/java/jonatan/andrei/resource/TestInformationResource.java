@@ -1,5 +1,6 @@
 package jonatan.andrei.resource;
 
+import jonatan.andrei.domain.SettingsModelType;
 import jonatan.andrei.domain.TestInformation;
 import jonatan.andrei.dto.TestInformationResponseDto;
 import jonatan.andrei.service.TestInformationService;
@@ -18,7 +19,7 @@ public class TestInformationResource {
     TestInformationService testInformationService;
 
     @GET
-    public TestInformationResponseDto findTestInformation(@QueryParam("testInformation") TestInformation testInformation, @QueryParam("settingsModel") Integer settingsModel) {
+    public TestInformationResponseDto findTestInformation(@QueryParam("testInformation") TestInformation testInformation, @QueryParam("settingsModel") SettingsModelType settingsModel) {
         return testInformationService.findTestInformation(testInformation, settingsModel);
     }
 }

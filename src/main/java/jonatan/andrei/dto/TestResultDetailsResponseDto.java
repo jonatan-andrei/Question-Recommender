@@ -1,5 +1,6 @@
 package jonatan.andrei.dto;
 
+import jonatan.andrei.domain.SettingsModelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,6 +20,8 @@ public class TestResultDetailsResponseDto {
     private String dumpName;
 
     private BigDecimal integratedDumpPercentage;
+
+    private SettingsModelType settingsModel;
 
     private Integer daysAfterDumpConsidered;
 

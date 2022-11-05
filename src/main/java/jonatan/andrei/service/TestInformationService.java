@@ -1,5 +1,6 @@
 package jonatan.andrei.service;
 
+import jonatan.andrei.domain.SettingsModelType;
 import jonatan.andrei.domain.TestInformation;
 import jonatan.andrei.dto.RecommendationSettingsRequestDto;
 import jonatan.andrei.dto.TestInformationResponseDto;
@@ -16,7 +17,7 @@ public class TestInformationService {
     SettingsModelService settingsModelService;
 
     @Transactional
-    public TestInformationResponseDto findTestInformation(TestInformation testInformation, Integer settingsModel) {
+    public TestInformationResponseDto findTestInformation(TestInformation testInformation, SettingsModelType settingsModel) {
         List<RecommendationSettingsRequestDto> settings = settingsModelService.findSettings(settingsModel);
         return TestInformationResponseDto.builder()
                 .dumpName(testInformation.getDump().getDumpName())
@@ -26,6 +27,7 @@ public class TestInformationService {
                 .minimumOfPreviousAnswers(testInformation.getMinimumOfPreviousAnswers())
                 .percentage(testInformation.getPercentage())
                 .settings(settings)
+                .settingsModel(settingsModel)
                 .build();
     }
 }

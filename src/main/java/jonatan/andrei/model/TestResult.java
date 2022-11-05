@@ -1,5 +1,6 @@
 package jonatan.andrei.model;
 
+import jonatan.andrei.domain.SettingsModelType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,6 +39,11 @@ public class TestResult {
     @NotNull
     @Column(name = "settings", length = 80000)
     private String settings;
+
+    @NotNull
+    @Column(name = "settings_model", length = 2)
+    @Enumerated(EnumType.STRING)
+    private SettingsModelType settingsModel;
 
     @NotNull
     @Column(name = "total_activity_system", length = 80000)
