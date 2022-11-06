@@ -37,6 +37,7 @@ public class UserCustomRepository {
                  INNER JOIN users u ON pa.user_id = u.user_id
                  WHERE pa.publication_date BETWEEN :startDate AND :endDate
                  AND pq.publication_date < :startDate
+                 AND pa.publication_date <= (pq.publication_date + interval '90' day)
                  AND :minimumOfPreviousAnswers <= 
                         (SELECT count(*) FROM post p2 
                         WHERE p2.post_type = 'ANSWER'
