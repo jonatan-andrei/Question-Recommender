@@ -5,3 +5,17 @@ databaseChangeLog:
       file: database/versions/version001-1.sql
   - include:
       file: database/versions/version001-2.sql
+  - include:
+      file: database/versions/version001-3.sql
+  - include:
+      file: database/versions/version001-3-1.sql
+  - include:
+      file: database/versions/version001-3-2.sql
+  - include:
+      file: database/versions/version001-3-3.sql
+  - include:
+      file: database/versions/version001-3-4.sql
+  - include:
+      file: database/versions/version001-3-5.sql
+  - include:
+      file: database/versions/version001-3-6.sql
