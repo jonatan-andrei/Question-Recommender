@@ -12,6 +12,7 @@ import jonatan.andrei.repository.custom.UserTagCustomRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ public class UserTagService {
     public void updateNumberQuestionsByAction(User user, List<QuestionTag> tags, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
         List<Long> tagsIds = tags.stream().map(QuestionTag::getTagId).collect(Collectors.toList());
         List<UserTag> userTags = userTagRepository.findByUserIdAndTagIdIn(user.getUserId(), tagsIds);
-        BigDecimal value = tags.isEmpty() ? BigDecimal.ZERO : userActionUpdateType.getValue().divide(new BigDecimal(tags.size()));
+        BigDecimal value = tags.isEmpty() ? BigDecimal.ZERO : userActionUpdateType.getValue().divide(new BigDecimal(tags.size()), 2, RoundingMode.HALF_UP);
         for (Long tag : tagsIds) {
             UserTag userTag = findOrCreateUserTag(userTags, user.getUserId(), tag);
             switch (userActionType) {

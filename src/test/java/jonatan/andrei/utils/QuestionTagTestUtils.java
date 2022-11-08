@@ -9,6 +9,7 @@ import jonatan.andrei.repository.TagRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,7 +22,7 @@ public class QuestionTagTestUtils {
     TagRepository tagRepository;
 
     public void saveQuestionTags(Question question, List<Tag> tags) {
-        BigDecimal value = BigDecimal.ONE.divide(new BigDecimal(tags.size()));
+        BigDecimal value = BigDecimal.ONE.divide(new BigDecimal(tags.size()), 2, RoundingMode.HALF_UP);
         for (Tag tag : tags) {
             tag.setNumberQuestionsAsked(tag.getNumberQuestionsAsked().add(value));
             tagRepository.save(tag);

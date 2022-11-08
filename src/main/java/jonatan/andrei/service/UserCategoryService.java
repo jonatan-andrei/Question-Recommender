@@ -10,6 +10,7 @@ import jonatan.andrei.repository.UserCategoryRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public class UserCategoryService {
     public void updateNumberQuestionsByAction(User user, List<QuestionCategory> categories, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
         List<Long> categoriesIds = categories.stream().map(QuestionCategory::getCategoryId).collect(Collectors.toList());
         List<UserCategory> userCategories = userCategoryRepository.findByUserIdAndCategoryIdIn(user.getUserId(), categoriesIds);
-        BigDecimal value = categories.isEmpty() ? BigDecimal.ZERO : userActionUpdateType.getValue().divide(new BigDecimal(categories.size()));
+        BigDecimal value = categories.isEmpty() ? BigDecimal.ZERO : userActionUpdateType.getValue().divide(new BigDecimal(categories.size()), 2, RoundingMode.HALF_UP);
         for (Long category : categoriesIds) {
             UserCategory userCategory = findOrCreateUserCategory(userCategories, user.getUserId(), category);
             switch (userActionType) {

@@ -9,6 +9,7 @@ import jonatan.andrei.repository.QuestionCategoryRepository;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @ApplicationScoped
@@ -21,7 +22,7 @@ public class QuestionCategoryTestUtils {
     CategoryRepository categoryRepository;
 
     public void saveQuestionCategories(Question question, List<Category> categories) {
-        BigDecimal value = BigDecimal.ONE.divide(new BigDecimal(categories.size()));
+        BigDecimal value = BigDecimal.ONE.divide(new BigDecimal(categories.size()), 2, RoundingMode.HALF_UP);
         for (Category category : categories) {
             category.setNumberQuestionsAsked(category.getNumberQuestionsAsked().add(value));
             categoryRepository.save(category);
