@@ -5,7 +5,10 @@ import jonatan.andrei.dto.CreatePostRequestDto;
 import jonatan.andrei.dto.UpdatePostRequestDto;
 import jonatan.andrei.model.Question;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 public class QuestionFactory {
 
@@ -27,6 +30,8 @@ public class QuestionFactory {
                 .views(0)
                 .answers(0)
                 .tags(String.join(";", createPostRequestDto.getTags()))
+                .numberTags(BigDecimal.valueOf(Optional.ofNullable(createPostRequestDto.getTags()).map(List::size).orElse(0)))
+                .numberCategories(BigDecimal.valueOf(Optional.ofNullable(createPostRequestDto.getIntegrationCategoriesIds()).map(List::size).orElse(0)))
                 .build();
     }
 
@@ -36,6 +41,8 @@ public class QuestionFactory {
         existingQuestion.setDescription(updatePostRequestDto.getContentOrDescription());
         existingQuestion.setUrl(updatePostRequestDto.getUrl());
         existingQuestion.setTags(String.join(";", updatePostRequestDto.getTags()));
+        existingQuestion.setNumberTags(BigDecimal.valueOf(Optional.ofNullable(updatePostRequestDto.getTags()).map(List::size).orElse(0)));
+        existingQuestion.setNumberCategories(BigDecimal.valueOf(Optional.ofNullable(updatePostRequestDto.getIntegrationCategoriesIds()).map(List::size).orElse(0)));
         return existingQuestion;
     }
 }

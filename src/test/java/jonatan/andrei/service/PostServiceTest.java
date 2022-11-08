@@ -55,6 +55,8 @@ public class PostServiceTest extends AbstractServiceTest {
         assertEquals(createPostRequestDto.getTitle(), question.getTitle());
         assertEquals(createPostRequestDto.getContentOrDescription(), question.getDescription());
         assertEquals("a;b", question.getTags());
+        assertEquals(BigDecimal.valueOf(2), question.getNumberTags());
+        assertEquals(BigDecimal.ZERO, question.getNumberCategories());
     }
 
     @Test
@@ -537,6 +539,8 @@ public class PostServiceTest extends AbstractServiceTest {
         assertEquals(question.getPostId(), result.getPostId());
         assertEquals(updatePostRequestDto.getTitle(), result.getTitle());
         assertEquals(updatePostRequestDto.getContentOrDescription(), result.getDescription());
+        assertEquals(BigDecimal.ONE, result.getNumberTags());
+        assertEquals(BigDecimal.ZERO, result.getNumberCategories());
     }
 
     @Test
