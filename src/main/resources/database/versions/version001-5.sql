@@ -1,0 +1,1 @@
+create index ix_question_tag_question_id ON question_tag(question_id);

@@ -21,3 +21,5 @@ databaseChangeLog:
       file: database/versions/version001-3-6.sql
   - include:
       file: database/versions/version001-4.sql
+  - include:
+      file: database/versions/version001-5.sql

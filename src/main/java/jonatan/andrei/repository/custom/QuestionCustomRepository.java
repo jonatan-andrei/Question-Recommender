@@ -33,6 +33,7 @@ public class QuestionCustomRepository {
                 SELECT ufr.user_id, ufr.integration_user_id
                 FROM users ufr
                 INNER JOIN post p ON p.post_id = :questionId
+                INNER JOIN question q ON q.post_id = p.post_id
                 LEFT JOIN user_follower uf ON follower_id = ufr.user_id AND uf.user_id = p.user_id
                                 
                 WHERE ufr.user_id <> p.user_id
@@ -106,7 +107,8 @@ public class QuestionCustomRepository {
                 +
 
                 """                                  
-                           ),0)
+                         ) / NULLIF(q.number_tags,0)
+                         ,0)
                          
                          AS user_tag_score
                          
@@ -177,7 +179,9 @@ public class QuestionCustomRepository {
                 +
 
                 """
-                            ),0)
+                            ) / NULLIF(q.number_categories,0)
+                            
+                            ,0)
                           
                           AS user_category_score
                           
@@ -498,7 +502,8 @@ public class QuestionCustomRepository {
                 +
 
                 """                                  
-                           ),0)
+                           ) / NULLIF(q.number_tags,0)
+                           ,0)
                          
                          AS user_tag_score
                          
@@ -569,7 +574,9 @@ public class QuestionCustomRepository {
                 +
 
                 """
-                            ),0)
+                            ) / NULLIF(q.number_categories,0)
+                            
+                            ,0)
                           
                           AS user_category_score
                           
@@ -893,7 +900,9 @@ public class QuestionCustomRepository {
                 +
 
                 """                                  
-                                   ),0)
+                                   ) / NULLIF(q.number_tags,0)
+                                   
+                                   ,0)
                                  
                                  AS user_tag_score
                                  
@@ -1064,7 +1073,9 @@ public class QuestionCustomRepository {
                 +
 
                 """                                  
-                           ),0)
+                           ) / NULLIF(q.number_tags,0)
+                           
+                           ,0)
                          
                          AS user_tag_score
                          
@@ -1135,7 +1146,9 @@ public class QuestionCustomRepository {
                 +
 
                 """
-                            ),0)
+                            ) / NULLIF(q.number_categories,0)
+                            
+                            ,0)
                           
                           AS user_category_score
                           
@@ -1249,7 +1262,7 @@ public class QuestionCustomRepository {
 
     public List<QuestionTagScoreDto> calculateQuestionTagsScoreToUser(Long userId, Long questionId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings) {
         Query nativeQuery = entityManager.createNativeQuery("""
-                 SELECT t.name,
+                 SELECT t.name, (
                  
                 """
 
@@ -1272,8 +1285,8 @@ public class QuestionCustomRepository {
                 +
 
                 """
-                                        
-                AS score,
+                
+                ) / NULLIF(q.number_tags,0) AS score,
                         
                 t.number_questions_asked AS numberQuestionsAskedInTag,
                 
@@ -1293,7 +1306,7 @@ public class QuestionCustomRepository {
 
                 """
                 
-                AS numberQuestionsAskedScore, 
+                / NULLIF(q.number_tags,0) AS numberQuestionsAskedScore, 
                 
                 t.number_questions_answered AS numberQuestionsAnsweredInTag,
                 
@@ -1313,7 +1326,7 @@ public class QuestionCustomRepository {
 
                 """
                 
-                AS numberQuestionsAnsweredScore,
+                / NULLIF(q.number_tags,0) AS numberQuestionsAnsweredScore,
                 
                 t.number_questions_commented AS numberQuestionsCommentedInTag,
                 
@@ -1333,7 +1346,7 @@ public class QuestionCustomRepository {
 
                 """
                 
-                AS numberQuestionsCommentedScore,
+                / NULLIF(q.number_tags,0) AS numberQuestionsCommentedScore,
                 
                 t.number_questions_followed AS numberQuestionsFollowedInTag,
                 
@@ -1352,10 +1365,10 @@ public class QuestionCustomRepository {
                 +
 
                 """
-                
-                AS numberQuestionsFollowedScore
+                / NULLIF(q.number_tags,0) AS numberQuestionsFollowedScore
                                         
                 FROM question_tag qt
+                INNER JOIN question q ON qt.question_id = q.post_id
                 INNER JOIN tag t ON t.tag_id = qt.tag_id
                 INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
                 INNER JOIN users ufr on ufr.user_id = :userId
