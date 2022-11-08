@@ -10,6 +10,7 @@ import jonatan.andrei.factory.CategoryFactory;
 import jonatan.andrei.model.Category;
 import jonatan.andrei.model.QuestionCategory;
 import jonatan.andrei.repository.CategoryRepository;
+import liquibase.pro.packaged.B;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -54,37 +55,37 @@ public class CategoryService {
         return categories;
     }
 
-    public void updateNumberQuestionsByAction(List<QuestionCategory> questionCategories, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
+    public void updateNumberQuestionsByAction(List<QuestionCategory> questionCategories, UserActionType userActionType, UserActionUpdateType userActionUpdateType, BigDecimal value) {
         List<Long> categoriesIds = questionCategories.stream().map(QuestionCategory::getCategoryId).collect(Collectors.toList());
         List<Category> categories = categoryRepository.findByCategoryIdIn(categoriesIds);
         for (Category category : categories) {
             switch (userActionType) {
                 case QUESTION_ASKED ->
-                        category.setNumberQuestionsAsked(category.getNumberQuestionsAsked().add(userActionUpdateType.getValue()));
+                        category.setNumberQuestionsAsked(category.getNumberQuestionsAsked().add(value));
                 case QUESTION_VIEWED ->
-                        category.setNumberQuestionsViewed(category.getNumberQuestionsViewed().add(userActionUpdateType.getValue()));
+                        category.setNumberQuestionsViewed(category.getNumberQuestionsViewed().add(value));
                 case QUESTION_ANSWERED ->
-                        category.setNumberQuestionsAnswered(category.getNumberQuestionsAnswered().add(userActionUpdateType.getValue()));
+                        category.setNumberQuestionsAnswered(category.getNumberQuestionsAnswered().add(value));
                 case QUESTION_COMMENTED ->
-                        category.setNumberQuestionsCommented(category.getNumberQuestionsCommented().add(userActionUpdateType.getValue()));
+                        category.setNumberQuestionsCommented(category.getNumberQuestionsCommented().add(value));
                 case QUESTION_FOLLOWED ->
-                        category.setNumberQuestionsFollowed(category.getNumberQuestionsFollowed().add(userActionUpdateType.getValue()));
+                        category.setNumberQuestionsFollowed(category.getNumberQuestionsFollowed().add(value));
                 case QUESTION_UPVOTED ->
-                        category.setNumberQuestionsUpvoted(category.getNumberQuestionsUpvoted().add(userActionUpdateType.getValue()));
+                        category.setNumberQuestionsUpvoted(category.getNumberQuestionsUpvoted().add(value));
                 case QUESTION_DOWNVOTED ->
-                        category.setNumberQuestionsDownvoted(category.getNumberQuestionsDownvoted().add(userActionUpdateType.getValue()));
+                        category.setNumberQuestionsDownvoted(category.getNumberQuestionsDownvoted().add(value));
                 case ANSWER_UPVOTED ->
-                        category.setNumberAnswersUpvoted(category.getNumberAnswersUpvoted().add(userActionUpdateType.getValue()));
+                        category.setNumberAnswersUpvoted(category.getNumberAnswersUpvoted().add(value));
                 case ANSWER_DOWNVOTED ->
-                        category.setNumberAnswersDownvoted(category.getNumberAnswersDownvoted().add(userActionUpdateType.getValue()));
+                        category.setNumberAnswersDownvoted(category.getNumberAnswersDownvoted().add(value));
                 case COMMENT_UPVOTED ->
-                        category.setNumberCommentsUpvoted(category.getNumberCommentsUpvoted().add(userActionUpdateType.getValue()));
+                        category.setNumberCommentsUpvoted(category.getNumberCommentsUpvoted().add(value));
                 case COMMENT_DOWNVOTED ->
-                        category.setNumberCommentsDownvoted(category.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
+                        category.setNumberCommentsDownvoted(category.getNumberCommentsDownvoted().add(value));
             }
         }
         categoryRepository.saveAll(categories);
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, userActionType, userActionUpdateType.getValue().multiply(BigDecimal.valueOf(categories.size())));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.CATEGORY, userActionType, userActionUpdateType.getValue());
     }
 
     private void validateIfAllCategoriesWereFound(List<String> integrationCategoriesIds, List<Category> categories) {

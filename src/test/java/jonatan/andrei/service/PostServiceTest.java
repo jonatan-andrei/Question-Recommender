@@ -357,9 +357,9 @@ public class PostServiceTest extends AbstractServiceTest {
         // Assert
         assertEquals(createPostRequestDto.getIntegrationPostId(), question.getIntegrationPostId());
         UserTag userTagA = userTagRepository.findByUserIdAndTagId(user.getUserId(), tagA.getTagId());
-        assertEquals(BigDecimal.valueOf(1), userTagA.getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), userTagA.getNumberQuestionsAsked().stripTrailingZeros());
         UserTag userTagB = userTagRepository.findByUserIdAndTagId(user.getUserId(), tagB.getTagId());
-        assertEquals(BigDecimal.valueOf(1), userTagB.getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), userTagB.getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -760,22 +760,22 @@ public class PostServiceTest extends AbstractServiceTest {
 
         // Assert
         UserCategory user1Category1 = userCategoryRepository.findByUserIdAndCategoryId(user1.getUserId(), category1.getCategoryId());
-        assertEquals(BigDecimal.valueOf(16), user1Category1.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(15.5), user1Category1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user1Category2 = userCategoryRepository.findByUserIdAndCategoryId(user1.getUserId(), category2.getCategoryId());
-        assertEquals(BigDecimal.valueOf(11), user1Category2.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(10.5), user1Category2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user2Category1 = userCategoryRepository.findByUserIdAndCategoryId(user2.getUserId(), category1.getCategoryId());
-        assertEquals(BigDecimal.valueOf(21), user2Category1.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(20.5), user2Category1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user2Category2 = userCategoryRepository.findByUserIdAndCategoryId(user2.getUserId(), category2.getCategoryId());
-        assertEquals(BigDecimal.valueOf(1), user2Category2.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), user2Category2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user3Category1 = userCategoryRepository.findByUserIdAndCategoryId(user3.getUserId(), category1.getCategoryId());
-        assertEquals(BigDecimal.valueOf(1), user3Category1.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), user3Category1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserCategory user3Category2 = userCategoryRepository.findByUserIdAndCategoryId(user3.getUserId(), category2.getCategoryId());
-        assertEquals(BigDecimal.valueOf(1), user3Category2.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), user3Category2.getNumberQuestionsViewed().stripTrailingZeros());
     }
 
     @Test
@@ -808,22 +808,22 @@ public class PostServiceTest extends AbstractServiceTest {
 
         // Assert
         UserTag user1Tag1 = userTagRepository.findByUserIdAndTagId(user1.getUserId(), tag1.getTagId());
-        assertEquals(BigDecimal.valueOf(16), user1Tag1.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(15.5), user1Tag1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user1Tag2 = userTagRepository.findByUserIdAndTagId(user1.getUserId(), tag2.getTagId());
-        assertEquals(BigDecimal.valueOf(11), user1Tag2.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(10.5), user1Tag2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user2Tag1 = userTagRepository.findByUserIdAndTagId(user2.getUserId(), tag1.getTagId());
-        assertEquals(BigDecimal.valueOf(21), user2Tag1.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(20.5), user2Tag1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user2Tag2 = userTagRepository.findByUserIdAndTagId(user2.getUserId(), tag2.getTagId());
-        assertEquals(BigDecimal.valueOf(1), user2Tag2.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), user2Tag2.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user3Tag1 = userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag1.getTagId());
-        assertEquals(BigDecimal.valueOf(1), user3Tag1.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), user3Tag1.getNumberQuestionsViewed().stripTrailingZeros());
 
         UserTag user3Tag2 = userTagRepository.findByUserIdAndTagId(user3.getUserId(), tag2.getTagId());
-        assertEquals(BigDecimal.valueOf(1), user3Tag2.getNumberQuestionsViewed().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), user3Tag2.getNumberQuestionsViewed().stripTrailingZeros());
     }
 
     @Test

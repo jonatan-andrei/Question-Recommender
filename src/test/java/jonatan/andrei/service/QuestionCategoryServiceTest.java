@@ -52,9 +52,9 @@ public class QuestionCategoryServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category1.getCategoryId())));
-        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("1").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), categoryRepository.findByIntegrationCategoryId("1").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category2.getCategoryId())));
-        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("2").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), categoryRepository.findByIntegrationCategoryId("2").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -75,11 +75,11 @@ public class QuestionCategoryServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category1.getCategoryId())));
-        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("1").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.25), categoryRepository.findByIntegrationCategoryId("1").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category2.getCategoryId())));
         assertEquals(BigDecimal.ZERO, categoryRepository.findByIntegrationCategoryId("2").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category3.getCategoryId())));
-        assertEquals(BigDecimal.ONE, categoryRepository.findByIntegrationCategoryId("3").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.25), categoryRepository.findByIntegrationCategoryId("3").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionCategoryRepository.findByQuestionIdAndCategoryId(question.getPostId(), category4.getCategoryId())));
         assertEquals(BigDecimal.ZERO, categoryRepository.findByIntegrationCategoryId("4").getNumberQuestionsAsked().stripTrailingZeros());
     }

@@ -50,9 +50,9 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag1.getTagId())));
-        assertEquals(BigDecimal.ONE, tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag2.getTagId())));
-        assertEquals(BigDecimal.ONE, tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
     @Test
@@ -73,11 +73,11 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
 
         // Assert
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag1.getTagId())));
-        assertEquals(BigDecimal.ONE, tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.25), tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag2.getTagId())));
         assertEquals(BigDecimal.ZERO, tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag3.getTagId())));
-        assertEquals(BigDecimal.ONE, tagRepository.findByName("c").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.25), tagRepository.findByName("c").getNumberQuestionsAsked().stripTrailingZeros());
         assertTrue(isNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag4.getTagId())));
         assertEquals(BigDecimal.ZERO, tagRepository.findByName("d").getNumberQuestionsAsked().stripTrailingZeros());
     }
@@ -97,11 +97,11 @@ public class QuestionTagServiceTest extends AbstractServiceTest {
         Tag tag1 = tagRepository.findByName("a");
         assertTrue(nonNull(tag1));
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag1.getTagId())));
-        assertEquals(BigDecimal.ONE, tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), tagRepository.findByName("a").getNumberQuestionsAsked().stripTrailingZeros());
         Tag tag2 = tagRepository.findByName("b");
         assertTrue(nonNull(tag2));
         assertTrue(nonNull(questionTagRepository.findByQuestionIdAndTagId(question.getPostId(), tag2.getTagId())));
-        assertEquals(BigDecimal.ONE, tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
+        assertEquals(BigDecimal.valueOf(0.5), tagRepository.findByName("b").getNumberQuestionsAsked().stripTrailingZeros());
     }
 
 }

@@ -58,37 +58,37 @@ public class TagService {
         return tags;
     }
 
-    public void updateNumberQuestionsByAction(List<QuestionTag> questionTags, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
+    public void updateNumberQuestionsByAction(List<QuestionTag> questionTags, UserActionType userActionType, UserActionUpdateType userActionUpdateType, BigDecimal value) {
         List<Long> tagsIds = questionTags.stream().map(QuestionTag::getTagId).collect(Collectors.toList());
         List<Tag> tags = tagRepository.findByTagIdIn(tagsIds);
         for (Tag tag : tags) {
             switch (userActionType) {
                 case QUESTION_ASKED ->
-                        tag.setNumberQuestionsAsked(tag.getNumberQuestionsAsked().add(userActionUpdateType.getValue()));
+                        tag.setNumberQuestionsAsked(tag.getNumberQuestionsAsked().add(value));
                 case QUESTION_VIEWED ->
-                        tag.setNumberQuestionsViewed(tag.getNumberQuestionsViewed().add(userActionUpdateType.getValue()));
+                        tag.setNumberQuestionsViewed(tag.getNumberQuestionsViewed().add(value));
                 case QUESTION_ANSWERED ->
-                        tag.setNumberQuestionsAnswered(tag.getNumberQuestionsAnswered().add(userActionUpdateType.getValue()));
+                        tag.setNumberQuestionsAnswered(tag.getNumberQuestionsAnswered().add(value));
                 case QUESTION_COMMENTED ->
-                        tag.setNumberQuestionsCommented(tag.getNumberQuestionsCommented().add(userActionUpdateType.getValue()));
+                        tag.setNumberQuestionsCommented(tag.getNumberQuestionsCommented().add(value));
                 case QUESTION_FOLLOWED ->
-                        tag.setNumberQuestionsFollowed(tag.getNumberQuestionsFollowed().add(userActionUpdateType.getValue()));
+                        tag.setNumberQuestionsFollowed(tag.getNumberQuestionsFollowed().add(value));
                 case QUESTION_UPVOTED ->
-                        tag.setNumberQuestionsUpvoted(tag.getNumberQuestionsUpvoted().add(userActionUpdateType.getValue()));
+                        tag.setNumberQuestionsUpvoted(tag.getNumberQuestionsUpvoted().add(value));
                 case QUESTION_DOWNVOTED ->
-                        tag.setNumberQuestionsDownvoted(tag.getNumberQuestionsDownvoted().add(userActionUpdateType.getValue()));
+                        tag.setNumberQuestionsDownvoted(tag.getNumberQuestionsDownvoted().add(value));
                 case ANSWER_UPVOTED ->
-                        tag.setNumberAnswersUpvoted(tag.getNumberAnswersUpvoted().add(userActionUpdateType.getValue()));
+                        tag.setNumberAnswersUpvoted(tag.getNumberAnswersUpvoted().add(value));
                 case ANSWER_DOWNVOTED ->
-                        tag.setNumberAnswersDownvoted(tag.getNumberAnswersDownvoted().add(userActionUpdateType.getValue()));
+                        tag.setNumberAnswersDownvoted(tag.getNumberAnswersDownvoted().add(value));
                 case COMMENT_UPVOTED ->
-                        tag.setNumberCommentsUpvoted(tag.getNumberCommentsUpvoted().add(userActionUpdateType.getValue()));
+                        tag.setNumberCommentsUpvoted(tag.getNumberCommentsUpvoted().add(value));
                 case COMMENT_DOWNVOTED ->
-                        tag.setNumberCommentsDownvoted(tag.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
+                        tag.setNumberCommentsDownvoted(tag.getNumberCommentsDownvoted().add(value));
             }
         }
         tagRepository.saveAll(tags);
-        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, userActionType, userActionUpdateType.getValue().multiply(BigDecimal.valueOf(tags.size())));
+        totalActivitySystemService.updateNumberByAction(PostClassificationType.TAG, userActionType, userActionUpdateType.getValue());
     }
 
     private void validateRequiredData(TagRequestDto tagRequestDto) {

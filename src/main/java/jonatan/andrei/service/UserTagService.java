@@ -11,6 +11,7 @@ import jonatan.andrei.repository.custom.UserTagCustomRepository;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,35 +49,32 @@ public class UserTagService {
     public void updateNumberQuestionsByAction(User user, List<QuestionTag> tags, UserActionType userActionType, UserActionUpdateType userActionUpdateType) {
         List<Long> tagsIds = tags.stream().map(QuestionTag::getTagId).collect(Collectors.toList());
         List<UserTag> userTags = userTagRepository.findByUserIdAndTagIdIn(user.getUserId(), tagsIds);
+        BigDecimal value = tags.isEmpty() ? BigDecimal.ZERO : userActionUpdateType.getValue().divide(new BigDecimal(tags.size()));
         for (Long tag : tagsIds) {
             UserTag userTag = findOrCreateUserTag(userTags, user.getUserId(), tag);
             switch (userActionType) {
-                case QUESTION_ASKED ->
-                        userTag.setNumberQuestionsAsked(userTag.getNumberQuestionsAsked().add(userActionUpdateType.getValue()));
-                case QUESTION_VIEWED ->
-                        userTag.setNumberQuestionsViewed(userTag.getNumberQuestionsViewed().add(userActionUpdateType.getValue()));
+                case QUESTION_ASKED -> userTag.setNumberQuestionsAsked(userTag.getNumberQuestionsAsked().add(value));
+                case QUESTION_VIEWED -> userTag.setNumberQuestionsViewed(userTag.getNumberQuestionsViewed().add(value));
                 case QUESTION_ANSWERED ->
-                        userTag.setNumberQuestionsAnswered(userTag.getNumberQuestionsAnswered().add(userActionUpdateType.getValue()));
+                        userTag.setNumberQuestionsAnswered(userTag.getNumberQuestionsAnswered().add(value));
                 case QUESTION_COMMENTED ->
-                        userTag.setNumberQuestionsCommented(userTag.getNumberQuestionsCommented().add(userActionUpdateType.getValue()));
+                        userTag.setNumberQuestionsCommented(userTag.getNumberQuestionsCommented().add(value));
                 case QUESTION_FOLLOWED ->
-                        userTag.setNumberQuestionsFollowed(userTag.getNumberQuestionsFollowed().add(userActionUpdateType.getValue()));
+                        userTag.setNumberQuestionsFollowed(userTag.getNumberQuestionsFollowed().add(value));
                 case QUESTION_UPVOTED ->
-                        userTag.setNumberQuestionsUpvoted(userTag.getNumberQuestionsUpvoted().add(userActionUpdateType.getValue()));
+                        userTag.setNumberQuestionsUpvoted(userTag.getNumberQuestionsUpvoted().add(value));
                 case QUESTION_DOWNVOTED ->
-                        userTag.setNumberQuestionsDownvoted(userTag.getNumberQuestionsDownvoted().add(userActionUpdateType.getValue()));
-                case ANSWER_UPVOTED ->
-                        userTag.setNumberAnswersUpvoted(userTag.getNumberAnswersUpvoted().add(userActionUpdateType.getValue()));
+                        userTag.setNumberQuestionsDownvoted(userTag.getNumberQuestionsDownvoted().add(value));
+                case ANSWER_UPVOTED -> userTag.setNumberAnswersUpvoted(userTag.getNumberAnswersUpvoted().add(value));
                 case ANSWER_DOWNVOTED ->
-                        userTag.setNumberAnswersDownvoted(userTag.getNumberAnswersDownvoted().add(userActionUpdateType.getValue()));
-                case COMMENT_UPVOTED ->
-                        userTag.setNumberCommentsUpvoted(userTag.getNumberCommentsUpvoted().add(userActionUpdateType.getValue()));
+                        userTag.setNumberAnswersDownvoted(userTag.getNumberAnswersDownvoted().add(value));
+                case COMMENT_UPVOTED -> userTag.setNumberCommentsUpvoted(userTag.getNumberCommentsUpvoted().add(value));
                 case COMMENT_DOWNVOTED ->
-                        userTag.setNumberCommentsDownvoted(userTag.getNumberCommentsDownvoted().add(userActionUpdateType.getValue()));
+                        userTag.setNumberCommentsDownvoted(userTag.getNumberCommentsDownvoted().add(value));
             }
         }
         userTagRepository.saveAll(userTags);
-        tagService.updateNumberQuestionsByAction(tags, userActionType, userActionUpdateType);
+        tagService.updateNumberQuestionsByAction(tags, userActionType, userActionUpdateType, value);
     }
 
     public void saveUserPreferences(User user, List<Tag> tags, UserPreferenceType userPreference) {

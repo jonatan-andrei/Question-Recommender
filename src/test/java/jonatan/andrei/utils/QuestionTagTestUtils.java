@@ -21,8 +21,9 @@ public class QuestionTagTestUtils {
     TagRepository tagRepository;
 
     public void saveQuestionTags(Question question, List<Tag> tags) {
+        BigDecimal value = BigDecimal.ONE.divide(new BigDecimal(tags.size()));
         for (Tag tag : tags) {
-            tag.setNumberQuestionsAsked(tag.getNumberQuestionsAsked().add(BigDecimal.ONE));
+            tag.setNumberQuestionsAsked(tag.getNumberQuestionsAsked().add(value));
             tagRepository.save(tag);
             questionTagRepository.save(QuestionTagFactory.newQuestionTag(question, tag));
         }

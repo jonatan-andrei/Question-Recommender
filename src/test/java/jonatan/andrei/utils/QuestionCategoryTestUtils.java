@@ -21,8 +21,9 @@ public class QuestionCategoryTestUtils {
     CategoryRepository categoryRepository;
 
     public void saveQuestionCategories(Question question, List<Category> categories) {
+        BigDecimal value = BigDecimal.ONE.divide(new BigDecimal(categories.size()));
         for (Category category : categories) {
-            category.setNumberQuestionsAsked(category.getNumberQuestionsAsked().add(BigDecimal.ONE));
+            category.setNumberQuestionsAsked(category.getNumberQuestionsAsked().add(value));
             categoryRepository.save(category);
             questionCategoryRepository.save(QuestionCategoryFactory.newQuestionCategory(question, category));
         }
