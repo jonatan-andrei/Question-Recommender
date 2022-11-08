@@ -18,7 +18,7 @@ Parâmetros para que você configure sua conexão com o banco de dados de sua pr
 ### Hibernate
 `` quarkus.hibernate-orm.database.generation ``<br/>
 Parâmetro que indica como o Hibernate irá interagir com a base de dados da aplicação.<br/>
-``Valor default: update``
+``Valor default: none``
 
 ### Scheduled - Processos agendados
 `` cron.recommended-email ``<br/>

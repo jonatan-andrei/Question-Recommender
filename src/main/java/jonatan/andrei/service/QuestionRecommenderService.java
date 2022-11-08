@@ -92,5 +92,6 @@ public class QuestionRecommenderService {
         recommendedListPageQuestionService.clear();
         recommendedListPageService.clear();
         recommendedListService.clear();
+        questionViewService.clear();
     }
 }
