@@ -287,7 +287,7 @@ public class PostService {
     }
 
     @Transactional
-    public RecommendedQuestionScoreDto calculateQuestionScoreToUser(String integrationUserId, String integrationQuestionId, LocalDateTime dateOfRecommendations) {
+    public RecommendedQuestionScoreResponseDto calculateQuestionScoreToUser(String integrationUserId, String integrationQuestionId, LocalDateTime dateOfRecommendations) {
         User user = userService.findByIntegrationUserId(integrationUserId);
         Post question = findByIntegrationPostIdAndPostType(integrationQuestionId, PostType.QUESTION);
 

@@ -4,6 +4,7 @@ import jonatan.andrei.domain.RecommendationChannelType;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.*;
 import jonatan.andrei.factory.QuestionFactory;
+import jonatan.andrei.factory.RecommendedQuestionScoreFactory;
 import jonatan.andrei.model.Question;
 import jonatan.andrei.model.QuestionCategory;
 import jonatan.andrei.model.QuestionTag;
@@ -98,9 +99,11 @@ public class QuestionService {
         }
     }
 
-    public RecommendedQuestionScoreDto calculateQuestionScoreToUser(Long userId, Long questionId, LocalDateTime dateOfRecommendations) {
+    public RecommendedQuestionScoreResponseDto calculateQuestionScoreToUser(Long userId, Long questionId, LocalDateTime dateOfRecommendations) {
         Map<RecommendationSettingsType, BigDecimal> recommendationSettings = recommendationSettingsService.findRecommendationSettingsByChannel(RecommendationChannelType.RECOMMENDED_LIST);
-        return questionCustomRepository.calculateQuestionScoreToUser(userId, questionId, recommendationSettings, dateOfRecommendations);
+        RecommendedQuestionScoreDto recommendedQuestionScoreDto = questionCustomRepository.calculateQuestionScoreToUser(userId, questionId, recommendationSettings, dateOfRecommendations);
+        List<QuestionTagScoreDto> tagsScore = questionCustomRepository.calculateQuestionTagsScoreToUser(userId, questionId, recommendationSettings);
+        return RecommendedQuestionScoreFactory.newResponseDto(recommendedQuestionScoreDto, tagsScore);
     }
 
     public Integer countForRecommendedList(Long userId, LocalDateTime dateOfRecommendations) {
