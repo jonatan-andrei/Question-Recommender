@@ -1288,13 +1288,13 @@ public class QuestionCustomRepository {
                 
                 ) / NULLIF(q.number_tags,0) AS score,
                         
-                t.number_questions_asked AS numberQuestionsAskedInTag,
+                COALESCE(t.number_questions_asked,0) AS numberQuestionsAskedInTag,
                 
-                ut.number_questions_asked AS numberQuestionsAskedInUserTag,
+                COALESCE(ut.number_questions_asked,0) AS numberQuestionsAskedInUserTag,
                 
-                ut.number_questions_asked / ufr.number_questions_asked * 100 AS numberQuestionsAskedPercent,
+                COALESCE(NULLIF(ut.number_questions_asked,0) / NULLIF(ufr.number_questions_asked,0),0) * 100 AS numberQuestionsAskedPercent,
                 
-                t.number_questions_asked / tas.number_questions_asked * 100 AS numberQuestionsAskedSystemPercent,
+                COALESCE(NULLIF(t.number_questions_asked,0) / NULLIF(tas.number_questions_asked,0),0) * 100 AS numberQuestionsAskedSystemPercent,
                 
                 """
 
@@ -1308,13 +1308,13 @@ public class QuestionCustomRepository {
                 
                 / NULLIF(q.number_tags,0) AS numberQuestionsAskedScore, 
                 
-                t.number_questions_answered AS numberQuestionsAnsweredInTag,
+                COALESCE(t.number_questions_answered,0) AS numberQuestionsAnsweredInTag,
                 
-                ut.number_questions_answered AS numberQuestionsAnsweredInUserTag,
+                COALESCE(ut.number_questions_answered,0) AS numberQuestionsAnsweredInUserTag,
                 
-                ut.number_questions_answered / ufr.number_questions_answered * 100 AS numberQuestionsAnsweredPercent,
+                COALESCE(NULLIF(ut.number_questions_answered,0) / NULLIF(ufr.number_questions_answered,0),0) * 100 AS numberQuestionsAnsweredPercent,
                 
-                t.number_questions_answered / tas.number_questions_answered * 100 AS numberQuestionsAnsweredSystemPercent,
+                COALESCE(NULLIF(t.number_questions_answered,0) / NULLIF(tas.number_questions_answered,0),0) * 100 AS numberQuestionsAnsweredSystemPercent,
                 
                 """
 
@@ -1328,13 +1328,13 @@ public class QuestionCustomRepository {
                 
                 / NULLIF(q.number_tags,0) AS numberQuestionsAnsweredScore,
                 
-                t.number_questions_commented AS numberQuestionsCommentedInTag,
+                COALESCE(t.number_questions_commented,0) AS numberQuestionsCommentedInTag,
                 
-                ut.number_questions_commented AS numberQuestionsCommentedInUserTag,
+                COALESCE(ut.number_questions_commented,0) AS numberQuestionsCommentedInUserTag,
                 
-                ut.number_questions_commented / ufr.number_questions_commented * 100 AS numberQuestionsCommentedPercent,
+                COALESCE(NULLIF(ut.number_questions_commented,0) / NULLIF(ufr.number_questions_commented,0),0) * 100 AS numberQuestionsCommentedPercent,
                 
-                t.number_questions_commented / tas.number_questions_commented * 100 AS numberQuestionsCommentedSystemPercent,
+                COALESCE(NULLIF(t.number_questions_commented,0) / NULLIF(tas.number_questions_commented,0),0) * 100 AS numberQuestionsCommentedSystemPercent,
                 
                 """
 
@@ -1348,13 +1348,13 @@ public class QuestionCustomRepository {
                 
                 / NULLIF(q.number_tags,0) AS numberQuestionsCommentedScore,
                 
-                t.number_questions_followed AS numberQuestionsFollowedInTag,
+                COALESCE(t.number_questions_followed,0) AS numberQuestionsFollowedInTag,
                 
-                ut.number_questions_followed AS numberQuestionsFollowedInUserTag,
+                COALESCE(ut.number_questions_followed,0) AS numberQuestionsFollowedInUserTag,
                 
-                ut.number_questions_followed / ufr.number_questions_followed * 100 AS numberQuestionsFollowedPercent,
+                COALESCE(NULLIF(ut.number_questions_followed,0) / NULLIF(ufr.number_questions_followed,0),0) * 100 AS numberQuestionsFollowedPercent,
                 
-                t.number_questions_followed / tas.number_questions_followed * 100 AS numberQuestionsFollowedSystemPercent,
+                COALESCE(NULLIF(t.number_questions_followed,0) / NULLIF(tas.number_questions_followed,0),0) * 100 AS numberQuestionsFollowedSystemPercent,
                 
                 """
 
