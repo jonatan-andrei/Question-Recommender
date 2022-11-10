@@ -10,7 +10,6 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public enum AlgorithmForCategoryOrTagType {
 
-    NONE(0),
     SUBTRACTION(1),
     PERCENTAGE(2);
 
@@ -20,6 +19,6 @@ public enum AlgorithmForCategoryOrTagType {
     public static AlgorithmForCategoryOrTagType findByCode(BigDecimal code) {
         return Stream.of(values())
                 .filter(a -> a.getCode().equals(code.intValue()))
-                .findFirst().orElse(AlgorithmForCategoryOrTagType.NONE);
+                .findFirst().orElse(AlgorithmForCategoryOrTagType.SUBTRACTION);
     }
 }

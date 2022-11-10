@@ -765,16 +765,11 @@ public class QuestionCustomRepository {
 
     public String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName, AlgorithmForCategoryOrTagType algorithm) {
         return switch (algorithm) {
-            case NONE -> appendRuleCategoryOrTagAlgorithmNone();
             case SUBTRACTION ->
                     appendRuleCategoryOrTagAlgorithmSubtract(aliasUserCategoryOrUserTag, aliasCategoryOrTag, columnName, parameterName);
             case PERCENTAGE ->
                     appendRuleCategoryOrTagAlgorithmPercentage(aliasUserCategoryOrUserTag, aliasCategoryOrTag, columnName, parameterName);
         };
-    }
-
-    private String appendRuleCategoryOrTagAlgorithmNone() {
-        return " + 0 ";
     }
 
     private String appendRuleCategoryOrTagAlgorithmSubtract(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
