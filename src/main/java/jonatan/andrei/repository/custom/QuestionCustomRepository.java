@@ -1,5 +1,6 @@
 package jonatan.andrei.repository.custom;
 
+import jonatan.andrei.domain.AlgorithmForCategoryOrTagType;
 import jonatan.andrei.domain.RecommendationSettingsType;
 import jonatan.andrei.dto.QuestionTagScoreDto;
 import jonatan.andrei.dto.RecommendedQuestionOfListDto;
@@ -29,6 +30,7 @@ public class QuestionCustomRepository {
     EntityManager entityManager;
 
     public List<UserToSendQuestionNotificationDto> findUsersToNotifyQuestion(Long questionId, Integer pageNumber, Integer lengthUsersList, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime minimumLastActivityDate) {
+        AlgorithmForCategoryOrTagType algorithmForCategoryOrTagType = AlgorithmForCategoryOrTagType.findByCode(recommendationSettings.get(RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG));
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT ufr.user_id, ufr.integration_user_id
                 FROM users ufr
@@ -62,47 +64,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
@@ -134,47 +136,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
@@ -308,6 +310,7 @@ public class QuestionCustomRepository {
     }
 
     public List<RecommendedQuestionOfListDto> findRecommendedList(Long userId, Integer pageNumber, Integer lengthQuestionList, Long recommendedListId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations, LocalDateTime minimumDateForRecommendedQuestions) {
+        AlgorithmForCategoryOrTagType algorithmForCategoryOrTagType = AlgorithmForCategoryOrTagType.findByCode(recommendationSettings.get(RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG));
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT q.post_id, p.integration_post_id,
                                  
@@ -457,47 +460,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
@@ -529,47 +532,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
@@ -760,7 +763,21 @@ public class QuestionCustomRepository {
         return ((java.sql.Timestamp) nativeQuery.getSingleResult()).toLocalDateTime();
     }
 
-    private String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
+    public String appendRuleCategoryOrTag(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName, AlgorithmForCategoryOrTagType algorithm) {
+        return switch (algorithm) {
+            case NONE -> appendRuleCategoryOrTagAlgorithmNone();
+            case SUBTRACTION ->
+                    appendRuleCategoryOrTagAlgorithmSubtract(aliasUserCategoryOrUserTag, aliasCategoryOrTag, columnName, parameterName);
+            case PERCENTAGE ->
+                    appendRuleCategoryOrTagAlgorithmPercentage(aliasUserCategoryOrUserTag, aliasCategoryOrTag, columnName, parameterName);
+        };
+    }
+
+    private String appendRuleCategoryOrTagAlgorithmNone() {
+        return " + 0 ";
+    }
+
+    private String appendRuleCategoryOrTagAlgorithmSubtract(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
         StringBuilder str = new StringBuilder();
         str.append(" + COALESCE( ");
         str.append("((COALESCE(NULLIF(" + aliasUserCategoryOrUserTag + "." + columnName + ",0) / " + "NULLIF(ufr." + columnName + ",0),0))");
@@ -773,7 +790,21 @@ public class QuestionCustomRepository {
         return str.toString();
     }
 
+    private String appendRuleCategoryOrTagAlgorithmPercentage(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
+        StringBuilder str = new StringBuilder();
+        str.append(" + COALESCE( ");
+        str.append("COALESCE((NULLIF(" + aliasUserCategoryOrUserTag + "." + columnName + ",0) / " + "NULLIF(ufr." + columnName + ",0))");
+        str.append(" / ");
+        str.append("(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0)),0)");
+        str.append(" * (NULLIF(CASE ");
+        str.append(" WHEN ufr." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
+        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * ufr." + columnName);
+        str.append(" END, 0)),0)");
+        return str.toString();
+    }
+
     public RecommendedQuestionScoreDto calculateQuestionScoreToUser(Long userId, Long questionId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings, LocalDateTime dateOfRecommendations) {
+        AlgorithmForCategoryOrTagType algorithmForCategoryOrTagType = AlgorithmForCategoryOrTagType.findByCode(recommendationSettings.get(RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG));
         Query nativeQuery = entityManager.createNativeQuery("""
                 SELECT q.post_id, p.integration_post_id,
                                 
@@ -855,47 +886,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
@@ -1028,47 +1059,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_viewed", "relevanceQuestionsViewedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_upvoted", "relevanceQuestionsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_downvoted", "relevanceQuestionsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_upvoted", "relevanceAnswersUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_answers_downvoted", "relevanceAnswersDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_upvoted", "relevanceCommentsUpvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_comments_downvoted", "relevanceCommentsDownvotedInTag", algorithmForCategoryOrTagType)
 
                 +
 
@@ -1101,47 +1132,47 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_asked", "relevanceQuestionsAskedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_answered", "relevanceQuestionsAnsweredInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_commented", "relevanceQuestionsCommentedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_viewed", "relevanceQuestionsViewedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_followed", "relevanceQuestionsFollowedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_upvoted", "relevanceQuestionsUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_questions_downvoted", "relevanceQuestionsDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_upvoted", "relevanceAnswersUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_answers_downvoted", "relevanceAnswersDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_upvoted", "relevanceCommentsUpvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory")
+                appendRuleCategoryOrTag("uc", "c", "number_comments_downvoted", "relevanceCommentsDownvotedInCategory", algorithmForCategoryOrTagType)
 
                 +
 
@@ -1261,6 +1292,7 @@ public class QuestionCustomRepository {
     }
 
     public List<QuestionTagScoreDto> calculateQuestionTagsScoreToUser(Long userId, Long questionId, Map<RecommendationSettingsType, BigDecimal> recommendationSettings) {
+        AlgorithmForCategoryOrTagType algorithmForCategoryOrTagType = AlgorithmForCategoryOrTagType.findByCode(recommendationSettings.get(RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG));
         Query nativeQuery = entityManager.createNativeQuery("""
                  SELECT t.name, (
                  
@@ -1268,114 +1300,114 @@ public class QuestionCustomRepository {
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag", algorithmForCategoryOrTagType)
 
                 +
 
-                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
-
-                +
-
-                """
-                
-                ) / NULLIF(q.number_tags,0) AS score,
-                        
-                COALESCE(t.number_questions_asked,0) AS numberQuestionsAskedInTag,
-                
-                COALESCE(ut.number_questions_asked,0) AS numberQuestionsAskedInUserTag,
-                
-                COALESCE(NULLIF(ut.number_questions_asked,0) / NULLIF(ufr.number_questions_asked,0),0) * 100 AS numberQuestionsAskedPercent,
-                
-                COALESCE(NULLIF(t.number_questions_asked,0) / NULLIF(tas.number_questions_asked,0),0) * 100 AS numberQuestionsAskedSystemPercent,
-                
-                """
-
-                +
-
-                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag")
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag", algorithmForCategoryOrTagType)
 
                 +
 
                 """
-                
-                / NULLIF(q.number_tags,0) AS numberQuestionsAskedScore, 
-                
-                COALESCE(t.number_questions_answered,0) AS numberQuestionsAnsweredInTag,
-                
-                COALESCE(ut.number_questions_answered,0) AS numberQuestionsAnsweredInUserTag,
-                
-                COALESCE(NULLIF(ut.number_questions_answered,0) / NULLIF(ufr.number_questions_answered,0),0) * 100 AS numberQuestionsAnsweredPercent,
-                
-                COALESCE(NULLIF(t.number_questions_answered,0) / NULLIF(tas.number_questions_answered,0),0) * 100 AS numberQuestionsAnsweredSystemPercent,
-                
-                """
-
-                +
-
-                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag")
-
-                +
-
-                """
-                
-                / NULLIF(q.number_tags,0) AS numberQuestionsAnsweredScore,
-                
-                COALESCE(t.number_questions_commented,0) AS numberQuestionsCommentedInTag,
-                
-                COALESCE(ut.number_questions_commented,0) AS numberQuestionsCommentedInUserTag,
-                
-                COALESCE(NULLIF(ut.number_questions_commented,0) / NULLIF(ufr.number_questions_commented,0),0) * 100 AS numberQuestionsCommentedPercent,
-                
-                COALESCE(NULLIF(t.number_questions_commented,0) / NULLIF(tas.number_questions_commented,0),0) * 100 AS numberQuestionsCommentedSystemPercent,
-                
-                """
-
-                +
-
-                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag")
-
-                +
-
-                """
-                
-                / NULLIF(q.number_tags,0) AS numberQuestionsCommentedScore,
-                
-                COALESCE(t.number_questions_followed,0) AS numberQuestionsFollowedInTag,
-                
-                COALESCE(ut.number_questions_followed,0) AS numberQuestionsFollowedInUserTag,
-                
-                COALESCE(NULLIF(ut.number_questions_followed,0) / NULLIF(ufr.number_questions_followed,0),0) * 100 AS numberQuestionsFollowedPercent,
-                
-                COALESCE(NULLIF(t.number_questions_followed,0) / NULLIF(tas.number_questions_followed,0),0) * 100 AS numberQuestionsFollowedSystemPercent,
-                
-                """
-
-                +
-
-                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag")
-
-                +
-
-                """
-                / NULLIF(q.number_tags,0) AS numberQuestionsFollowedScore
                                         
-                FROM question_tag qt
-                INNER JOIN question q ON qt.question_id = q.post_id
-                INNER JOIN tag t ON t.tag_id = qt.tag_id
-                INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
-                INNER JOIN users ufr on ufr.user_id = :userId
-                LEFT JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId 
-                WHERE qt.question_id = :questionId
-                                                                        
-                        """, Tuple.class);
+                        ) / NULLIF(q.number_tags,0) AS score,
+                                
+                        COALESCE(t.number_questions_asked,0) AS numberQuestionsAskedInTag,
+                                        
+                        COALESCE(ut.number_questions_asked,0) AS numberQuestionsAskedInUserTag,
+                                        
+                        COALESCE(NULLIF(ut.number_questions_asked,0) / NULLIF(ufr.number_questions_asked,0),0) * 100 AS numberQuestionsAskedPercent,
+                                        
+                        COALESCE(NULLIF(t.number_questions_asked,0) / NULLIF(tas.number_questions_asked,0),0) * 100 AS numberQuestionsAskedSystemPercent,
+                                        
+                        """
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_asked", "relevanceQuestionsAskedInTag", algorithmForCategoryOrTagType)
+
+                +
+
+                """
+                                        
+                        / NULLIF(q.number_tags,0) AS numberQuestionsAskedScore, 
+                                        
+                        COALESCE(t.number_questions_answered,0) AS numberQuestionsAnsweredInTag,
+                                        
+                        COALESCE(ut.number_questions_answered,0) AS numberQuestionsAnsweredInUserTag,
+                                        
+                        COALESCE(NULLIF(ut.number_questions_answered,0) / NULLIF(ufr.number_questions_answered,0),0) * 100 AS numberQuestionsAnsweredPercent,
+                                        
+                        COALESCE(NULLIF(t.number_questions_answered,0) / NULLIF(tas.number_questions_answered,0),0) * 100 AS numberQuestionsAnsweredSystemPercent,
+                                        
+                        """
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_answered", "relevanceQuestionsAnsweredInTag", algorithmForCategoryOrTagType)
+
+                +
+
+                """
+                                        
+                        / NULLIF(q.number_tags,0) AS numberQuestionsAnsweredScore,
+                                        
+                        COALESCE(t.number_questions_commented,0) AS numberQuestionsCommentedInTag,
+                                        
+                        COALESCE(ut.number_questions_commented,0) AS numberQuestionsCommentedInUserTag,
+                                        
+                        COALESCE(NULLIF(ut.number_questions_commented,0) / NULLIF(ufr.number_questions_commented,0),0) * 100 AS numberQuestionsCommentedPercent,
+                                        
+                        COALESCE(NULLIF(t.number_questions_commented,0) / NULLIF(tas.number_questions_commented,0),0) * 100 AS numberQuestionsCommentedSystemPercent,
+                                        
+                        """
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_commented", "relevanceQuestionsCommentedInTag", algorithmForCategoryOrTagType)
+
+                +
+
+                """
+                                        
+                        / NULLIF(q.number_tags,0) AS numberQuestionsCommentedScore,
+                                        
+                        COALESCE(t.number_questions_followed,0) AS numberQuestionsFollowedInTag,
+                                        
+                        COALESCE(ut.number_questions_followed,0) AS numberQuestionsFollowedInUserTag,
+                                        
+                        COALESCE(NULLIF(ut.number_questions_followed,0) / NULLIF(ufr.number_questions_followed,0),0) * 100 AS numberQuestionsFollowedPercent,
+                                        
+                        COALESCE(NULLIF(t.number_questions_followed,0) / NULLIF(tas.number_questions_followed,0),0) * 100 AS numberQuestionsFollowedSystemPercent,
+                                        
+                        """
+
+                +
+
+                appendRuleCategoryOrTag("ut", "t", "number_questions_followed", "relevanceQuestionsFollowedInTag", algorithmForCategoryOrTagType)
+
+                +
+
+                """
+                        / NULLIF(q.number_tags,0) AS numberQuestionsFollowedScore
+                                                
+                        FROM question_tag qt
+                        INNER JOIN question q ON qt.question_id = q.post_id
+                        INNER JOIN tag t ON t.tag_id = qt.tag_id
+                        INNER JOIN total_activity_system tas ON tas.post_classification_type = 'TAG'
+                        INNER JOIN users ufr on ufr.user_id = :userId
+                        LEFT JOIN user_tag ut ON qt.tag_id = ut.tag_id AND ut.user_id = :userId 
+                        WHERE qt.question_id = :questionId
+                                                                                
+                                """, Tuple.class);
         nativeQuery.setParameter("userId", userId);
         nativeQuery.setParameter("questionId", questionId);
         nativeQuery.setParameter("minimumOfActivitiesToConsiderMaximumScore", recommendationSettings.get(MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE));

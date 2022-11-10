@@ -3,11 +3,6 @@ package jonatan.andrei.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import static jonatan.andrei.domain.RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS;
-
 @Getter
 @AllArgsConstructor
 public enum RecommendationSettingsType {
@@ -64,6 +59,8 @@ public enum RecommendationSettingsType {
     DEFAULT_HOUR_OF_THE_DAY_TO_SEND_RECOMMENDATIONS(),
     DAYS_OF_USER_INACTIVITY_TO_SUSPEND_RECOMMENDATIONS(),
     MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST(),
-    MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS()
+    MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS(),
+
+    RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG();
 
 }

@@ -62,7 +62,8 @@ public enum RecommendationChannelType {
             entry(RELEVANCE_COMMENTS_UPVOTED_IN_TAG, BigDecimal.valueOf(0)),
             entry(RELEVANCE_COMMENTS_DOWNVOTED_IN_TAG, BigDecimal.valueOf(0)),
             entry(DEFAULT_LENGTH, BigDecimal.valueOf(20)),
-            entry(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(20))
+            entry(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(20)),
+            entry(RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1))
     )),
 
     RECOMMENDED_EMAIL(Map.ofEntries(
@@ -117,7 +118,8 @@ public enum RecommendationChannelType {
             entry(DEFAULT_HOUR_OF_THE_DAY_TO_SEND_RECOMMENDATIONS, BigDecimal.valueOf(8)),
             entry(DAYS_OF_USER_INACTIVITY_TO_SUSPEND_RECOMMENDATIONS, BigDecimal.valueOf(60)),
             entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10)),
-            entry(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(60))
+            entry(MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(60)),
+            entry(RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1))
     )),
 
     QUESTION_NOTIFICATION(Map.ofEntries(
@@ -150,7 +152,8 @@ public enum RecommendationChannelType {
             entry(MINIMUM_SCORE_TO_SEND_QUESTION_TO_USER, BigDecimal.valueOf(200)),
             entry(ENABLE_CHANNEL, BigDecimal.valueOf(0)),
             entry(DAYS_OF_USER_INACTIVITY_TO_SUSPEND_RECOMMENDATIONS, BigDecimal.valueOf(30)),
-            entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10))
+            entry(MAXIMUM_SIZE_OF_INTEGRATED_USER_LIST, BigDecimal.valueOf(10)),
+            entry(RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1))
     ));
 
     private Map<RecommendationSettingsType, BigDecimal> settings;
