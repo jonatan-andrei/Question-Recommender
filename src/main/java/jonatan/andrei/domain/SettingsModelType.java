@@ -16,6 +16,7 @@ public enum SettingsModelType {
     G,
     H,
     I,
-    J
+    J,
+    K
 
 }

@@ -13,7 +13,7 @@ import java.util.List;
 @ApplicationScoped
 public class SettingsModelService {
 
-    public List<RecommendationSettingsRequestDto> findSettings(SettingsModelType settings){
+    public List<RecommendationSettingsRequestDto> findSettings(SettingsModelType settings) {
         return switch (settings) {
             case A -> settingsModelA();
             case B -> settingsModelB();
@@ -21,11 +21,38 @@ public class SettingsModelService {
             case D -> settingsModelD();
             case E -> settingsModelE();
             case F -> settingsModelF();
-            default -> null;
+            case G -> settingsModelG();
+            case H -> settingsModelH();
+            case I -> settingsModelI();
+            case J -> settingsModelJ();
+            case K -> settingsModelK();
         };
     }
 
-        private List<RecommendationSettingsRequestDto> settingsModelA() {
+    private List<RecommendationSettingsRequestDto> settingsModelA() { // Sem recomendações
+        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        return recommendationSettings;
+    }
+
+    private List<RecommendationSettingsRequestDto> settingsModelB() { // Antigo A
         List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(21), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
@@ -44,10 +71,34 @@ public class SettingsModelService {
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
         return recommendationSettings;
     }
 
-    private List<RecommendationSettingsRequestDto> settingsModelB() {
+    private List<RecommendationSettingsRequestDto> settingsModelC() { // Variação do B, alterando o número de dias para 14
+        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(14), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-400), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(1800), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
+        return recommendationSettings;
+    }
+
+    private List<RecommendationSettingsRequestDto> settingsModelD() { // Variação do B, alterando RELEVANCE_QUESTIONS_ANSWERED_IN_TAG para 2100
         List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(21), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
@@ -66,32 +117,11 @@ public class SettingsModelService {
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
         return recommendationSettings;
     }
 
-    private List<RecommendationSettingsRequestDto> settingsModelC() {
-        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(14), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-400), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(1800), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-        return recommendationSettings;
-    }
-
-    private List<RecommendationSettingsRequestDto> settingsModelD() {
+    private List<RecommendationSettingsRequestDto> settingsModelE() { // Variação do C, alterando RELEVANCE_QUESTIONS_ANSWERED_IN_TAG para 2100
         List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(14), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
@@ -110,10 +140,11 @@ public class SettingsModelService {
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
         return recommendationSettings;
     }
 
-    private List<RecommendationSettingsRequestDto> settingsModelE() {
+    private List<RecommendationSettingsRequestDto> settingsModelF() { // Variação do B, alterando o número de dias para 7
         List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
@@ -132,10 +163,103 @@ public class SettingsModelService {
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
         return recommendationSettings;
     }
 
-    private List<RecommendationSettingsRequestDto> settingsModelF() {
+    private List<RecommendationSettingsRequestDto> settingsModelG() {
+        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(21), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-400), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(90), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(45), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(2), RecommendationChannelType.RECOMMENDED_LIST));
+        return recommendationSettings;
+    }
+
+    private List<RecommendationSettingsRequestDto> settingsModelH() {
+        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(14), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-400), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(90), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(45), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(2), RecommendationChannelType.RECOMMENDED_LIST));
+        return recommendationSettings;
+    }
+
+    private List<RecommendationSettingsRequestDto> settingsModelI() {
+        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(21), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-400), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(105), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(45), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(2), RecommendationChannelType.RECOMMENDED_LIST));
+        return recommendationSettings;
+    }
+
+    private List<RecommendationSettingsRequestDto> settingsModelJ() {
+        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(14), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-200), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-400), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(105), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(45), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(2), RecommendationChannelType.RECOMMENDED_LIST));
+        return recommendationSettings;
+    }
+
+    private List<RecommendationSettingsRequestDto> settingsModelK() {
         List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
@@ -149,276 +273,12 @@ public class SettingsModelService {
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-400), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(2100), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
-        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(90), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(45), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
         recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
+        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RECOMMENDATION_ALGORITHM_FOR_CATEGORY_OR_TAG, BigDecimal.valueOf(2), RecommendationChannelType.RECOMMENDED_LIST));
         return recommendationSettings;
     }
-
-
-//    private List<RecommendationSettingsRequestDto> settingsModelA() { // Default
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(-5), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(600), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(200), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelB() {
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(-5), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(1000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(2000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(1000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(1000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelC() {
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(-5), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(1000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(2000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(1000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(1000), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelD() {
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelE() {
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(1200), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(600), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelF() {
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(200), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(1200), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(600), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelG() {
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(1200), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(600), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelH() {
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(21), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.00005), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(1800), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(900), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(80), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-
-//    private List<RecommendationSettingsRequestDto> settingsModelB() { // recent questions
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(3), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(200), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(200), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(-50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.0001), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(-20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-
-//    private List<RecommendationSettingsRequestDto> settingsModelC() { // tag attributes
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(-50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.0001), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(-20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(150), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(500), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(250), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(150), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(20), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelD() { // question attributes
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.0003), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(5), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(0), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(50), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
-//    private List<RecommendationSettingsRequestDto> settingsModelE() { // maximum number of pages with recommended questions
-//        List<RecommendationSettingsRequestDto> recommendationSettings = new ArrayList<>();
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RECENT, BigDecimal.valueOf(7), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.NUMBER_OF_DAYS_QUESTION_IS_RELEVANT, BigDecimal.valueOf(365), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RECENT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_PUBLICATION_DATE_RELEVANT, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_ANSWER, BigDecimal.valueOf(-30), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_PER_ANSWER, BigDecimal.valueOf(-10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_HAS_BEST_ANSWER, BigDecimal.valueOf(-50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_VIEWS, BigDecimal.valueOf(0.0001), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTION_NUMBER_FOLLOWERS, BigDecimal.valueOf(1), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_ANSWERED, BigDecimal.valueOf(-50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_USER_ALREADY_COMMENTED, BigDecimal.valueOf(-20), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MINIMUM_OF_ACTIVITIES_TO_CONSIDER_MAXIMUM_SCORE, BigDecimal.valueOf(10), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ASKED_IN_TAG, BigDecimal.valueOf(50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_ANSWERED_IN_TAG, BigDecimal.valueOf(300), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_COMMENTED_IN_TAG, BigDecimal.valueOf(100), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.RELEVANCE_QUESTIONS_FOLLOWED_IN_TAG, BigDecimal.valueOf(50), RecommendationChannelType.RECOMMENDED_LIST));
-//        recommendationSettings.add(new RecommendationSettingsRequestDto(RecommendationSettingsType.MAXIMUM_NUMBER_OF_PAGES_WITH_RECOMMENDED_QUESTIONS, BigDecimal.valueOf(60), RecommendationChannelType.RECOMMENDED_LIST));
-//        return recommendationSettings;
-//    }
-//
 }
