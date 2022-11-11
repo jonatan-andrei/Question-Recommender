@@ -780,7 +780,7 @@ public class QuestionCustomRepository {
         str.append("(COALESCE(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0),0)))");
         str.append(" * (NULLIF(CASE ");
         str.append(" WHEN " + aliasUserCategoryOrUserTag + "." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
-        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * " + aliasUserCategoryOrUserTag + "." + columnName);
+        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * GREATEST(" + aliasUserCategoryOrUserTag + "." + columnName + ",0.01)");
         str.append(" END, 0)),0)");
         return str.toString();
     }
@@ -793,7 +793,7 @@ public class QuestionCustomRepository {
         str.append("(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0)),0)");
         str.append(" * (NULLIF(CASE ");
         str.append(" WHEN " + aliasUserCategoryOrUserTag + "." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
-        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * " + aliasUserCategoryOrUserTag + "." + columnName);
+        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * GREATEST(" + aliasUserCategoryOrUserTag + "." + columnName + ",0.01)");
         str.append(" END, 0)),0)");
         return str.toString();
     }
