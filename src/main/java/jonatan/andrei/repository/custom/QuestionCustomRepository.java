@@ -779,8 +779,8 @@ public class QuestionCustomRepository {
         str.append(" - ");
         str.append("(COALESCE(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0),0)))");
         str.append(" * (NULLIF(CASE ");
-        str.append(" WHEN " + aliasUserCategoryOrUserTag + "." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
-        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * GREATEST(" + aliasUserCategoryOrUserTag + "." + columnName + ",0.01)");
+        str.append(" WHEN ufr." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
+        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * ufr."+ columnName);
         str.append(" END, 0)),0)");
         return str.toString();
     }
@@ -788,12 +788,12 @@ public class QuestionCustomRepository {
     private String appendRuleCategoryOrTagAlgorithmPercentage(String aliasUserCategoryOrUserTag, String aliasCategoryOrTag, String columnName, String parameterName) {
         StringBuilder str = new StringBuilder();
         str.append(" + COALESCE( ");
-        str.append("COALESCE((NULLIF(" + aliasUserCategoryOrUserTag + "." + columnName + ",0) / " + "NULLIF(ufr." + columnName + ",0))");
+        str.append("(COALESCE((NULLIF(" + aliasUserCategoryOrUserTag + "." + columnName + ",0) / " + "NULLIF(ufr." + columnName + ",0))");
         str.append(" / ");
-        str.append("(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0)),0)");
+        str.append("(NULLIF(" + aliasCategoryOrTag + "." + columnName + ",0) / NULLIF(tas." + columnName + ",0)),0)-1)");
         str.append(" * (NULLIF(CASE ");
         str.append(" WHEN " + aliasUserCategoryOrUserTag + "." + columnName + " >= :minimumOfActivitiesToConsiderMaximumScore THEN :" + parameterName);
-        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * GREATEST(" + aliasUserCategoryOrUserTag + "." + columnName + ",0.01)");
+        str.append(" ELSE :" + parameterName + " / :minimumOfActivitiesToConsiderMaximumScore * GREATEST(" + aliasUserCategoryOrUserTag + "." + columnName + ",1)");
         str.append(" END, 0)),0)");
         return str.toString();
     }
