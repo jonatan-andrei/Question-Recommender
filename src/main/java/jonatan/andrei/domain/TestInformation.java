@@ -34,7 +34,17 @@ public enum TestInformation {
     PT_STACKOVERFLOW_50_PERCENTAGE(Dump.PT_STACKOVERFLOW, LocalDateTime.parse("2017-08-23T02:06:29.760"), 7, 3, BigDecimal.valueOf(50)),
     PT_STACKOVERFLOW_60_PERCENTAGE(Dump.PT_STACKOVERFLOW, LocalDateTime.parse("2018-02-27T13:57:43.480"), 7, 3, BigDecimal.valueOf(60)),
     PT_STACKOVERFLOW_70_PERCENTAGE(Dump.PT_STACKOVERFLOW, LocalDateTime.parse("2018-09-23T18:17:53.713"), 7, 3, BigDecimal.valueOf(70)),
-    PT_STACKOVERFLOW_80_PERCENTAGE(Dump.PT_STACKOVERFLOW, LocalDateTime.parse("2019-06-01T19:24:25.670"), 7, 3, BigDecimal.valueOf(80));
+    PT_STACKOVERFLOW_80_PERCENTAGE(Dump.PT_STACKOVERFLOW, LocalDateTime.parse("2019-06-01T19:24:25.670"), 7, 3, BigDecimal.valueOf(80)),
+    PHYSICS_40_PERCENTAGE(Dump.PHYSICS, LocalDateTime.parse("2016-11-08T20:42:19.773"), 7, 3, BigDecimal.valueOf(40)),
+    PHYSICS_50_PERCENTAGE(Dump.PHYSICS, LocalDateTime.parse("2017-11-12T16:33:50.960"), 7, 3, BigDecimal.valueOf(50)),
+    PHYSICS_60_PERCENTAGE(Dump.PHYSICS, LocalDateTime.parse("2018-12-04T19:43:59.510"), 7, 3, BigDecimal.valueOf(60)),
+    PHYSICS_70_PERCENTAGE(Dump.PHYSICS, LocalDateTime.parse("2019-12-07T09:12:31.560"), 7, 3, BigDecimal.valueOf(70)),
+    PHYSICS_80_PERCENTAGE(Dump.PHYSICS, LocalDateTime.parse("2020-10-28T10:27:20.230"), 7, 3, BigDecimal.valueOf(80)),
+    ELECTRONICS_40_PERCENTAGE(Dump.ELECTRONICS, LocalDateTime.parse("2016-09-25T19:02:49.120"), 7, 3, BigDecimal.valueOf(40)),
+    ELECTRONICS_50_PERCENTAGE(Dump.ELECTRONICS, LocalDateTime.parse("2017-08-23T08:13:35.030"), 7, 3, BigDecimal.valueOf(50)),
+    ELECTRONICS_60_PERCENTAGE(Dump.ELECTRONICS, LocalDateTime.parse("2018-08-01T22:53:08.603"), 7, 3, BigDecimal.valueOf(60)),
+    ELECTRONICS_70_PERCENTAGE(Dump.ELECTRONICS, LocalDateTime.parse("2019-08-06T11:38:23.020"), 7, 3, BigDecimal.valueOf(70)),
+    ELECTRONICS_80_PERCENTAGE(Dump.ELECTRONICS, LocalDateTime.parse("2020-07-28T05:49:48.933"), 7, 3, BigDecimal.valueOf(80));
 
     private Dump dump;
 
