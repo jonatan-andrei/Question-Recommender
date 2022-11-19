@@ -53,7 +53,11 @@ public class TestResultUserDetailsResponseDto {
 
         private Integer numberOfRecommendedQuestions;
 
+        private BigDecimal percentageOfQuestionsAnsweredWithoutRecommendations;
+
         private BigDecimal percentageOfCorrectRecommendations;
+
+        private BigDecimal percentageIncreaseOfCorrectRecommendations;
 
         private String testDate;
 

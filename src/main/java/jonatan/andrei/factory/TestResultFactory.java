@@ -7,8 +7,12 @@ import jonatan.andrei.dto.TestResultUserDetailsResponseDto;
 import jonatan.andrei.model.TestResult;
 import jonatan.andrei.model.TestResultUser;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.isNull;
 
 public class TestResultFactory {
 
@@ -38,6 +42,7 @@ public class TestResultFactory {
                 .numberOfQuestions(testResult.getNumberOfQuestions())
                 .numberOfRecommendedQuestions(testResult.getNumberOfRecommendedQuestions())
                 .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
+                .percentageIncreaseOfCorrectRecommendations(calculatePercentageIncreaseOfCorrectRecommendations(testResult))
                 .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
                 .settingsModel(testResult.getSettingsModel())
                 .build();
@@ -53,7 +58,9 @@ public class TestResultFactory {
                 .numberOfUsers(testResult.getNumberOfUsers())
                 .numberOfQuestions(testResult.getNumberOfQuestions())
                 .numberOfRecommendedQuestions(testResult.getNumberOfRecommendedQuestions())
+                .percentageOfQuestionsAnsweredWithoutRecommendations(testResult.getPercentageOfQuestionsAnsweredWithoutRecommendations())
                 .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
+                .percentageIncreaseOfCorrectRecommendations(calculatePercentageIncreaseOfCorrectRecommendations(testResult))
                 .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
                 .users(users.stream()
                         .map(u -> TestResultDetailsResponseDto.TestResultUserResponseDto.builder()
@@ -86,13 +93,28 @@ public class TestResultFactory {
                         .numberOfUsers(testResult.getNumberOfUsers())
                         .numberOfQuestions(testResult.getNumberOfQuestions())
                         .numberOfRecommendedQuestions(testResult.getNumberOfRecommendedQuestions())
+                        .percentageOfQuestionsAnsweredWithoutRecommendations(testResult.getPercentageOfQuestionsAnsweredWithoutRecommendations())
                         .percentageOfCorrectRecommendations(testResult.getPercentageOfCorrectRecommendations())
+                        .percentageIncreaseOfCorrectRecommendations(calculatePercentageIncreaseOfCorrectRecommendations(testResult))
                         .testDate(LocalDateTimeFormatterFactory.formatLocalDateTimeToString(testResult.getTestDate()))
                         .settings(testResult.getSettings())
                         .settingsModel(testResult.getSettingsModel())
                         .totalActivitySystem(testResult.getTotalActivitySystem())
                         .build())
                 .build();
+    }
+
+
+    public static BigDecimal calculatePercentageIncreaseOfCorrectRecommendations(TestResult testResult) {
+        if (isNull(testResult.getPercentageOfQuestionsAnsweredWithoutRecommendations())){
+            return null;
+        }
+
+        BigDecimal percent = testResult.getPercentageOfCorrectRecommendations()
+                .multiply(BigDecimal.valueOf(100))
+                .divide(testResult.getPercentageOfQuestionsAnsweredWithoutRecommendations(), 2, RoundingMode.HALF_UP);
+
+        return percent.subtract(BigDecimal.valueOf(100)).setScale(2, RoundingMode.HALF_UP);
     }
 
 }

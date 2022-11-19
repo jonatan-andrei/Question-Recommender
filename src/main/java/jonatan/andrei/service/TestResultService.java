@@ -34,7 +34,7 @@ public class TestResultService {
 
     @Transactional
     public List<TestResultResponseDto> findAll() {
-        return testResultRepository.findAll()
+        return testResultRepository.findAllByOrderByTestResultIdAsc()
                 .stream().map(tr -> TestResultFactory.toDto(tr))
                 .collect(Collectors.toList());
     }

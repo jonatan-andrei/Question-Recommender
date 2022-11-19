@@ -31,6 +31,8 @@ public class TestResultResponseDto {
 
     private BigDecimal percentageOfCorrectRecommendations;
 
+    private BigDecimal percentageIncreaseOfCorrectRecommendations;
+
     private String testDate;
 
     private SettingsModelType settingsModel;

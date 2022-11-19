@@ -3,6 +3,7 @@ package jonatan.andrei.service;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
 import jonatan.andrei.dto.TestResultRequestDto;
+import jonatan.andrei.factory.TestResultFactory;
 import jonatan.andrei.model.TestResult;
 import jonatan.andrei.model.TestResultUser;
 import org.junit.jupiter.api.Test;
@@ -65,5 +66,20 @@ public class TestResultServiceTest extends AbstractServiceTest {
         assertEquals(testResultRequestDto.getUsers().get(0).getNumberOfRecommendedQuestions(), testResultUser.getNumberOfRecommendedQuestions());
         assertEquals(testResultRequestDto.getUsers().get(0).getPercentageOfCorrectRecommendations().stripTrailingZeros(), testResultUser.getPercentageOfCorrectRecommendations().stripTrailingZeros());
         assertEquals(testResultRequestDto.getUsers().get(0).isError(), testResultUser.isError());
+    }
+
+    @Test
+    public void calculatePercentageIncreaseOfCorrectRecommendations(){
+        // Arrange
+        TestResult testResult = TestResult.builder()
+                .percentageOfCorrectRecommendations(BigDecimal.valueOf(68.97))
+                .percentageOfQuestionsAnsweredWithoutRecommendations(BigDecimal.valueOf(13.7))
+                .build();
+
+        // Act
+        BigDecimal result = TestResultFactory.calculatePercentageIncreaseOfCorrectRecommendations(testResult);
+
+        // Assert
+        assertEquals(BigDecimal.valueOf(403.43), result);
     }
 }

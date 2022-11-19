@@ -69,4 +69,7 @@ public class TestResult {
     @Column(name = "test_date")
     private LocalDateTime testDate;
 
+    @Column(name = "percentage_of_questions_answered_without_recommendations")
+    private BigDecimal percentageOfQuestionsAnsweredWithoutRecommendations;
+
 }

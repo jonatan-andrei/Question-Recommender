@@ -1,0 +1,1 @@
+ALTER TABLE public.test_result ADD COLUMN "percentage_of_questions_answered_without_recommendations" numeric(19, 2) NULL;
